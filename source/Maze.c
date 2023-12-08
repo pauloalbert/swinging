@@ -2,7 +2,8 @@
  * maze.c
  *
  *  Created on: Oct 24, 2023
- *      Author: nds
+ *      Author: nds paulo
+ *
  */
 #include "Maze.h"
 int maze[] = {1,1,1,1,1, 1,1,1,1,1,
