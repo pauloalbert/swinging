@@ -22,9 +22,6 @@ void _handleInput(Camera* camera, Player* player, u16 keys, u16 keys_pressed){
 		int seed = (int)((player->x*100)+(player->y*100000));
 		set_seed(seed);
 		printf("RESET: new seed - %d\n",seed);
-		u16 old = shuffleGoal();
-
-		printf("The goal was in: %d, %d\n",old&0xf, old >> 8);
 		printf("Final score: %d\n\n", player->score);
 		player->x = 60;
 		player->y = 140;
@@ -37,8 +34,6 @@ void _handleInput(Camera* camera, Player* player, u16 keys, u16 keys_pressed){
 
 	player->y = mod_float(player->y, MAZE_HEIGHT<<MAZE_BLOCK_BITS);
 	//
-	if(keys_pressed & KEY_A)
-		tryGoal(player->x,player->y,player->angle, player);
 }
 
 void handleInput(Camera* camera, Player* player){

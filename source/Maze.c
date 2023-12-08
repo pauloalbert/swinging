@@ -11,7 +11,7 @@ int maze[] = {1,1,1,1,1, 1,1,1,1,1,
 		1,0,0,0,0, 1,1,1,0,1,
 		1,0,0,0,0, 0,0,0,0,1,
 		1,0,0,0,0, 0,0,0,0,1,
-		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,1,0,0,1,
 		1,0,0,0,0, 0,0,0,0,1,
 		1,0,0,0,0, 0,0,0,0,1,
 		1,1,1,1,1, 1,1,1,1,1
@@ -40,8 +40,6 @@ u16 color_from_wall(int wall_type, bool is_x_wall){
 void Maze_Init(){
 	MAZE_FOV = MAZE_FOV_MIN;
 	PULLBACK = PULLBACK_MIN;
-
-	shuffleGoal();
 
 }
 
@@ -179,26 +177,4 @@ byte getMazeFromWorld(float px, float py){
 	return getMaze(round_float(px)>>MAZE_BLOCK_BITS,round_float(py)>>MAZE_BLOCK_BITS);
 }
 
-u16 shuffleGoal(){
-	maze[coords(goal.x,goal.y,MAZE_WIDTH)] = goal.old_block;
-	u16 old = (goal.y<<8) + goal.x;
-	goal.x = rng() % MAZE_WIDTH;
-	goal.y = rng() % MAZE_HEIGHT;
-	goal.old_block = getMaze(goal.x,goal.y);
-
-	maze[coords(goal.x,goal.y,MAZE_WIDTH)] = BLOCK_GOAL;
-
-	return old;
-}
-
-
-void tryGoal(float x, float y, float angle, Player* player){
-	if(getMazeFromWorld(x + 32 * cos(angle),y + 32 * sin(angle)) == BLOCK_GOAL ||
-			getMazeFromWorld(x + 16 * cos(angle),y + 16 * sin(angle)) == BLOCK_GOAL ||
-			getMazeFromWorld(x + 8 * cos(angle),y + 8 * sin(angle)) == BLOCK_GOAL){
-		shuffleGoal();
-		Audio_PlaySoundEX( SFX_SWISH , 255, 128);
-		printf("found one!, score %d\n",++player->score);
-	}
-}
 

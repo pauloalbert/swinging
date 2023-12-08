@@ -48,7 +48,3 @@ void Render_map(enum BUFFER_TYPE bT, Camera player);
 byte getMaze(int x, int y);
 
 byte getMazeFromWorld(float x, float y);
-
-void tryGoal(float x, float y, float angle, Player* player);
-
-u16 shuffleGoal();
