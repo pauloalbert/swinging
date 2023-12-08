@@ -6,7 +6,7 @@
  *
  */
 #include "Maze.h"
-int maze[] = {1,1,1,1,1, 1,1,1,1,1,
+int map[] = {1,1,1,1,1, 1,1,1,1,1,
 		1,0,0,0,0, 0,0,0,0,1,
 		1,0,0,0,0, 0,0,0,0,1,
 		1,0,0,0,0, 1,1,1,0,1,
@@ -71,7 +71,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wa
 
 			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
 
-			int current_wall = maze[coords((((px)>>WORLD_BLOCK_BITS) - !facing_right),((int)float_py)>>WORLD_BLOCK_BITS,MAP_WIDTH)];
+			int current_wall = map[coords((((px)>>WORLD_BLOCK_BITS) - !facing_right),((int)float_py)>>WORLD_BLOCK_BITS,MAP_WIDTH)];
 			if(current_wall != 0){
 				if(wall_type) *(wall_type) = current_wall;
 				return distance;
@@ -94,7 +94,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wa
 			float_px = mod_float(float_px,MAP_WIDTH<<WORLD_BLOCK_BITS);
 			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
 
-			int current_wall = maze[coords(((int)(float_px)>>WORLD_BLOCK_BITS),(py>>WORLD_BLOCK_BITS)-!facing_down,MAP_WIDTH)];
+			int current_wall = map[coords(((int)(float_px)>>WORLD_BLOCK_BITS),(py>>WORLD_BLOCK_BITS)-!facing_down,MAP_WIDTH)];
 			if(current_wall != 0){
 				if(wall_type) *(wall_type) = current_wall;
 				return distance;
@@ -158,7 +158,7 @@ void Render_map(enum BUFFER_TYPE bT, Camera player){
 		int j;
 		for(j=0; j < MAP_HEIGHT; j++){
 
-			if(maze[coords(i,j,MAP_WIDTH)]) FillRectangle(bT,16*j + map_border,16*(j+1)-1 - map_border,16*i + map_border,16*(i+1)-1- map_border,RGB15(10,10,10));
+			if(map[coords(i,j,MAP_WIDTH)]) FillRectangle(bT,16*j + map_border,16*(j+1)-1 - map_border,16*i + map_border,16*(i+1)-1- map_border,RGB15(10,10,10));
 			else FillRectangle(bT,16*j,16*(j+1)-1,16*i,16*(i+1)-1,RGB15(0,0,0));
 		}
 	}
