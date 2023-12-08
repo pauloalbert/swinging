@@ -59,3 +59,7 @@ dkms.conf
 .cproject
 *.xml
 *.prefs
+*.nds
+swinging.elf
+*.arm9
+*.elf
