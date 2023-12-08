@@ -38,13 +38,11 @@ u16 color_from_wall(int wall_type, bool is_x_wall){
 #endif
 }
 
-void Maze_Init(){
-	MAZE_FOV = MAZE_FOV_MIN;
-	PULLBACK = PULLBACK_MIN;
+void Map_Init(){
 
 }
 
-float Maze_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wall_type){
+float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wall_type){
 	float slope = tan(angle);
 
 	bool facing_down = sin(angle) > 0;
@@ -113,12 +111,12 @@ void Render_screen(enum BUFFER_TYPE bT, Camera player, int columns){
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
 	int i = 0;
 	for(i = 0; i < columns; i++){
-		float angle = player.angle + MAZE_FOV*(-0.5 + (i+1)/(float)(columns+1));
+		float angle = player.tilt + MAP_FOV*(-0.5 + (i+1)/(float)(columns+1));
 
 		int x_wall_type = 0;
 		int y_wall_type = 0;
-		float x_wall_distance = Maze_get_raycast_distance(player.x, player.y, angle, true, &x_wall_type);
-		float y_wall_distance = Maze_get_raycast_distance(player.x, player.y, angle, false, &y_wall_type);
+		float x_wall_distance = Map_get_raycast_distance(player.x, player.y, angle, true, &x_wall_type);
+		float y_wall_distance = Map_get_raycast_distance(player.x, player.y, angle, false, &y_wall_type);
 
 		float distance = x_wall_distance < y_wall_distance ? x_wall_distance : y_wall_distance;
 
@@ -156,26 +154,26 @@ void Render_map(enum BUFFER_TYPE bT, Camera player){
 
 
 	int i = 0;
-	for(i = 0; i < MAZE_WIDTH; i++){
+	for(i = 0; i < MAP_WIDTH; i++){
 		int j;
-		for(j=0; j < MAZE_HEIGHT; j++){
+		for(j=0; j < MAP_HEIGHT; j++){
 
-			if(maze[coords(i,j,MAZE_WIDTH)]) FillRectangle(bT,16*j + map_border,16*(j+1)-1 - map_border,16*i + map_border,16*(i+1)-1- map_border,RGB15(10,10,10));
+			if(maze[coords(i,j,MAP_WIDTH)]) FillRectangle(bT,16*j + map_border,16*(j+1)-1 - map_border,16*i + map_border,16*(i+1)-1- map_border,RGB15(10,10,10));
 			else FillRectangle(bT,16*j,16*(j+1)-1,16*i,16*(i+1)-1,RGB15(0,0,0));
 		}
 	}
 	DrawCircle(bT,player.x,player.y,5,RGB15(31,31,31));
 	DrawCircle(bT,player.x,player.y,5.5,RGB15(31,31,31));
 
-	DrawAngledLine(bT,player.x,player.y,player.angle,10,RGB15(31,0,0));
+	DrawAngledLine(bT,player.x,player.y,player.tilt,10,RGB15(31,0,0));
 }
 
-byte getMaze(int x, int y){
-	return maze[coords(x,y,MAZE_WIDTH)];
+byte getBuilding(int x, int y){
+	return map[coords(x,y,MAP_WIDTH)];
 }
 
-byte getMazeFromWorld(float px, float py){
-	return getMaze(round_float(px)>>MAZE_BLOCK_BITS,round_float(py)>>MAZE_BLOCK_BITS);
+byte getBuildingFromWorld(float px, float py){
+	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
 }
 
 

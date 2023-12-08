@@ -17,18 +17,16 @@
 typedef struct{
 	int x;
 	int y;
-	float angle;
+	int z;
+	float pan;
+	float tilt;
 } Camera;
 
 typedef struct{
 	float x;
 	float y;
 	float angle;
-	float x_vel;
-	float y_vel;
-	float torque;
-	int score;
-	byte health;
+	//TODO: store for the player
 } Player;
 
 typedef struct{
@@ -37,14 +35,14 @@ typedef struct{
 	int old_block;
 } Goal;
 
-void Maze_Init();
+void Map_Init();
 
-float Maze_get_raycast_distance(int x, int y, float angle, bool x_wall, int* wall_type);
+float Map_get_raycast_distance(int x, int y, float angle, bool x_wall, int* wall_type);
 
 void Render_screen(enum BUFFER_TYPE bT, Camera player, int columns);
 
 void Render_map(enum BUFFER_TYPE bT, Camera player);
 
-byte getMaze(int x, int y);
+byte getBuilding(int x, int y);
 
-byte getMazeFromWorld(float x, float y);
+byte getBuildingFromWorld(float x, float y);
