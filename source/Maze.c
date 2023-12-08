@@ -5,23 +5,16 @@
  *      Author: nds
  */
 #include "Maze.h"
-maze[] = {1,1,1,1,1, 1,1,1,1,1, 1,1,1,1,1,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 1,2,3,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,1, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
-		0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0
+int maze[] = {1,1,1,1,1, 1,1,1,1,1,
+		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 1,1,1,0,1,
+		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,0,0,0,1,
+		1,1,1,1,1, 1,1,1,1,1
 };
 
 Goal goal = {0, 0, 1};
@@ -136,20 +129,26 @@ void Render_screen(enum BUFFER_TYPE bT, Camera player, int columns){
 		float adjusted_distance = distance*cos(MAZE_FOV*(-0.5+i/(float)columns));
 
 		//should be sourced elsewhere
-		float camera_tilt = 16;
+		float camera_tilt = 30/360;
 		float wall_height = 128;
-		float camera_height = 30;
+		float camera_height = 60;
 
-		float vert_fov = 4*MAZE_FOV/3;
+		float vert_fov = 3*MAZE_FOV/4;
 		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera_tilt);
 
 		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera_tilt)) - camera_height;
-		int top = 192 * wall_height / screen_height_at_wall + bottom_wall;
-		int bottom = bottom_wall;
+		int top = 192 * (wall_height + bottom_wall) / screen_height_at_wall;
+		int bottom = 192 * bottom_wall / screen_height_at_wall;
+		if(i == 0){
+			//printf("%.2f,%.2f, %.2f, %.2f\n", screen_height_at_wall,adjusted_distance, wall_height/screen_height_at_wall, bottom_wall/screen_height_at_wall);
+			printf("%.2f,%.2f, %d, %d\n", screen_height_at_wall,adjusted_distance, top, bottom);
 
-		FillRectangle(bT, clamp(top,0,192), clamp(bottom,0,192), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
-		//DrawAngledLine(bT,player.x,player.y,angle,x_wall_distance,RGB15(31,0,0));
-		//DrawAngledLine(bT,player.x,player.y,angle+0.05,y_wall_distance,RGB15(0,0,31));
+		}
+		FillRectangle(bT, clamp(bottom,0,191), clamp(top,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+
+		//float half_length_wall = 150/(1+(distance*cos(MAZE_FOV*(-0.5+i/(float)columns)))/MAZE_BLOCK_SIZE);
+		//FillRectangle(bT, clamp(96-(int)half_length_wall,0,192), clamp(96+(int)half_length_wall,0,192), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+
 	}
 }
 
