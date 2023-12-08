@@ -5,7 +5,7 @@
  *      Author: nds paulo
  *
  */
-#include "Maze.h"
+#include "Map.h"
 int map[] = {1,1,1,1,1, 1,1,1,1,1,
 		1,0,0,0,0, 0,0,0,0,1,
 		1,0,0,0,0, 0,0,0,0,1,

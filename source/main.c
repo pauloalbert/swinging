@@ -2,11 +2,11 @@
 #include <nds.h>
 #include "P_Graphics.h"
 #include "P_Graphics_Plus.h"
-#include "Maze.h"
+#include "Map.h"
 #include "Controls.h"
 #include "P_Audio.h"
 Camera camera= {60,140,0};
-Player player = {60,140,0,0,0,0,0,10};
+Player player = {60,140,0,0};
 extern Goal goal;
 int main(void)
 {

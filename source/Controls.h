@@ -7,7 +7,7 @@
 #pragma once
 
 #include <nds.h>
-#include "Maze.h"
+#include "Map.h"
 #include "P_Util.h"
 void initInput();
 void handleInput(Camera* camera, Player* player);
