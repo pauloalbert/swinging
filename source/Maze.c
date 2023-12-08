@@ -62,16 +62,16 @@ float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wa
 
 		for(i = 0; i < RAYCAST_RECURSION; i++){
 			int last_px = px;
-			px = (((px+(facing_right ? MAZE_BLOCK_SIZE : -1))>>MAZE_BLOCK_BITS))<<MAZE_BLOCK_BITS;
+			px = (((px+(facing_right ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS))<<WORLD_BLOCK_BITS;
 			float_py += slope*(px - last_px);
 			distance += sqrt( (1+slope*slope)*(px-last_px)*(px-last_px) );
 
-			px = mod(px - !facing_right, MAZE_WIDTH<<MAZE_BLOCK_BITS) + !facing_right;
-			float_py = mod_float(float_py,MAZE_HEIGHT<<MAZE_BLOCK_BITS);
+			px = mod(px - !facing_right, MAP_WIDTH<<WORLD_BLOCK_BITS) + !facing_right;
+			float_py = mod_float(float_py,MAP_HEIGHT<<WORLD_BLOCK_BITS);
 
-			if(px < 0 || (int)float_py < 0 || px>>MAZE_BLOCK_BITS > MAZE_WIDTH || (int)float_py>>MAZE_BLOCK_BITS > MAZE_HEIGHT) return 1000000;
+			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
 
-			int current_wall = maze[coords((((px)>>MAZE_BLOCK_BITS) - !facing_right),((int)float_py)>>MAZE_BLOCK_BITS,MAZE_WIDTH)];
+			int current_wall = maze[coords((((px)>>WORLD_BLOCK_BITS) - !facing_right),((int)float_py)>>WORLD_BLOCK_BITS,MAP_WIDTH)];
 			if(current_wall != 0){
 				if(wall_type) *(wall_type) = current_wall;
 				return distance;
@@ -86,15 +86,15 @@ float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wa
 		float distance = 0;
 		for(i = 0; i < RAYCAST_RECURSION; i++){
 			int last_py = py;
-			py = ((py+(facing_down ? MAZE_BLOCK_SIZE : -1))>>MAZE_BLOCK_BITS)<<MAZE_BLOCK_BITS;
+			py = ((py+(facing_down ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS)<<WORLD_BLOCK_BITS;
 			float_px += (1/slope)*(py - last_py);
 			distance += sqrt( (1+(1/slope)*(1/slope))*(py-last_py)*(py-last_py) );
 
-			py = mod(py - !facing_down, MAZE_HEIGHT<<MAZE_BLOCK_BITS) + !facing_down;
-			float_px = mod_float(float_px,MAZE_WIDTH<<MAZE_BLOCK_BITS);
-			if(py < 0 || (int)float_px < 0 || py>>MAZE_BLOCK_BITS > MAZE_WIDTH || (int)float_px>>MAZE_BLOCK_BITS > MAZE_HEIGHT) return 1000000;
+			py = mod(py - !facing_down, MAP_HEIGHT<<WORLD_BLOCK_BITS) + !facing_down;
+			float_px = mod_float(float_px,MAP_WIDTH<<WORLD_BLOCK_BITS);
+			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
 
-			int current_wall = maze[coords(((int)(float_px)>>MAZE_BLOCK_BITS),(py>>MAZE_BLOCK_BITS)-!facing_down,MAZE_WIDTH)];
+			int current_wall = maze[coords(((int)(float_px)>>WORLD_BLOCK_BITS),(py>>WORLD_BLOCK_BITS)-!facing_down,MAP_WIDTH)];
 			if(current_wall != 0){
 				if(wall_type) *(wall_type) = current_wall;
 				return distance;
@@ -106,31 +106,31 @@ float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wa
 
 }
 
-void Render_screen(enum BUFFER_TYPE bT, Camera player, int columns){
+void Render_screen(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 0,85,0,255, RGB15(20,25,31));
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
 	int i = 0;
 	for(i = 0; i < columns; i++){
-		float angle = player.tilt + MAP_FOV*(-0.5 + (i+1)/(float)(columns+1));
+		float angle = camera.tilt + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
 		int x_wall_type = 0;
 		int y_wall_type = 0;
-		float x_wall_distance = Map_get_raycast_distance(player.x, player.y, angle, true, &x_wall_type);
-		float y_wall_distance = Map_get_raycast_distance(player.x, player.y, angle, false, &y_wall_type);
+		float x_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, true, &x_wall_type);
+		float y_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, false, &y_wall_type);
 
 		float distance = x_wall_distance < y_wall_distance ? x_wall_distance : y_wall_distance;
 
 		//int color_falloff = ((int)distance / 30) & 0x1f;
 		u16 wall_color = color_from_wall(x_wall_distance < y_wall_distance ? x_wall_type : y_wall_type, x_wall_distance > y_wall_distance);
 
-		float adjusted_distance = distance*cos(MAZE_FOV*(-0.5+i/(float)columns));
+		float adjusted_distance = distance*cos(camera.fov_width*(-0.5+i/(float)columns));
 
 		//should be sourced elsewhere
 		float camera_tilt = 30/360;
 		float wall_height = 128;
 		float camera_height = 60;
 
-		float vert_fov = 3*MAZE_FOV/4;
+		float vert_fov = 3*camera.fov_width/4;
 		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera_tilt);
 
 		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera_tilt)) - camera_height;
@@ -143,7 +143,7 @@ void Render_screen(enum BUFFER_TYPE bT, Camera player, int columns){
 		}
 		FillRectangle(bT, clamp(bottom,0,191), clamp(top,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 
-		//float half_length_wall = 150/(1+(distance*cos(MAZE_FOV*(-0.5+i/(float)columns)))/MAZE_BLOCK_SIZE);
+		//float half_length_wall = 150/(1+(distance*cos(MAZE_FOV*(-0.5+i/(float)columns)))/WORLD_BLOCK_SIZE);
 		//FillRectangle(bT, clamp(96-(int)half_length_wall,0,192), clamp(96+(int)half_length_wall,0,192), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 
 	}

@@ -18,8 +18,12 @@ typedef struct{
 	int x;
 	int y;
 	int z;
+
 	float pan;
 	float tilt;
+
+	float fov_width;
+	float fov_height;
 } Camera;
 
 typedef struct{
