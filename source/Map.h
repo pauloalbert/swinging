@@ -1,12 +1,9 @@
 #pragma once
 #include <stdio.h>
 #include <nds.h>
-#include "P_Graphics.h"
-#include "P_Graphics_Plus.h"
 #include "Constants.h"
 #include <stdlib.h>
 #include <math.h>
-#include "P_Audio.h"
 #include "P_Util.h"
 //         north (-y)
 //	(0,0) (1,0) (2,0)
@@ -43,8 +40,6 @@ typedef struct{
 void Map_Init();
 
 int Map_get_raycast_distance(int px, int py, float angle, int* wall_type);
-
-void Render_screen(enum BUFFER_TYPE bT, Camera player, int columns);
 
 void Render_map(enum BUFFER_TYPE bT, Camera player);
 
