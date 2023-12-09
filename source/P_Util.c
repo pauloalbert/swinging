@@ -29,10 +29,17 @@ inline int round_float(float b){
 	return (int)(b+0.5);
 }
 
+inline int mod(int x, int amount){
+	return ((x % amount) + amount) % amount;
+}
+inline float mod_float(float x, int amount){
+	return fmod(fmod(x, amount) + amount,amount);
+}
+
 int seed = 123456789;
 #define RNG_A 1103515245
 #define RNG_C 12345
-#define RNG_M (2<<31)
+#define RNG_M (2<<15)
 int rng(){
 	seed = (RNG_A * seed + RNG_C) % RNG_M;
 	return seed < 0 ? -seed : seed;
@@ -41,3 +48,5 @@ int rng(){
 void set_seed(int new_seed){
 	seed = new_seed;
 }
+
+

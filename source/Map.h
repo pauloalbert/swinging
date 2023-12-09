@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "P_Audio.h"
+#include "P_Util.h"
 //         north (-y)
 //	(0,0) (1,0) (2,0)
 //  (0,1) (1,1) (2,1)   east(+x)
@@ -41,12 +42,14 @@ typedef struct{
 
 void Map_Init();
 
-float Map_get_raycast_distance(int x, int y, float angle, bool x_wall, int* wall_type);
+int Map_get_raycast_distance(int px, int py, float angle, int* wall_type);
 
 void Render_screen(enum BUFFER_TYPE bT, Camera player, int columns);
 
 void Render_map(enum BUFFER_TYPE bT, Camera player);
 
-byte getBuilding(int x, int y);
+inline byte getBuilding(int x, int y);
 
-byte getBuildingFromWorld(float x, float y);
+inline byte getBuildingFromWorld(float x, float y);
+
+inline byte getBuildingFromFXP(int px, int py);

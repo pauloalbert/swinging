@@ -42,68 +42,87 @@ void Map_Init(){
 
 }
 
-float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wall_type){
+int Map_get_raycast_distance(int px, int py, float angle, int* wall_type){
 	float slope = tan(angle);
-
+	int slope_fxp = float_to_fxp(slope,FXP_DECIMAL_BITS);
+	int slope_inverse_fxp = float_to_fxp(1/slope, FXP_DECIMAL_BITS);
 	bool facing_down = sin(angle) > 0;
 	bool facing_right = cos(angle) > 0;
-	inline int mod(int x, int amount){
-		return ((x % amount) + amount) % amount;
-	}
-	inline float mod_float(float x, int amount){
-		return fmod(fmod(x, amount) + amount,amount);
-	}
 
-	if(x_wall){
-		float float_py = py;
-		//set a limit
-		int i = 0;
-		float distance = 0;
+	//distances of x and y
+	int x_distance = 0, y_distance = 0;
+	//second set of coordinates for the other ray
+	int px2 = px;
+	int py2 = py;
+	/*This is the new MARCHING SQUARES raycast implemenation
+	The idea is to shoot two rays, one that stops at X walls, one at Y walls
+	if a wall is hit,
+	*/
+	int i = 0;
+	for(i = 0; i < RAYCAST_RECURSION; i++){
+		printf("start %d\n",i);
+		printf("%d,%d,%d,%d,%d,%d\n",x_distance, y_distance, px,py,px2,py2);
+		//Advance the shorter of the two rays.
+		if(x_distance <= y_distance){
+			if(px < 0 || px > (MAP_WIDTH<<FXP_DECIMAL_BITS) || py < 0 || py > (MAP_HEIGHT<<FXP_DECIMAL_BITS))
+				return MAX_INT;
+			//if we advanced x in the past and we hit a wall, this must be the shortest path
+			int building = getBuildingFromFXP(px,py);
+			if(building != 0){
+				if(wall_type)
+					(*wall_type) = building;
+				return x_distance;
+			}
 
-		for(i = 0; i < RAYCAST_RECURSION; i++){
+			//advance the ray
 			int last_px = px;
-			px = (((px+(facing_right ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS))<<WORLD_BLOCK_BITS;
-			float_py += slope*(px - last_px);
-			distance += sqrt( (1+slope*slope)*(px-last_px)*(px-last_px) );
+			px += FXP_UNIT * (facing_right * 2 - 1);	//subtract/add from x 256 based on facing
 
-			px = mod(px - !facing_right, MAP_WIDTH<<WORLD_BLOCK_BITS) + !facing_right;
-			float_py = mod_float(float_py,MAP_HEIGHT<<WORLD_BLOCK_BITS);
-
-			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
-
-			int current_wall = map[coords((((px)>>WORLD_BLOCK_BITS) - !facing_right),((int)float_py)>>WORLD_BLOCK_BITS,MAP_WIDTH)];
-			if(current_wall != 0){
-				if(wall_type) *(wall_type) = current_wall;
-				return distance;
+			//simplify the math depending on if we moved a full square already
+			if(true){
+				px = floor_bits(px, FXP_DECIMAL_BITS);		//round px to an int
+				py += (int)((1/slope)*(px-last_px));		//add to py the movement
+				x_distance += float_to_fxp(sqrt( (1+slope*slope)*(px-last_px)*(px-last_px)),FXP_DECIMAL_BITS);	//progress px
 			}
-		}
-		return 1000000;
-	}
-	else{
-		float float_px = px;
-		//set a limit
-		int i = 0;
-		float distance = 0;
-		for(i = 0; i < RAYCAST_RECURSION; i++){
-			int last_py = py;
-			py = ((py+(facing_down ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS)<<WORLD_BLOCK_BITS;
-			float_px += (1/slope)*(py - last_py);
-			distance += sqrt( (1+(1/slope)*(1/slope))*(py-last_py)*(py-last_py) );
-
-			py = mod(py - !facing_down, MAP_HEIGHT<<WORLD_BLOCK_BITS) + !facing_down;
-			float_px = mod_float(float_px,MAP_WIDTH<<WORLD_BLOCK_BITS);
-			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
-
-			int current_wall = map[coords(((int)(float_px)>>WORLD_BLOCK_BITS),(py>>WORLD_BLOCK_BITS)-!facing_down,MAP_WIDTH)];
-			if(current_wall != 0){
-				if(wall_type) *(wall_type) = current_wall;
-				return distance;
+			else{
+				py += slope_fxp;
+				x_distance += 1;
 			}
+
+			printf("x %x,%x,%x,%x,%x,%x\n",x_distance, y_distance, px,py,px2,py2);
+
 		}
-		return 1000000;
+		else{
+			if(px2 < 0 || px2 > (MAP_WIDTH<<FXP_DECIMAL_BITS) || py2 < 0 || py2 > (MAP_HEIGHT<<FXP_DECIMAL_BITS))
+				return MAX_INT;
+			//the y ray is currently shorter!
+			//if we advanced x in the past and we hit a wall, this must be the shortest path
+			int building = getBuildingFromFXP(px2,py2);
+			if(building != 0){
+				if(wall_type)
+					(*wall_type) = building;
+				return -y_distance;	//return NEGATIVE DISTANCE
+			}
 
+			//advance the ray
+			int last_py = py2;
+			py2 += FXP_UNIT * (facing_down * 2 - 1);	//subtract/add from x 256 based on facing
+
+			//simplify the math depending on if we moved a full square already
+			if(true){
+				py2 = floor_bits(py, FXP_DECIMAL_BITS);		//round px to an int
+				px2 += (int)((1/slope)*(py2-last_py));		//add to py the movement
+				y_distance += float_to_fxp(sqrt( (1+(1/slope)*(1/slope))*(py2-last_py)*(py2-last_py)),FXP_DECIMAL_BITS);	//progress px
+			}
+			else{
+				py += slope_inverse_fxp;
+				x_distance += 1;
+			}
+
+			printf("y %x,%x,%x,%x,%x,%x\n",x_distance, y_distance, px,py,px2,py2);
+		}
 	}
-
+	return MAX_INT;
 }
 
 void Render_screen(enum BUFFER_TYPE bT, Camera camera, int columns){
@@ -113,21 +132,17 @@ void Render_screen(enum BUFFER_TYPE bT, Camera camera, int columns){
 	for(i = 0; i < columns; i++){
 		float angle = camera.tilt + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		int x_wall_type = 0;
-		int y_wall_type = 0;
-		float x_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, true, &x_wall_type);
-		float y_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, false, &y_wall_type);
+		int wall_type = 0;
+		int distance = Map_get_raycast_distance(camera.x, camera.y, angle, &wall_type);
+		printf("result %x\n", distance);
+		u16 wall_color = color_from_wall(wall_type, distance > 0);
+		distance = abs(distance);
 
-		float distance = x_wall_distance < y_wall_distance ? x_wall_distance : y_wall_distance;
-
-		//int color_falloff = ((int)distance / 30) & 0x1f;
-		u16 wall_color = color_from_wall(x_wall_distance < y_wall_distance ? x_wall_type : y_wall_type, x_wall_distance > y_wall_distance);
-
-		float adjusted_distance = distance*cos(camera.fov_width*(-0.5+i/(float)columns));
+		int adjusted_distance = (int)(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
 		//should be sourced elsewhere
 		float camera_tilt = 30/360;
-		float wall_height = 128;
+		float wall_height = 1280;
 		float camera_height = 60;
 
 		float vert_fov = 3*camera.fov_width/4;
@@ -136,16 +151,8 @@ void Render_screen(enum BUFFER_TYPE bT, Camera camera, int columns){
 		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera_tilt)) - camera_height;
 		int top = 192 * (wall_height + bottom_wall) / screen_height_at_wall;
 		int bottom = 192 * bottom_wall / screen_height_at_wall;
-		if(i == 0){
-			//printf("%.2f,%.2f, %.2f, %.2f\n", screen_height_at_wall,adjusted_distance, wall_height/screen_height_at_wall, bottom_wall/screen_height_at_wall);
-			printf("%.2f,%.2f, %d, %d\n", screen_height_at_wall,adjusted_distance, top, bottom);
 
-		}
 		FillRectangle(bT, clamp(bottom,0,191), clamp(top,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
-
-		//float half_length_wall = 150/(1+(distance*cos(MAZE_FOV*(-0.5+i/(float)columns)))/WORLD_BLOCK_SIZE);
-		//FillRectangle(bT, clamp(96-(int)half_length_wall,0,192), clamp(96+(int)half_length_wall,0,192), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
-
 	}
 }
 
@@ -168,12 +175,16 @@ void Render_map(enum BUFFER_TYPE bT, Camera player){
 	DrawAngledLine(bT,player.x,player.y,player.tilt,10,RGB15(31,0,0));
 }
 
-byte getBuilding(int x, int y){
+inline byte getBuilding(int x, int y){
 	return map[coords(x,y,MAP_WIDTH)];
 }
 
-byte getBuildingFromWorld(float px, float py){
+inline byte getBuildingFromWorld(float px, float py){
 	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
+}
+
+inline byte getBuildingFromFXP(int x, int y){
+	return getBuilding(x>>FXP_DECIMAL_BITS, y>>FXP_DECIMAL_BITS);
 }
 
 

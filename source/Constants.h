@@ -8,6 +8,7 @@
 /* VISUALS */
 
 #define RAYCAST_RECURSION 20
+#define MAX_INT (0xffff)
 
 /* MAZE */
 #define WORLD_BLOCK_BITS 5

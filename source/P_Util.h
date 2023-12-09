@@ -6,6 +6,7 @@
  */
 #pragma once
 #include <nds.h>
+#include <math.h>
 
 inline float clamp_float(float value, float min, float max);
 
@@ -20,3 +21,14 @@ inline int round_float(float b);
 int rng();
 
 void set_seed(int new_seed);
+
+inline int mod(int x, int amount);
+inline float mod_float(float x, int amount);
+//not sure this works for negative numbers
+#define floor_bits(i, bits) (((i)>>(bits))<<(bits))
+//Fixed percision multiplication for integer floats. see lecture 10
+
+#define FXP_DECIMAL_BITS 8		//range: -128..128, 1/256 decimals
+#define FXP_UNIT (1<<FXP_DECIMAL_BITS)
+#define fixed_mult_16on32(i,j,shift) ((int16_t)(((((int32_t)(i)*(int32_t)(j)) >> (shift))))
+#define float_to_fxp(f,bits) (((int)((f)*(2<<(bits))))>>(bits))
