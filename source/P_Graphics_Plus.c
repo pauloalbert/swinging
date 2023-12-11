@@ -118,6 +118,7 @@ void DrawCircle(enum BUFFER_TYPE bT, int x, int y, float radius, u16 color){
 	int P_BufferW = get_buffer_width(bT);
 	float theta;
 	for(theta = 0; theta < 2* M_PI; theta += M_PI_2 / (1.1*radius)){
+
 		P_Buffer[coords(x+cos(theta)*radius,y+sin(theta)*radius,P_BufferW)] = color;
 	}
 }

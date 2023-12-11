@@ -12,7 +12,7 @@
 
 	float fov_width;
 	float fov_height;
-Camera camera= {400,400,0,3.141592*10/180.,3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
+Camera camera= {400,400,0,3.141592*10/180.,3.141592*100/180.,3.141592*70/180.,3.141592*52/180.};
 Player player = {60,140,0};
 extern Goal goal;
 int main(void)
@@ -26,11 +26,11 @@ int main(void)
 	//int distance = Map_get_raycast_distance(300,300,0.1,&building);
 	//printf("%x, %d\n", distance, building);
 
-	Render_3D(MAIN,camera,3);
-	while(0) {
+	while(1) {
 		swap_buffers(MAIN);
+		Render_2D(MAIN,camera,0,0,256,192);
 		handleInput(&camera, &player);
-		Render_3D(MAIN,camera,32);
+		//Render_3D(MAIN,camera,32);
 		swiWaitForVBlank();
 	}
 }

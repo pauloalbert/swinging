@@ -20,24 +20,6 @@ int map[] = {1,1,1,1,1, 1,1,1,1,1,
 
 Goal goal = {0, 0, 1};
 
-u16 color_from_wall(int wall_type, bool is_x_wall){
-#ifdef FB0
-	switch(wall_type){
-	case 1:
-		if (is_x_wall) return RGB15(15,0,15);
-		return RGB15(25,10,25);
-	case 2:
-		if (is_x_wall) return RGB15(15,5,5);
-		return RGB15(25,0,0);
-	default:
-		return RGB15(0,0,0);
-	}
-#endif
-#ifdef ROTOSCALE
-	return wall_type*2 - 1 + is_x_wall;
-#endif
-}
-
 void Map_Init(){
 
 }

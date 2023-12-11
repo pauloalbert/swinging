@@ -41,7 +41,6 @@ void P_Graphics_setup_main()
 
 	//Set the coresponding VRAM bank
 	VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
-	//VRAM_B_CR = VRAM_ENABLE | VRAM_B_MAIN_BG;
 
 	BGCTRL[2] = BG_BMP_BASE(1) | BG_BMP8_256x256;
 
@@ -82,6 +81,12 @@ void P_Graphics_setup_main()
 	for(i=0;i<32*32;i++){
 		BG_MAP_RAM(1)[i] = 0 | (i>=32*12 ? BIT(12) : 0);
 	}
+
+	// Sub
+	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
+
+
+
 #endif
 }
 

@@ -5,6 +5,25 @@
  *      Author: nds
  */
 #include "Render.h"
+
+u16 color_from_wall(int wall_type, bool is_x_wall){
+#ifdef FB0
+	switch(wall_type){
+	case 1:
+		if (is_x_wall) return RGB15(15,0,15);
+		return RGB15(25,10,25);
+	case 2:
+		if (is_x_wall) return RGB15(15,5,5);
+		return RGB15(25,0,0);
+	default:
+		return RGB15(0,0,0);
+	}
+#endif
+#ifdef ROTOSCALE
+	return wall_type*2 - 1 + is_x_wall;
+#endif
+}
+
 void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 0,85,0,255, RGB15(20,25,31));
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
@@ -43,14 +62,18 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 	for(i = 0; i < MAP_WIDTH; i++){
 		int j;
 		for(j=0; j < MAP_HEIGHT; j++){
-
-			if(map[coords(i,j,MAP_WIDTH)]) FillRectangle(bT,16*j + map_border,16*(j+1)-1 - map_border,16*i + map_border,16*(i+1)-1- map_border,RGB15(10,10,10));
-			else FillRectangle(bT,16*j,16*(j+1)-1,16*i,16*(i+1)-1,RGB15(0,0,0));
+			int color = color_from_wall(getBuilding(i,j), false);
+			int x = convert_ranges(i,0,MAP_WIDTH,left,right);
+			int y = convert_ranges(j,0,MAP_HEIGHT,top,bottom);
+			int x1 = convert_ranges(i+1,0,MAP_WIDTH,left,right) - 1;
+			int y1 = convert_ranges(j+1,0,MAP_HEIGHT,top,bottom) - 1;
+			FillRectangle(bT,y,y1,x,x1,color);
 		}
 	}
-	DrawCircle(bT,camera.x,camera.y,5,RGB15(31,31,31));
-	DrawCircle(bT,camera.x,camera.y,5.5,RGB15(31,31,31));
-
-	DrawAngledLine(bT,camera.x,camera.y,camera.tilt,10,RGB15(31,0,0));
+	int x = convert_ranges(camera.x, 0, MAP_WIDTH << FXP_DECIMAL_BITS, left, right);
+	int y = convert_ranges(camera.y, 0, MAP_HEIGHT << FXP_DECIMAL_BITS, top, bottom);
+	DrawCircle(bT,x,y,4,3);
+	DrawCircle(bT,x,y,3.5,3);
+	DrawAngledLine(bT,x,y,camera.tilt,10,5);
 }
 
