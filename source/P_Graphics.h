@@ -24,9 +24,9 @@ extern int P_Graphics_subH;
 /*
  * get the current buffer
  */
-inline u16* get_buffer_pointer(enum BUFFER_TYPE bT);
-inline int get_buffer_width(enum BUFFER_TYPE bT);
-inline int get_buffer_height(enum BUFFER_TYPE bT);
+extern inline int* get_buffer_pointer(enum BUFFER_TYPE bT);
+extern inline int get_buffer_width(enum BUFFER_TYPE bT);
+extern inline int get_buffer_height(enum BUFFER_TYPE bT);
 /*
 	This function does not receive any input parameter. It initializes the main
 	 graphical engine to be used with the Framebuffer Mode 0 (FB0).
