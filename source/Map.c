@@ -46,12 +46,6 @@ float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wa
 
 	bool facing_down = sin(angle) > 0;
 	bool facing_right = cos(angle) > 0;
-	inline int mod(int x, int amount){
-		return ((x % amount) + amount) % amount;
-	}
-	inline float mod_float(float x, int amount){
-		return fmod(fmod(x, amount) + amount,amount);
-	}
 
 	if(x_wall){
 		float float_py = py;
