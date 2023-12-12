@@ -1,5 +1,5 @@
 #include "P_Graphics.h"
-
+#include <stdio.h>
 u16* P_Graphics_mainBuffer;
 u16* P_Graphics_subBuffer;
 int P_Graphics_mainW;
@@ -82,11 +82,18 @@ void P_Graphics_setup_main()
 		BG_MAP_RAM(1)[i] = 0 | (i>=32*12 ? BIT(12) : 0);
 	}
 
-	// Sub
+	// Sub screen
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
+	//
+	REG_DISPCNT_SUB = MODE_4_2D | DISPLAY_BG2_ACTIVE;
+	//
+	BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
 
+	P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
 
-
+	for(i = 0; i < 15; i++){
+		BG_PALETTE_SUB[i] = BG_PALETTE[i];
+	}
 #endif
 }
 
@@ -224,7 +231,15 @@ void swap_buffers(enum BUFFER_TYPE bT){
 		main_graphics_frame = !main_graphics_frame;
 		break;
 	case SUB:
-		break;
+		if(sub_graphics_frame) P_Graphics_assignBuffer(SUB,BG_GFX_SUB + 0x6000,256,192);
+		else P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
+
+		if(sub_graphics_frame) memset(BG_GFX_SUB + 0x6000,0,256*192);
+		else memset(BG_GFX_SUB,0,256*192);
+
+		if(sub_graphics_frame) BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
+		else BGCTRL_SUB[2] = BG_BMP_BASE(3) | BG_BMP8_256x256;
+		sub_graphics_frame = !sub_graphics_frame;
 	}
 #endif
 }

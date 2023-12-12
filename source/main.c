@@ -28,7 +28,8 @@ int main(void)
 
 	while(1) {
 		swap_buffers(MAIN);
-		Render_2D(MAIN,camera,0,0,256,192);
+		swap_buffers(SUB);
+		Render_2D(SUB,camera,0,0,256,192);
 		handleInput(&camera, &player);
 		//Render_3D(MAIN,camera,32);
 		swiWaitForVBlank();
