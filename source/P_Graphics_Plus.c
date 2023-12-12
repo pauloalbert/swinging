@@ -4,9 +4,6 @@
  *  Created on: Oct 20, 2023
  *      Author: nds
  */
-extern int coords(int,int,int);
-extern int sign(int);
-extern int clamp(int x, int lower, int upper);
 #include "P_Graphics_Plus.h"
 
 /*

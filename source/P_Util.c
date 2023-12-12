@@ -6,18 +6,18 @@
  */
 #include "P_Util.h"
 
-inline float clamp_float(float value, float min, float max){
+extern inline float clamp_float(float value, float min, float max){
 	return value < min ? min : (value > max ? max : value);
 }
 
-inline int clamp(int value, int min, int max){
+extern inline int clamp(int value, int min, int max){
 	return value < min ? min : (value > max ? max : value);
 }
-inline int coords(int x, int y, int w){
+extern inline int coords(int x, int y, int w){
 	return w*y + x;
 }
 
-inline int sign(int x){
+extern inline int sign(int x){
 	if(x > 0)
 		return 1;
 	else if(x < 0)
@@ -25,14 +25,14 @@ inline int sign(int x){
 	return 0;
 }
 
-inline int round_float(float b){
+extern inline int round_float(float b){
 	return (int)(b+0.5);
 }
 
-inline int mod(int x, int amount){
+extern inline int mod(int x, int amount){
 	return ((x % amount) + amount) % amount;
 }
-inline float mod_float(float x, int amount){
+extern inline float mod_float(float x, int amount){
 	return fmod(fmod(x, amount) + amount,amount);
 }
 
@@ -45,7 +45,7 @@ int rng(){
 	return seed < 0 ? -seed : seed;
 }
 
-inline int convert_ranges(int number, int origin_min, int origin_max, int target_min, int target_max){
+extern inline int convert_ranges(int number, int origin_min, int origin_max, int target_min, int target_max){
 	//this function converts a number from one range to another
 	return (number - origin_min) * (target_max - target_min) / (origin_max - origin_min) + target_min;
 }
