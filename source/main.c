@@ -6,7 +6,6 @@
 #include "Controls.h"
 #include "P_Audio.h"
 #include "Render.h"
-
 	float pan;
 	float tilt;
 

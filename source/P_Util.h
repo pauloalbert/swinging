@@ -7,7 +7,7 @@
 #pragma once
 #include <nds.h>
 #include <math.h>
-
+#include "extern.h"
 #ifndef PAULO
 #define MAC_EXTERN extern
 #endif
