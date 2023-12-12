@@ -17,5 +17,6 @@
 #define MAP_WIDTH 10
 extern int map[];
 
+#define BUILDINGS_MAX_HEIGHT 2560
 /* MOVEMENT */
 

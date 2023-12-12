@@ -34,10 +34,10 @@ typedef struct{
 } Player;
 
 typedef struct{
-	int x;
-	int y;
-	int old_block;
-} Goal;
+	float x;
+	float y;
+	float z;
+} Pos;
 
 void Map_Init();
 
