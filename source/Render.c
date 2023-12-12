@@ -31,15 +31,11 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	for(i = 0; i < columns; i++){
 		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		int x_wall_type = 0;
-		int y_wall_type = 0;
-		float x_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, true, &x_wall_type);
-		float y_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, false, &y_wall_type);
+		int wall_type = 0;
+		bool is_x_wall = (i == 13);
+		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &wall_type);
 
-		float distance = x_wall_distance < y_wall_distance ? x_wall_distance : y_wall_distance;
-
-		//int color_falloff = ((int)distance / 30) & 0x1f;
-		u16 wall_color = color_from_wall(x_wall_distance < y_wall_distance ? x_wall_type : y_wall_type, x_wall_distance > y_wall_distance);
+		u16 wall_color = color_from_wall(wall_type + 2*(i==13), !is_x_wall);
 
 		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 

@@ -27,14 +27,15 @@ int main(void)
 	printf("%f,%f\n",camera.fov_width,camera.fov_height);
 
 	camera.tilt = 0;
-	while(true) {
+	Render_3D(MAIN,camera,32);
+	while(0) {
 		t += 0.1;
 		camera.tilt -= sin(2*t)/70.;
 		camera.pan -= (((int)(t*100))%10 - 5)/200.;
 		swap_buffers(MAIN);
 		swap_buffers(SUB);
 		//FillRectangle(SUB,0,100,0,100,1);
-		Render_3D(MAIN,camera,64);
+		Render_3D(MAIN,camera,32);
 		Render_2D(SUB,camera,0,0,256,192);
 		handleInput(&camera, &player);
 		swiWaitForVBlank();
