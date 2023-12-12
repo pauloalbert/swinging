@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "P_Util.h"
+#include <stdbool.h>
 //         north (-y)
 //	(0,0) (1,0) (2,0)
 //  (0,1) (1,1) (2,1)   east(+x)
@@ -43,8 +44,8 @@ int Map_get_raycast_distance(int px, int py, float angle, int* wall_type);
 
 void Render_map(enum BUFFER_TYPE bT, Camera player);
 
-inline byte getBuilding(int x, int y);
+extern inline s8 getBuilding(int x, int y);
 
-inline byte getBuildingFromWorld(float x, float y);
+extern inline s8 getBuildingFromWorld(float x, float y);
 
-inline byte getBuildingFromFXP(int px, int py);
+extern inline s8 getBuildingFromFXP(int px, int py);

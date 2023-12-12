@@ -6,6 +6,20 @@
  *
  */
 #include "Map.h"
+#include "P_Util.h"
+
+extern inline s8 getBuilding(int x, int y){
+	return map[coords(x,y,MAP_WIDTH)];
+}
+
+extern inline s8 getBuildingFromWorld(float px, float py){
+	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
+}
+
+extern inline s8 getBuildingFromFXP(int x, int y){
+	return getBuilding(x>>FXP_DECIMAL_BITS, y>>FXP_DECIMAL_BITS);
+}
+
 int map[] = {1,1,1,1,1, 1,1,1,1,1,
 		1,0,0,0,0, 0,0,0,0,1,
 		1,0,0,0,0, 0,0,0,0,1,
@@ -109,16 +123,5 @@ int Map_get_raycast_distance(int px, int py, float angle, int* wall_type){
 	return MAX_INT;
 }
 
-inline byte getBuilding(int x, int y){
-	return map[coords(x,y,MAP_WIDTH)];
-}
-
-inline byte getBuildingFromWorld(float px, float py){
-	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
-}
-
-inline byte getBuildingFromFXP(int x, int y){
-	return getBuilding(x>>FXP_DECIMAL_BITS, y>>FXP_DECIMAL_BITS);
-}
 
 
