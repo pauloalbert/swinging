@@ -24,7 +24,7 @@ void Map_Init(){
 
 }
 
-float Maze_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wall_type){
+float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wall_type){
 	float slope = tan(angle);
 
 	bool facing_down = sin(angle) > 0;
