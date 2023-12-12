@@ -7,6 +7,8 @@
 #include "P_Audio.h"
 #include "Render.h"
 
+#define	RED ARGB16(1,31,0,0)
+
 	float pan;
 	float tilt;
 
