@@ -34,7 +34,7 @@ extern inline int get_buffer_height(enum BUFFER_TYPE bT);
 */
 void P_Graphics_setup_main();
 
-
+void P_Graphics_setup_sub();
 /*
  	 Function that assigns the buffer (already implemented) and its size
  */

@@ -38,89 +38,68 @@ void Map_Init(){
 
 }
 
-int Map_get_raycast_distance(int px, int py, float angle, int* wall_type){
+float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wall_type){
 	float slope = tan(angle);
-	int slope_fxp = float_to_fxp(slope,FXP_DECIMAL_BITS);
-	int slope_inverse_fxp = float_to_fxp(1/slope, FXP_DECIMAL_BITS);
+
 	bool facing_down = sin(angle) > 0;
 	bool facing_right = cos(angle) > 0;
-
-	//distances of x and y
-	int x_distance = 0, y_distance = 0;
-	//second set of coordinates for the other ray
-	int px2 = px;
-	int py2 = py;
-	/*This is the new MARCHING SQUARES raycast implemenation
-	The idea is to shoot two rays, one that stops at X walls, one at Y walls
-	if a wall is hit,
-	*/
-
-	printf("slope: %.2f, 1/s: %.2f\n",slope,(1/slope));
-	int i = 0;
-	for(i = 0; i < RAYCAST_RECURSION; i++){
-		printf("start %d\n",i);
-		printf("%.2f,%.2f\n",fxp_to_float(x_distance,8),fxp_to_float(y_distance,8));
-		//Advance the shorter of the two rays.
-		if(x_distance <= y_distance){
-			if(px < 0 || px > (MAP_WIDTH<<FXP_DECIMAL_BITS) || py < 0 || py > (MAP_HEIGHT<<FXP_DECIMAL_BITS))
-				return MAX_INT;
-			//if we advanced x in the past and we hit a wall, this must be the shortest path
-			int building = getBuildingFromFXP(px,py);
-			if(building != 0){
-				if(wall_type)
-					(*wall_type) = building;
-				return x_distance;
-			}
-
-			//advance the ray
-			int last_px = px;
-			px += FXP_UNIT * (facing_right * 2 - 1);	//subtract/add from x 256 based on facing
-
-			//simplify the math depending on if we moved a full square already
-			if(true){
-				px = floor_bits(px, FXP_DECIMAL_BITS);		//round px to an int
-				py += (int)((1/slope)*(px-last_px));		//add to py the movement
-				x_distance += float_to_fxp(sqrt( (1+slope*slope)*(px-last_px)*(px-last_px)),FXP_DECIMAL_BITS);	//progress px
-			}
-			else{
-				py += slope_fxp;
-				x_distance += 1;
-			}
-
-			printf("x %x,%x,%x,%x,%x,%x\n",x_distance, y_distance, px,py,px2,py2);
-
-		}
-		else{
-			if(px2 < 0 || px2 > (MAP_WIDTH<<FXP_DECIMAL_BITS) || py2 < 0 || py2 > (MAP_HEIGHT<<FXP_DECIMAL_BITS))
-				return MAX_INT;
-			//the y ray is currently shorter!
-			//if we advanced x in the past and we hit a wall, this must be the shortest path
-			int building = getBuildingFromFXP(px2,py2);
-			if(building != 0){
-				if(wall_type)
-					(*wall_type) = building;
-				return -y_distance;	//return NEGATIVE DISTANCE
-			}
-
-			//advance the ray
-			int last_py = py2;
-			py2 += FXP_UNIT * (facing_down * 2 - 1);	//subtract/add from x 256 based on facing
-
-			//simplify the math depending on if we moved a full square already
-			if(true){
-				py2 = floor_bits(py, FXP_DECIMAL_BITS);		//round px to an int
-				px2 += (int)((1/slope)*(py2-last_py));		//add to py the movement
-				y_distance += float_to_fxp(sqrt( (1+(1/slope)*(1/slope))*(py2-last_py)*(py2-last_py)),FXP_DECIMAL_BITS);	//progress px
-			}
-			else{
-				py += slope_inverse_fxp;
-				x_distance += 1;
-			}
-
-			printf("y %x,%x,%x,%x,%x,%x\n",x_distance, y_distance, px,py,px2,py2);
-		}
+	inline int mod(int x, int amount){
+		return ((x % amount) + amount) % amount;
 	}
-	return MAX_INT;
+	inline float mod_float(float x, int amount){
+		return fmod(fmod(x, amount) + amount,amount);
+	}
+
+	if(x_wall){
+		float float_py = py;
+		//set a limit
+		int i = 0;
+		float distance = 0;
+
+		for(i = 0; i < RAYCAST_RECURSION; i++){
+			int last_px = px;
+			px = (((px+(facing_right ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS))<<WORLD_BLOCK_BITS;
+			float_py += slope*(px - last_px);
+			distance += sqrt( (1+slope*slope)*(px-last_px)*(px-last_px) );
+
+			px = mod(px - !facing_right, MAP_WIDTH<<WORLD_BLOCK_BITS) + !facing_right;
+			float_py = mod_float(float_py,MAP_HEIGHT<<WORLD_BLOCK_BITS);
+
+			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
+
+			int current_wall = map[coords((((px)>>WORLD_BLOCK_BITS) - !facing_right),((int)float_py)>>WORLD_BLOCK_BITS,MAP_WIDTH)];
+			if(current_wall != 0){
+				if(wall_type) *(wall_type) = current_wall;
+				return distance;
+			}
+		}
+		return 1000000;
+	}
+	else{
+		float float_px = px;
+		//set a limit
+		int i = 0;
+		float distance = 0;
+		for(i = 0; i < RAYCAST_RECURSION; i++){
+			int last_py = py;
+			py = ((py+(facing_down ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS)<<WORLD_BLOCK_BITS;
+			float_px += (1/slope)*(py - last_py);
+			distance += sqrt( (1+(1/slope)*(1/slope))*(py-last_py)*(py-last_py) );
+
+			py = mod(py - !facing_down, MAP_HEIGHT<<WORLD_BLOCK_BITS) + !facing_down;
+			float_px = mod_float(float_px,MAP_WIDTH<<WORLD_BLOCK_BITS);
+			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT) return 1000000;
+
+			int current_wall = map[coords(((int)(float_px)>>WORLD_BLOCK_BITS),(py>>WORLD_BLOCK_BITS)-!facing_down,MAP_WIDTH)];
+			if(current_wall != 0){
+				if(wall_type) *(wall_type) = current_wall;
+				return distance;
+			}
+		}
+		return 1000000;
+
+	}
+
 }
 
 

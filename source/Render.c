@@ -31,17 +31,21 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	for(i = 0; i < columns; i++){
 		float angle = camera.tilt + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		int wall_type = 0;
-		int distance = Map_get_raycast_distance(camera.x, camera.y, angle, &wall_type);
-		printf("result %x\n", distance);
-		u16 wall_color = color_from_wall(wall_type, distance > 0);
-		distance = abs(distance);
+		int x_wall_type = 0;
+		int y_wall_type = 0;
+		float x_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, true, &x_wall_type);
+		float y_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, false, &y_wall_type);
 
-		int adjusted_distance = (int)(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
+		float distance = x_wall_distance < y_wall_distance ? x_wall_distance : y_wall_distance;
+
+		//int color_falloff = ((int)distance / 30) & 0x1f;
+		u16 wall_color = color_from_wall(x_wall_distance < y_wall_distance ? x_wall_type : y_wall_type, x_wall_distance > y_wall_distance);
+
+		float adjusted_distance = (distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
 		//should be sourced elsewhere
 		float camera_tilt = 30/360;
-		float wall_height = 1280;
+		float wall_height = 128;
 		float camera_height = 60;
 
 		float vert_fov = 3*camera.fov_width/4;
@@ -50,7 +54,6 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera_tilt)) - camera_height;
 		int top = 192 * (wall_height + bottom_wall) / screen_height_at_wall;
 		int bottom = 192 * bottom_wall / screen_height_at_wall;
-
 		FillRectangle(bT, clamp(bottom,0,191), clamp(top,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 	}
 }
@@ -67,7 +70,7 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 			int y = convert_ranges(j,0,MAP_HEIGHT,top,bottom);
 			int x1 = convert_ranges(i+1,0,MAP_WIDTH,left,right) - 1;
 			int y1 = convert_ranges(j+1,0,MAP_HEIGHT,top,bottom) - 1;
-			FillRectangle(bT,y,y1,x,x1,color);
+			if(color < 300) FillRectangle(bT,y,y1,x,x1,color);
 		}
 	}
 	int x = convert_ranges(camera.x, 0, MAP_WIDTH << FXP_DECIMAL_BITS, left, right);
