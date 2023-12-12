@@ -31,17 +31,21 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	for(i = 0; i < columns; i++){
 		float angle = camera.tilt + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		int wall_type = 0;
-		int distance = Map_get_raycast_distance(camera.x, camera.y, angle, &wall_type);
-		printf("result %x\n", distance);
-		u16 wall_color = color_from_wall(wall_type, distance > 0);
-		distance = abs(distance);
+		int x_wall_type = 0;
+		int y_wall_type = 0;
+		float x_wall_distance = Maze_get_raycast_distance(camera.x, camera.y, angle, true, &x_wall_type);
+		float y_wall_distance = Maze_get_raycast_distance(camera.x, camera.y, angle, false, &y_wall_type);
+
+		float distance = x_wall_distance < y_wall_distance ? x_wall_distance : y_wall_distance;
+
+		//int color_falloff = ((int)distance / 30) & 0x1f;
+		u16 wall_color = color_from_wall(x_wall_distance < y_wall_distance ? x_wall_type : y_wall_type, x_wall_distance > y_wall_distance);
 
 		int adjusted_distance = (int)(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
 		//should be sourced elsewhere
 		float camera_tilt = 30/360;
-		float wall_height = 1280;
+		float wall_height = 128;
 		float camera_height = 60;
 
 		float vert_fov = 3*camera.fov_width/4;
@@ -51,7 +55,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		int top = 192 * (wall_height + bottom_wall) / screen_height_at_wall;
 		int bottom = 192 * bottom_wall / screen_height_at_wall;
 
-		FillRectangle(bT, clamp(bottom,0,191), clamp(top,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+		FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 	}
 }
 
