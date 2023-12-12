@@ -8,15 +8,15 @@
 #include "Map.h"
 #include "P_Util.h"
 
-extern inline s8 getBuilding(int x, int y){
+MAC_EXTERN inline s8 getBuilding(int x, int y){
 	return map[coords(x,y,MAP_WIDTH)];
 }
 
-extern inline s8 getBuildingFromWorld(float px, float py){
+MAC_EXTERN inline s8 getBuildingFromWorld(float px, float py){
 	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
 }
 
-extern inline s8 getBuildingFromFXP(int x, int y){
+MAC_EXTERN inline s8 getBuildingFromFXP(int x, int y){
 	return getBuilding(x>>FXP_DECIMAL_BITS, y>>FXP_DECIMAL_BITS);
 }
 

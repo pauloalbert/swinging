@@ -8,27 +8,34 @@
 #include <nds.h>
 #include <math.h>
 
-extern inline float clamp_float(float value, float min, float max);
+#ifndef PAULO
+#define MAC_EXTERN extern
+#endif
+#ifdef PAULO
+#define MAC_EXTERN
+#endif
 
-extern inline int clamp(int value, int min, int max);
+MAC_EXTERN inline float clamp_float(float value, float min, float max);
 
-extern inline int coords(int x, int y, int w);
+MAC_EXTERN inline int clamp(int value, int min, int max);
 
-extern inline int sign(int x);
+MAC_EXTERN inline int coords(int x, int y, int w);
 
-extern inline int round_float(float b);
+MAC_EXTERN inline int sign(int x);
+
+MAC_EXTERN inline int round_float(float b);
 
 int rng();
 
 void set_seed(int new_seed);
 
-extern inline int mod(int x, int amount);
-extern inline float mod_float(float x, int amount);
+MAC_EXTERN inline int mod(int x, int amount);
+MAC_EXTERN inline float mod_float(float x, int amount);
 //not sure this works for negative numbers
 #define floor_bits(i, bits) (((i)>>(bits))<<(bits))
 //Fixed percision multiplication for integer floats. see lecture 10
 
-extern inline int convert_ranges(int number, int origin_min, int origin_max, int target_min, int target_max);
+MAC_EXTERN inline int convert_ranges(int number, int origin_min, int origin_max, int target_min, int target_max);
 /* FXP */
 #define FXP_DECIMAL_BITS 8		//range: -128..128, 1/256 decimals
 #define FXP_UNIT (1<<FXP_DECIMAL_BITS)
