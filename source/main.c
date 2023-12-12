@@ -6,6 +6,7 @@
 #include "Controls.h"
 #include "P_Audio.h"
 #include "Render.h"
+#include "Game.h"
 	float pan;
 	float tilt;
 
@@ -19,7 +20,7 @@ int main(void)
 	Map_Init();
 	initInput();
 	P_Graphics_setup_main();
-	P_Graphics_setup_sub();
+	//P_Graphics_setup_sub();
 	Audio_Init();
 	float t = 0;
 	//int distance = Map_get_raycast_distance(300,300,0.1,&building);
@@ -28,15 +29,11 @@ int main(void)
 
 	camera.tilt = 0;
 	Render_3D(MAIN,camera,32);
-	while(0) {
-		t += 0.1;
-		camera.tilt -= sin(2*t)/70.;
-		camera.pan -= (((int)(t*100))%10 - 5)/200.;
-		swap_buffers(MAIN);
-		swap_buffers(SUB);
-		//FillRectangle(SUB,0,100,0,100,1);
-		Render_3D(MAIN,camera,32);
-		Render_2D(SUB,camera,0,0,256,192);
+	while(1) {
+		//t += 0.1;
+		//camera.tilt -= sin(2*t)/70.;
+		//camera.pan -= (((int)(t*100))%10 - 5)/200.;
+		//redraw_screen();
 		handleInput(&camera, &player);
 		swiWaitForVBlank();
 	}
