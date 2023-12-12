@@ -20,7 +20,7 @@ int main(void)
 	Map_Init();
 	initInput();
 	P_Graphics_setup_main();
-	//P_Graphics_setup_sub();
+	P_Graphics_setup_sub();
 	Audio_Init();
 
 	//int distance = Map_get_raycast_distance(300,300,0.1,&building);
@@ -28,11 +28,12 @@ int main(void)
 	printf("%f,%f\n",camera.fov_width,camera.fov_height);
 
 	while(true) {
+		camera.pan += 0.1;
 		swap_buffers(MAIN);
-		//swap_buffers(SUB);
-		//FillRectangle(MAIN,0,100,0,100,1);
+		swap_buffers(SUB);
+		//FillRectangle(SUB,0,100,0,100,1);
 		Render_3D(MAIN,camera,32);
-		//Render_2D(SUB,camera,0,0,256,192);
+		Render_2D(SUB,camera,0,0,256,192);
 		handleInput(&camera, &player);
 		swiWaitForVBlank();
 	}

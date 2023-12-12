@@ -29,7 +29,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
 	int i = 0;
 	for(i = 0; i < columns; i++){
-		float angle = camera.tilt + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
+		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
 		int x_wall_type = 0;
 		int y_wall_type = 0;
@@ -77,6 +77,6 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 	int y = convert_ranges(camera.y, 0, MAP_HEIGHT << FXP_DECIMAL_BITS, top, bottom);
 	DrawCircle(bT,x,y,4,3);
 	DrawCircle(bT,x,y,3.5,3);
-	DrawAngledLine(bT,x,y,camera.tilt,10,5);
+	DrawAngledLine(bT,x,y,camera.pan,10,5);
 }
 
