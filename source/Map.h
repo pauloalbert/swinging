@@ -50,3 +50,5 @@ extern inline s8 getBuilding(int x, int y);
 extern inline s8 getBuildingFromWorld(float x, float y);
 
 extern inline s8 getBuildingFromFXP(int px, int py);
+
+#endif
