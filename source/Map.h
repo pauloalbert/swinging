@@ -41,7 +41,7 @@ typedef struct{
 
 void Map_Init();
 
-float Map_get_raycast_distance(int px, int py, float angle, bool xwall, int* wall_type);
+float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, int* wall_type);
 
 void Render_map(enum BUFFER_TYPE bT, Camera player);
 
