@@ -63,3 +63,4 @@ dkms.conf
 swinging.elf
 *.arm9
 *.elf
+source/extern.h
