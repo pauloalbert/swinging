@@ -67,7 +67,7 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 			int y = convert_ranges(j,0,MAP_HEIGHT,top,bottom);
 			int x1 = convert_ranges(i+1,0,MAP_WIDTH,left,right) - 1;
 			int y1 = convert_ranges(j+1,0,MAP_HEIGHT,top,bottom) - 1;
-			FillRectangle(bT,y,y1,x,x1,color);
+			if(color < 300) FillRectangle(bT,y,y1,x,x1,color);
 		}
 	}
 	int x = convert_ranges(camera.x, 0, MAP_WIDTH << FXP_DECIMAL_BITS, left, right);

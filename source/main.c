@@ -21,6 +21,7 @@ int main(void)
 	Map_Init();
 	initInput();
 	P_Graphics_setup_main();
+	P_Graphics_setup_sub();
 	Audio_Init();
 
 	//int distance = Map_get_raycast_distance(300,300,0.1,&building);
@@ -29,9 +30,10 @@ int main(void)
 	while(1) {
 		swap_buffers(MAIN);
 		swap_buffers(SUB);
+
+		Render_3D(MAIN,camera,32);
 		Render_2D(SUB,camera,0,0,256,192);
 		handleInput(&camera, &player);
-		//Render_3D(MAIN,camera,32);
 		swiWaitForVBlank();
 	}
 }

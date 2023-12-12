@@ -100,7 +100,7 @@ void P_Graphics_setup_sub(){
 	P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
 	int i;
 	for(i = 0; i < 15; i++){
-		BG_PALETTE_SUB[i] = RGB15(20,20,20);
+		BG_PALETTE_SUB[i] = BG_PALETTE[i];
 	}
 }
 inline u16* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
