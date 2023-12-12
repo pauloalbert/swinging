@@ -32,11 +32,14 @@ int map[] = {1,1,1,1,1, 1,1,1,1,1,
 		1,1,1,1,1, 1,1,1,1,1
 };
 
-Goal goal = {0, 0, 1};
-
 void Map_Init(){
 
 }
+
+/*
+ * This function returns the distance and the type of wall from a position.
+ *
+ * */
 
 float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wall_type){
 	float slope = tan(angle);
@@ -100,6 +103,18 @@ float Map_get_raycast_distance(int px, int py, float angle, bool x_wall, int* wa
 
 	}
 
+}
+
+float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
+
+	//Calculate the vertical and horizontal angle from the touch position:
+	float angle_horizontal = touch.px * camera.fov_width / 256;
+	float angle_vertical = touch.py * camera.fov_height / 192;
+
+	//get the grip from raycasting
+	Pos get_grip = {-1,-1,-1};
+
+	return 0;
 }
 
 

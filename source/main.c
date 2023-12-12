@@ -13,7 +13,6 @@
 	float fov_height;
 Camera camera= {400,400,0,3.141592*10/180.,3.141592*100/180.,3.141592*70/180.,3.141592*52/180.};
 Player player = {60,140,0};
-extern Goal goal;
 int main(void)
 {
 	consoleDemoInit();
