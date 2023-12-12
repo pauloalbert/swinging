@@ -27,8 +27,9 @@ int main(void)
 	//printf("%x, %d\n", distance, building);
 	printf("%f,%f\n",camera.fov_width,camera.fov_height);
 
+	camera.tilt = 0;
 	while(true) {
-		camera.pan += 0.1;
+		camera.tilt -= 0.01;
 		swap_buffers(MAIN);
 		swap_buffers(SUB);
 		//FillRectangle(SUB,0,100,0,100,1);
