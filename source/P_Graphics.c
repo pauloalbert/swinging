@@ -72,7 +72,7 @@ void P_Graphics_setup_main()
 
 	/*Tilemap*/
 	BGCTRL[0] = BG_MAP_BASE(1) | BG_32x32 | BG_COLOR_16 | BG_TILE_BASE(0) | BG_PRIORITY_1;
-	P_Graphics_assignBuffer(MAIN,BG_GFX,256,192);
+	P_Graphics_assignBuffer(MAIN,BG_GFX+0x2000,256,192);
 
 
 	dmaCopy(A16, &BG_TILE_RAM(0)[0], 32);
@@ -81,22 +81,28 @@ void P_Graphics_setup_main()
 	for(i=0;i<32*32;i++){
 		BG_MAP_RAM(1)[i] = 0 | (i>=32*12 ? BIT(12) : 0);
 	}
-
-	// Sub screen
-	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
-	//
-	REG_DISPCNT_SUB = MODE_4_2D | DISPLAY_BG2_ACTIVE;
-	//
-	BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
-
-	P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
-
-	for(i = 0; i < 15; i++){
-		BG_PALETTE_SUB[i] = BG_PALETTE[i];
-	}
 #endif
 }
 
+void P_Graphics_setup_sub(){
+	// Sub screen
+	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
+	//
+	REG_DISPCNT_SUB = MODE_5_2D | DISPLAY_BG2_ACTIVE;
+	//
+	BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
+
+	REG_BG2PA_SUB = 256;
+	REG_BG2PC_SUB = 0;
+	REG_BG2PB_SUB = 0;
+	REG_BG2PD_SUB = 256;
+
+	P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
+	int i;
+	for(i = 0; i < 15; i++){
+		BG_PALETTE_SUB[i] = RGB15(20,20,20);
+	}
+}
 inline u16* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
 inline int get_buffer_width(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainW : P_Graphics_subW;}
 inline int get_buffer_height(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainH : P_Graphics_subH;}

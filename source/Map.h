@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SWING_MAP_H
+#define SWING_MAP_H
 #include <stdio.h>
 #include <nds.h>
 #include "Constants.h"
@@ -48,3 +49,5 @@ inline byte getBuilding(int x, int y);
 inline byte getBuildingFromWorld(float x, float y);
 
 inline byte getBuildingFromFXP(int px, int py);
+
+#endif
