@@ -41,7 +41,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		//int color_falloff = ((int)distance / 30) & 0x1f;
 		u16 wall_color = color_from_wall(x_wall_distance < y_wall_distance ? x_wall_type : y_wall_type, x_wall_distance > y_wall_distance);
 
-		float adjusted_distance = (distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
+		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
 		//should be sourced elsewhere
 		float wall_height = 128;
