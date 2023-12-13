@@ -33,7 +33,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	for(i = 0; i < columns; i++){
 		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		int wall_type = 0;
+		u16 wall_type = 0;
 		bool is_x_wall = false;
 		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &wall_type, 0, 0);
 

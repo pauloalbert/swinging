@@ -41,12 +41,12 @@ typedef struct{
 
 void Map_Init();
 
-float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, int* wall_type, int pz, float tilt);
+float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, u16* wall_type, int pz, float tilt);
 
-MAC_EXTERN inline s8 getBuilding(int x, int y);
+MAC_EXTERN inline u16 getBuilding(int x, int y);
 
-MAC_EXTERN inline s8 getBuildingFromWorld(float x, float y);
+MAC_EXTERN inline u16 getBuildingFromWorld(float x, float y);
 
-MAC_EXTERN inline s8 getBuildingFromFXP(int px, int py);
+MAC_EXTERN inline u16 getBuildingFromFXP(int px, int py);
 
 #endif

@@ -8,28 +8,39 @@
 #include "Map.h"
 #include "P_Util.h"
 
-MAC_EXTERN inline s8 getBuilding(int x, int y){
+MAC_EXTERN inline u16 getBuilding(int x, int y){
 	return map[coords(x,y,MAP_WIDTH)];
 }
 
-MAC_EXTERN inline s8 getBuildingFromWorld(float px, float py){
+MAC_EXTERN inline u16 getBuildingFromWorld(float px, float py){
 	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
 }
 
-MAC_EXTERN inline s8 getBuildingFromFXP(int x, int y){
+MAC_EXTERN inline u16 getBuildingFromFXP(int x, int y){
 	return getBuilding(x>>FXP_DECIMAL_BITS, y>>FXP_DECIMAL_BITS);
 }
 
-int map[] = {1,1,1,1,1, 1,1,1,1,1,
-		1,0,0,0,0, 0,0,0,0,1,
-		1,0,0,0,0, 0,0,0,0,2,
-		1,0,0,0,0, 0,0,0,0,3,
-		1,0,0,0,0, 0,0,0,0,5,
-		1,0,0,0,0, 0,0,0,0,1,
-		1,0,0,0,0, 0,0,0,0,5,
-		1,0,0,0,0, 0,0,0,0,2,
-		1,0,0,0,0, 0,0,0,0,3,
-		1,1,1,1,1, 1,1,1,1,1
+#define BUILDING_COLOR_BITS 12
+#define BUILDING_HEIGHT_BITS 0
+#define BUILDING_HEIGHT_UNITS 1
+
+#define BUILDING(color, height) (((color)<<BUILDING_COLOR_BITS) | (height)<<BUILDING_HEIGHT_BITS)
+#define B1 BUILDING(1,128)
+#define B2 BUILDING(2,128)
+#define B3 BUILDING(3,128)
+#define B5 BUILDING(5,128)
+#define B4 BUILDING(1,32)
+
+u16 map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
+		B1,0,0,0,0, 0,0,0,0,B1,
+		B1,0,0,0,0, 0,0,0,0,B2,
+		B1,0,0,0,0, B4,0,0,0,B3,
+		B1,0,0,0,0, 0,0,0,0,B5,
+		B1,0,0,0,0, B4,0,0,0,B1,
+		B1,0,0,0,0, 0,0,0,0,B5,
+		B1,0,0,0,0, 0,0,0,0,B2,
+		B1,0,0,0,0, 0,0,0,0,B3,
+		B1,B1,B1,B1,B1, B1,B1,B1,B1,B1
 };
 
 void Map_Init(){
@@ -42,7 +53,7 @@ void Map_Init(){
  * If <is_x_wall> is supplied, the wall face will be returned.
  * */
 
-float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int* wall_type, int pz, float tilt){
+float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, u16* wall_type, int pz, float tilt){
 	//Constants for the traversal.
 	float slope = tan(angle);
 	bool facing_down = sin(angle) > 0;
