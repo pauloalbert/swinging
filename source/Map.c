@@ -95,7 +95,8 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			float_py = mod_float(float_py,MAP_HEIGHT<<WORLD_BLOCK_BITS);
 
 			//This should never happen but is here just incase i want to remove the top line.
-			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT){
+			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT ||
+					x_pz > BUILDINGS_MAX_HEIGHT || x_pz < 0){
 				x_distance = 1000000;
 				continue;
 			}
@@ -104,7 +105,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			Building current_wall = getBuilding((px>>WORLD_BLOCK_BITS) - !facing_right, ((int)float_py) >> WORLD_BLOCK_BITS);
 
 			//If hit a wall, save it.
-			if(current_wall.u16 != 0){
+			if(current_wall.u16 != 0 && current_wall.height >= x_pz){
 				x_wall_type.u16 = current_wall.u16;
 			}
 		}
@@ -132,7 +133,8 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			float_px = mod_float(float_px,MAP_WIDTH<<WORLD_BLOCK_BITS);
 
 			//Out of bounds sanity check
-			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT){
+			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT
+					|| y_pz > BUILDINGS_MAX_HEIGHT || y_pz < 0){
 				y_distance = 1000000;
 				continue;
 			}
@@ -141,7 +143,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			Building current_wall = getBuilding(((int)float_px) >> WORLD_BLOCK_BITS,(py - !facing_down)>>WORLD_BLOCK_BITS);
 
 			//save it.
-			if(current_wall.u16 != 0){
+			if(current_wall.u16 != 0 && current_wall.height >= y_pz){
 				y_wall_type.u16 = current_wall.u16;
 			}
 		}
