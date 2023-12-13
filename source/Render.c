@@ -25,7 +25,6 @@ u16 color_from_wall(int wall_type, bool is_x_wall){
 }
 
 
-u16 screen_index = 0;
 
 void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 0,85,0,255, RGB15(20,25,31));
@@ -35,11 +34,10 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
 		int wall_type = 0;
-		bool is_x_wall = (i == screen_index);
-		if(is_x_wall)printf("start! %d ",screen_index);
+		bool is_x_wall = false;
 		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &wall_type);
 
-		u16 wall_color = color_from_wall(wall_type+ 20*(i==screen_index), !is_x_wall);
+		u16 wall_color = color_from_wall(wall_type, !is_x_wall);
 
 		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
@@ -76,8 +74,7 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 	int x = convert_ranges(camera.x, 0, MAP_WIDTH << WORLD_BLOCK_BITS, left, right);
 	int y = convert_ranges(camera.y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS, top, bottom);
 	FillCircle(bT,x,y,4,3);
-	printf("player: %d, %d\n",camera.x >> WORLD_BLOCK_BITS,camera.y>> WORLD_BLOCK_BITS);
-	float angle = (camera.pan + ((screen_index) * camera.fov_width / 32. - (camera.fov_width/2)));
+	float angle = (camera.pan);
 	DrawAngledLine(bT,x,y,angle,50,5);
 	//FillCircle(bT,x+10*cos(6.28+angle),y+10*sin(6.28+angle),3,5);
 }

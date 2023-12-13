@@ -12,12 +12,6 @@ void ISR_KEYS(){
 	extern Camera camera;
 	u16 keys = ~REG_KEYINPUT;
 
-	if(keys & KEY_LEFT){
-		screen_index += 1;
-	}
-	if(keys & KEY_RIGHT){
-		screen_index -= 1;
-	}
 	redraw_screen();
 }
 
@@ -33,15 +27,11 @@ void handleInput(Camera* camera, Player* player){
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
 
-	if(keys_pressed & KEY_LEFT){
-		screen_index -= 1;
+	if(keys & KEY_LEFT){
+		camera->pan -= 0.12;
 	}
-	if(keys_pressed & KEY_RIGHT){
-		screen_index += 1;
-	}
-	if(keys_pressed & (KEY_RIGHT | KEY_LEFT | KEY_DOWN)){
-		redraw_screen();
-		swap_buffers(MAIN);
+	if(keys & KEY_RIGHT){
+		camera->pan += 0.12;
 	}
 	if(keys_pressed & KEY_A){
 		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
