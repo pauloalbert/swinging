@@ -12,7 +12,7 @@
 #define B2 {BUILDING(2,128)}
 #define B3 {BUILDING(3,128)}
 #define B5 {BUILDING(5,128)}
-#define B4 {BUILDING(1,32)}
+#define B4 {BUILDING(1,64)}
 
 Building map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
 		B1,0,0,0,0, 0,0,0,0,B1,
@@ -95,7 +95,10 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			float_py = mod_float(float_py,MAP_HEIGHT<<WORLD_BLOCK_BITS);
 
 			//This should never happen but is here just incase i want to remove the top line.
-			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT) x_distance = 1000000;
+			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT){
+				x_distance = 1000000;
+				continue;
+			}
 
 			//Get the building the ray is at.
 			Building current_wall = getBuilding((px>>WORLD_BLOCK_BITS) - !facing_right, ((int)float_py) >> WORLD_BLOCK_BITS);
@@ -129,7 +132,10 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			float_px = mod_float(float_px,MAP_WIDTH<<WORLD_BLOCK_BITS);
 
 			//Out of bounds sanity check
-			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT) y_distance = 1000000;
+			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT){
+				y_distance = 1000000;
+				continue;
+			}
 
 			//gyat building
 			Building current_wall = getBuilding(((int)float_px) >> WORLD_BLOCK_BITS,(py - !facing_down)>>WORLD_BLOCK_BITS);
