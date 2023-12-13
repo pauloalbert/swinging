@@ -28,7 +28,10 @@ MAC_EXTERN inline int round_float(float b);
 int rng();
 
 float min(float a, float b);
+
 float max(float a, float b);
+
+float mag(float a, float b, float c);
 
 void set_seed(int new_seed);
 

@@ -47,10 +47,14 @@ int rng(){
 
 float min(float a,float b)
 {return ((a<b)*a+(a>=b)*b);
-
 }
 float max(float a,float b)
 {return ((a>b)*a+(a<=b)*b);
+}
+
+float mag(float a, float b, float c)
+{
+return sqrt(sqr(a)+sqr(b)+sqr(c));
 }
 
 MAC_EXTERN inline int convert_ranges(int number, int origin_min, int origin_max, int target_min, int target_max){

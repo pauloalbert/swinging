@@ -29,9 +29,28 @@ typedef struct{
 typedef struct{
 	float x;
 	float y;
+	float z;
+	float vx;
+	float vy;
+	float vz;
 	float angle;
 	//TODO: store for the player
 } Player;
+
+typedef struct{
+	bool ON;
+	float x;
+	float y;
+	float z;
+	float d_rest;
+	float d;
+	float vd;
+	float theta;
+	float vtheta;
+	float phi;
+	float vphi;
+	//TODO: store for the player
+} Grip;
 
 typedef struct{
 	int x;

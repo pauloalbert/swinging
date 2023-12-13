@@ -14,5 +14,4 @@ void handleInput(Camera* camera, Player* player){
 	scanKeys();
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
-
 }
