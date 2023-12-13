@@ -24,6 +24,9 @@ u16 color_from_wall(int wall_type, bool is_x_wall){
 #endif
 }
 
+
+u16 screen_index;
+
 void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 0,85,0,255, RGB15(20,25,31));
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
@@ -32,10 +35,11 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
 		int wall_type = 0;
-		bool is_x_wall = (i == 13);
+		bool is_x_wall = (i == screen_index);
+		if(is_x_wall)printf("start! %d\n",screen_index);
 		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &wall_type);
 
-		u16 wall_color = color_from_wall(wall_type + 2*(i==13), !is_x_wall);
+		u16 wall_color = color_from_wall(wall_type + 2*(i==screen_index), !is_x_wall);
 
 		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
@@ -66,12 +70,12 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 			int x1 = convert_ranges(i+1,0,MAP_WIDTH,left,right) - 1;
 			int y1 = convert_ranges(j+1,0,MAP_HEIGHT,top,bottom) - 1;
 			if(color < 300) FillRectangle(bT,y,y1,x,x1,color);
+			else DrawRectangle(bT,y,y1,x,x1,4);
 		}
 	}
 	int x = convert_ranges(camera.x, 0, MAP_WIDTH << FXP_DECIMAL_BITS, left, right);
 	int y = convert_ranges(camera.y, 0, MAP_HEIGHT << FXP_DECIMAL_BITS, top, bottom);
-	DrawCircle(bT,x,y,4,3);
-	DrawCircle(bT,x,y,3.5,3);
+	FillCircle(bT,x,y,4,3);
 	DrawAngledLine(bT,x,y,camera.pan,10,5);
 }
 
