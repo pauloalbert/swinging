@@ -95,7 +95,7 @@ void P_Graphics_setup_sub(){
 	REG_BG2PA_SUB = 128;
 	REG_BG2PC_SUB = 0;
 	REG_BG2PB_SUB = 0;
-	REG_BG2PD_SUB = 128;
+	REG_BG2PD_SUB = 120;
 
 	P_Graphics_assignBuffer(SUB,BG_GFX_SUB+0x0000,256,192);
 	int i;
