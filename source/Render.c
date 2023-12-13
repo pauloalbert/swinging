@@ -48,9 +48,9 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		float vert_fov = 3*camera.fov_width/4;
 		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
 
-		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera.tilt)) - camera_height;
-		int bottom = 192 * (bottom_wall + wall_height) / screen_height_at_wall;
-		int top = 192 * (bottom_wall) / screen_height_at_wall;
+		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera.tilt)) + camera_height;
+		int bottom = 192 * (bottom_wall) / screen_height_at_wall;
+		int top = 192 * (bottom_wall - wall_height) / screen_height_at_wall;
 		FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 	}
 }
