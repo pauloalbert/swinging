@@ -22,13 +22,13 @@ MAC_EXTERN inline s8 getBuildingFromFXP(int x, int y){
 
 int map[] = {1,1,1,1,1, 1,1,1,1,1,
 		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,0,0,0,2,
+		1,0,0,0,0, 0,0,0,0,3,
+		1,0,0,0,0, 0,0,0,0,5,
 		1,0,0,0,0, 0,0,0,0,1,
-		1,0,0,0,0, 1,1,1,0,1,
-		1,0,0,0,0, 0,0,0,0,1,
-		1,0,0,0,0, 0,0,0,0,1,
-		1,0,0,0,0, 0,1,0,0,1,
-		1,0,0,0,0, 0,0,0,0,1,
-		1,0,0,0,0, 0,0,0,0,1,
+		1,0,0,0,0, 0,0,0,0,5,
+		1,0,0,0,0, 0,0,0,0,2,
+		1,0,0,0,0, 0,0,0,0,3,
 		1,1,1,1,1, 1,1,1,1,1
 };
 
@@ -43,9 +43,9 @@ void Map_Init(){
 
 float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int* wall_type){
 	float slope = tan(angle);
-
 	bool facing_down = sin(angle) > 0;
 	bool facing_right = cos(angle) > 0;
+	if(*is_x_wall) printf("%.2f, %.2f, %d\n", angle,slope, 10*(facing_down) + facing_right);
 
 	float x_distance = 0;
 	float y_distance = 0;
@@ -53,8 +53,6 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int
 	int i;
 	float float_py = py;
 	float float_px = px;
-	int last_px = px;
-	int last_py = py;
 
 	int x_wall_type = 0;
 	int y_wall_type = 0;
@@ -66,6 +64,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int
 				if(is_x_wall) *(is_x_wall) = true;
 				return x_distance;
 			}
+			int last_px = px;
 			px = (((px+(facing_right ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS))<<WORLD_BLOCK_BITS;
 			float_py += slope*(px - last_px);
 			x_distance += sqrt( (1+slope*slope)*(px-last_px)*(px-last_px) );
@@ -76,10 +75,10 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int
 			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT) x_distance = 1000000;
 
 			int current_wall = getBuilding((px)>>WORLD_BLOCK_BITS - !facing_right, ((int)float_py) >> WORLD_BLOCK_BITS);
-			//int current_wall = map[coords((((px)>>WORLD_BLOCK_BITS) - !facing_right),((int)float_py)>>WORLD_BLOCK_BITS,MAP_WIDTH)];
+
 			if(*is_x_wall){
 
-				printf("%d X wall %.2f %d %.2f\n",i, x_distance, px, float_py);
+				printf("%d X %d %d %.0f (%d,%d)\n",i, (px-last_px), px, float_py, (px)>>WORLD_BLOCK_BITS - !facing_right,((int)float_py) >> WORLD_BLOCK_BITS);
 			}
 			if(current_wall != 0){
 				x_wall_type = current_wall;
@@ -103,7 +102,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int
 
 			int current_wall = getBuilding(((int)float_px) >> WORLD_BLOCK_BITS,(py - !facing_down)>>WORLD_BLOCK_BITS);
 			if(*is_x_wall){
-				printf("%d Y wall %.2f %.2f %d\n",i ,y_distance, float_px, py);
+				printf("%d Y %.2f %.0f %d (%d,%d)\n",i ,y_distance, float_px, py,((int)float_px) >> WORLD_BLOCK_BITS,(py - !facing_down)>>WORLD_BLOCK_BITS);
 			}
 			if(current_wall != 0){
 				y_wall_type = current_wall;
