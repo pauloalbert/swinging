@@ -33,25 +33,25 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	for(i = 0; i < columns; i++){
 		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		u16 wall_type = 0;
+		Building building = {0};
 		bool is_x_wall = false;
-		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &wall_type, 0, 0);
+		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0);
 
-		u16 wall_color = color_from_wall(wall_type, !is_x_wall);
+		u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
 		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
 		//should be sourced elsewhere
-		float wall_height = 128;
+		float wall_height = building.height;
 		float camera_height = 60;
 
 		float vert_fov = 3*camera.fov_width/4;
 		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
 
 		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera.tilt)) - camera_height;
-		int top = 192 * (wall_height + bottom_wall) / screen_height_at_wall;
-		int bottom = 192 * bottom_wall / screen_height_at_wall;
-		FillRectangle(bT, clamp(bottom,0,191), clamp(top,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+		int bottom = 192 * (bottom_wall + wall_height) / screen_height_at_wall;
+		int top = 192 * (bottom_wall) / screen_height_at_wall;
+		FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 	}
 }
 
@@ -61,7 +61,7 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 	for(i = 0; i < MAP_WIDTH; i++){
 		int j;
 		for(j=0; j < MAP_HEIGHT; j++){
-			int color = color_from_wall(getBuilding(i,j), false);
+			int color = color_from_wall(getBuilding(i,j).color, false);
 			int x = convert_ranges(i,0,MAP_WIDTH,left,right);
 			int y = convert_ranges(j,0,MAP_HEIGHT,top,bottom);
 			int x1 = convert_ranges(i+1,0,MAP_WIDTH,left,right) - 1;

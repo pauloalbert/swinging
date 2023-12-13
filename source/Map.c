@@ -8,35 +8,18 @@
 #include "Map.h"
 #include "P_Util.h"
 
-MAC_EXTERN inline u16 getBuilding(int x, int y){
-	return map[coords(x,y,MAP_WIDTH)];
-}
+#define B1 {BUILDING(1,128)}
+#define B2 {BUILDING(2,128)}
+#define B3 {BUILDING(3,128)}
+#define B5 {BUILDING(5,128)}
+#define B4 {BUILDING(1,32)}
 
-MAC_EXTERN inline u16 getBuildingFromWorld(float px, float py){
-	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
-}
-
-MAC_EXTERN inline u16 getBuildingFromFXP(int x, int y){
-	return getBuilding(x>>FXP_DECIMAL_BITS, y>>FXP_DECIMAL_BITS);
-}
-
-#define BUILDING_COLOR_BITS 12
-#define BUILDING_HEIGHT_BITS 0
-#define BUILDING_HEIGHT_UNITS 1
-
-#define BUILDING(color, height) (((color)<<BUILDING_COLOR_BITS) | (height)<<BUILDING_HEIGHT_BITS)
-#define B1 BUILDING(1,128)
-#define B2 BUILDING(2,128)
-#define B3 BUILDING(3,128)
-#define B5 BUILDING(5,128)
-#define B4 BUILDING(1,32)
-
-u16 map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
+Building map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
 		B1,0,0,0,0, 0,0,0,0,B1,
 		B1,0,0,0,0, 0,0,0,0,B2,
-		B1,0,0,0,0, B4,0,0,0,B3,
+		B1,0,0,0,0, 0,0,0,0,B3,
 		B1,0,0,0,0, 0,0,0,0,B5,
-		B1,0,0,0,0, B4,0,0,0,B1,
+		B1,0,0,0,0, 0,0,0,0,B4,
 		B1,0,0,0,0, 0,0,0,0,B5,
 		B1,0,0,0,0, 0,0,0,0,B2,
 		B1,0,0,0,0, 0,0,0,0,B3,
@@ -46,14 +29,24 @@ u16 map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
 void Map_Init(){
 
 }
+MAC_EXTERN inline Building getBuilding(int x, int y){
+	return map[coords(x,y,MAP_WIDTH)];
+}
 
+MAC_EXTERN inline Building getBuildingFromWorld(float px, float py){
+	return getBuilding(round_float(px)>>WORLD_BLOCK_BITS,round_float(py)>>WORLD_BLOCK_BITS);
+}
+
+MAC_EXTERN inline Building getBuildingFromFXP(int x, int y){
+	return getBuilding(x>>FXP_DECIMAL_BITS, y>>FXP_DECIMAL_BITS);
+}
 /*
  * This function returns the distance and the type of wall from a position.
  * If <wall_type> is supplied, the type of wall will be returned aswell.
  * If <is_x_wall> is supplied, the wall face will be returned.
  * */
 
-float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, u16* wall_type, int pz, float tilt){
+float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Building* wall_type, int pz, float tilt){
 	//Constants for the traversal.
 	float slope = tan(angle);
 	bool facing_down = sin(angle) > 0;
@@ -73,15 +66,15 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, u16
 	float float_py = py;
 	float float_px = px;
 
-	u16 x_wall_type = 0;
-	u16 y_wall_type = 0;
+	Building x_wall_type = {0};
+	Building y_wall_type = {0};
 
 	for(i = 0; i < RAYCAST_RECURSION && (y_distance < 1000000 || x_distance < 1000000); i++){
 		//Advance the shorter ray of the two
 		if(x_distance <= y_distance){
 			//If a wall on this axis was discovered, return it.
 			//(The theory here is, this will only be reached if the y ray is at least longer).
-			if(x_wall_type){
+			if(x_wall_type.u16){
 				if(wall_type) *(wall_type) = x_wall_type;
 				if(is_x_wall) *(is_x_wall) = true;
 				return x_distance;
@@ -105,17 +98,17 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, u16
 			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT) x_distance = 1000000;
 
 			//Get the building the ray is at.
-			int current_wall = getBuilding((px>>WORLD_BLOCK_BITS) - !facing_right, ((int)float_py) >> WORLD_BLOCK_BITS);
+			Building current_wall = getBuilding((px>>WORLD_BLOCK_BITS) - !facing_right, ((int)float_py) >> WORLD_BLOCK_BITS);
 
 			//If hit a wall, save it.
-			if(current_wall != 0){
-				x_wall_type = current_wall;
+			if(current_wall.u16 != 0){
+				x_wall_type.u16 = current_wall.u16;
 			}
 		}
 		else{
 
 			//If a wall on this axis was discovered, return it.
-			if(y_wall_type){
+			if(y_wall_type.u16){
 				if(wall_type) *(wall_type) = y_wall_type;
 				if(is_x_wall) *(is_x_wall) = false;
 				return y_distance;
@@ -139,11 +132,11 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, u16
 			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT) y_distance = 1000000;
 
 			//gyat building
-			int current_wall = getBuilding(((int)float_px) >> WORLD_BLOCK_BITS,(py - !facing_down)>>WORLD_BLOCK_BITS);
+			Building current_wall = getBuilding(((int)float_px) >> WORLD_BLOCK_BITS,(py - !facing_down)>>WORLD_BLOCK_BITS);
 
 			//save it.
-			if(current_wall != 0){
-				y_wall_type = current_wall;
+			if(current_wall.u16 != 0){
+				y_wall_type.u16 = current_wall.u16;
 			}
 		}
 	}
