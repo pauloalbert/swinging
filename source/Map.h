@@ -39,16 +39,23 @@ typedef struct{
 	float z;
 } Pos;
 
+typedef union{
+	u16 u16;
+	struct{
+		u16 height : 10;
+		u16 flag1 : 1;
+		u16 flag2   : 1;
+		u16 color : 4;
+	};
+} Building;
 void Map_Init();
 
-float Map_get_raycast_distance(int px, int py, float angle, bool xwall, int* wall_type);
+float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, Building* wall_type, int pz, float tilt);
 
-void Render_map(enum BUFFER_TYPE bT, Camera player);
+MAC_EXTERN inline Building getBuilding(int x, int y);
 
-MAC_EXTERN inline s8 getBuilding(int x, int y);
+MAC_EXTERN inline Building getBuildingFromWorld(float x, float y);
 
-MAC_EXTERN inline s8 getBuildingFromWorld(float x, float y);
-
-MAC_EXTERN inline s8 getBuildingFromFXP(int px, int py);
+MAC_EXTERN inline Building getBuildingFromFXP(int px, int py);
 
 #endif

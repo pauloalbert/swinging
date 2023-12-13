@@ -88,16 +88,16 @@ void P_Graphics_setup_sub(){
 	// Sub screen
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
 	//
-	REG_DISPCNT_SUB = MODE_5_2D | DISPLAY_BG2_ACTIVE;
+	REG_DISPCNT_SUB = MODE_5_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG0_ACTIVE;
 	//
 	BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
 
-	REG_BG2PA_SUB = 256;
+	REG_BG2PA_SUB = 128;
 	REG_BG2PC_SUB = 0;
 	REG_BG2PB_SUB = 0;
-	REG_BG2PD_SUB = 256;
+	REG_BG2PD_SUB = 120;
 
-	P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
+	P_Graphics_assignBuffer(SUB,BG_GFX_SUB+0x0000,256,192);
 	int i;
 	for(i = 0; i < 15; i++){
 		BG_PALETTE_SUB[i] = BG_PALETTE[i];
@@ -203,6 +203,7 @@ void DrawRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right
 
 }
 
+#define OFFSET_POINTER(pointer,offset) ((u16*)((u32)(pointer) + (u32)(offset)))
 void swap_buffers(enum BUFFER_TYPE bT){
 
 #ifdef FB0
@@ -226,25 +227,28 @@ void swap_buffers(enum BUFFER_TYPE bT){
 #ifdef ROTOSCALE
 	switch(bT){
 	case MAIN:
-		if(main_graphics_frame) P_Graphics_assignBuffer(MAIN,BG_GFX+0x8000,256,192);
-		else P_Graphics_assignBuffer(MAIN,BG_GFX+0x2000,256,192);
+		//set the new buffer to be OFFSET 4 or OFFSET 1
+		if(main_graphics_frame) P_Graphics_assignBuffer(MAIN,OFFSET_POINTER(BG_GFX, 4 *0x4000),256,192);
+		else P_Graphics_assignBuffer(MAIN,OFFSET_POINTER(BG_GFX, 1 *0x4000),256,192);
 
-		if(main_graphics_frame) memset(BG_GFX + 0x8000,0,256*192);
-		else memset(BG_GFX+0x2000,0,256*192);
+		//clear the newly set buffer (OFFSET 4 or OFFSET 1)
+		if(main_graphics_frame) memset(OFFSET_POINTER(BG_GFX, 4 *0x4000),0,256*192);
+		else memset(OFFSET_POINTER(BG_GFX, 1 *0x4000),0,256*192);
 
+		//display the old buffer (OFFSET 1 or OFFSET 4)
 		if(main_graphics_frame) BGCTRL[2] = BG_BMP_BASE(1) | BG_BMP8_256x256;
 		else BGCTRL[2] = BG_BMP_BASE(4) | BG_BMP8_256x256;
 		main_graphics_frame = !main_graphics_frame;
 		break;
 	case SUB:
-		if(sub_graphics_frame) P_Graphics_assignBuffer(SUB,BG_GFX_SUB + 0x6000,256,192);
+		if(sub_graphics_frame) P_Graphics_assignBuffer(SUB,OFFSET_POINTER(BG_GFX_SUB,5*0x4000),256,192);
 		else P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
 
-		if(sub_graphics_frame) memset(BG_GFX_SUB + 0x6000,0,256*192);
+		if(sub_graphics_frame) memset(OFFSET_POINTER(BG_GFX_SUB,5*0x4000),0,256*192);
 		else memset(BG_GFX_SUB,0,256*192);
 
 		if(sub_graphics_frame) BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
-		else BGCTRL_SUB[2] = BG_BMP_BASE(3) | BG_BMP8_256x256;
+		else BGCTRL_SUB[2] = BG_BMP_BASE(5) | BG_BMP8_256x256;
 		sub_graphics_frame = !sub_graphics_frame;
 	}
 #endif
