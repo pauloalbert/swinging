@@ -5,12 +5,12 @@
 
 float g = 9.81;				// gravity acceleration
 
-float k = 0.05;				// spring constant
+float k = 0;				// spring constant
 float dl = 0;				// web length delta
-float UpOffset = 5;			// initial Offset when changing web (bounce up)
-float DOffset = 10;			// initial Offset when Fallinging on web (bounce down)
+float UpOffset = 0;			// initial Offset when changing web (bounce up)
+float DOffset = 0;			// initial Offset when Fallinging on web (bounce down)
 
-float dt = 0.1;				// time interval per loop
+float dt = 1.14;				// time interval per loop
 
 float a = 0.999;			// rope shortening factor
 
@@ -19,20 +19,22 @@ float sinT = 0;
 float cosF = 0;
 float sinF = 0;
 
+int front = 1;
+
 enum STATE Transit(Player *player, Grip *grip, enum STATE state)
 {
 	touchPosition touch;
 	touchRead(&touch);
 
-	player->vx = (grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
-	player->vy = (grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
-	player->vz = (- grip->vd * sinF + grip->d*grip->vtheta * cosF);
+	player->vx = 0; //(grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
+	player->vy = 0; //(grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
+	player->vz = 0; //(- grip->vd * sinF + grip->d*grip->vtheta * cosF);
 
 // call raycasting and get grip position + distance by inputing touch XXXXXX
 
-	grip->x=80;
-	grip->y=160;
-	grip->z=100000;
+	grip->x= 0 + player->x;
+	grip->y= front*10 + player->y;
+	grip->z= 100 + player->z;
 	grip->d=mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
 	if(grip->d<MAXWEB)
@@ -85,6 +87,10 @@ void Swing(Player *player, Grip *grip)
 	player->x = grip->d*sinT*cosF + grip->x;
 	player->y = grip->d*sinT*sinF + grip->y;
 	player->z = grip->d*(1-cosT) + grip->z;				// MAYBE NOT 1-cos just cos->->->
+
+	player->vx = (grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
+	player->vy = (grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
+	player->vz = (- grip->vd * sinF + grip->d*grip->vtheta * cosF);
 
 	if(grip->d_rest>75)
 			{
@@ -142,6 +148,7 @@ enum STATE game(Camera *camera, Player *player, Grip *grip, enum STATE state)
 	if(keyss == KEY_TOUCH)
 	{
 	state = Transition;
+	front = front*(-1);
 
 	// HERE erase previous web XXXXXXXX
 
@@ -158,6 +165,8 @@ enum STATE game(Camera *camera, Player *player, Grip *grip, enum STATE state)
 	camera->x = player->x;
 	camera->y = player->y;
 	camera->z = player->z;
+
+	camera->pan = camera->pan - grip->vphi*dt;
 
 	return state;
 }

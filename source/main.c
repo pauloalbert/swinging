@@ -40,9 +40,11 @@ int main(void)
 		//swap_buffers(SUB);
 
 		state = game(&camera, &player, &grip, state);
+
 		if(state != GameOff)
 		printf("%d\n",state);
 		//FillRectangle(MAIN,0,100,0,100,1);
+
 		Render_3D(MAIN,camera,32);
 		//Render_2D(SUB,camera,0,0,256,192);
 		handleInput(&camera, &player);

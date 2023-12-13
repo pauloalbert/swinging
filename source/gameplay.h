@@ -10,7 +10,7 @@
 #define	RED ARGB16(1,31,0,0)
 #define	BLUE ARGB16(1,0,0,31)
 
-#define MAXWEB 9999999
+#define MAXWEB 99999999999
 
 enum STATE {
 	GameOff,
