@@ -43,5 +43,8 @@ void handleInput(Camera* camera, Player* player){
 		redraw_screen();
 		swap_buffers(MAIN);
 	}
+	if(keys_pressed & KEY_A){
+		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
+	}
 
 }
