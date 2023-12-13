@@ -119,15 +119,34 @@ void DrawCircle(enum BUFFER_TYPE bT, int x, int y, float radius, u16 color){
 		P_Buffer[coords(x+cos(theta)*radius,y+sin(theta)*radius,P_BufferW)] = color;
 	}
 }
-
+void DrawPixel(u16* buffer, int pixel, u16 color){
+	if(pixel % 2 == 0){
+		buffer[pixel/2] &= 0xff00;
+		buffer[pixel/2] |= color;
+	}
+	else{
+		buffer[pixel/2] &= 0xff;
+		buffer[pixel/2] |= color<<8;
+	}
+}
 void FillCircle(enum BUFFER_TYPE bT, int x, int y, float radius, u16 color){
 	/*int r = 1;
 	for(r = 1; r < radius; r++){
 		DrawCircle(bT, x, y, r, false, color);
-	}*/
+	}*
 	float theta;
 	for(theta = 0; theta < 2* M_PI; theta += M_PI_2 / (1.1*radius)){
 		DrawAngledLine(bT,x,y,theta,radius,color);
+	}*/
+	int* P_Buffer = get_buffer_pointer(bT);
+		int P_BufferW = get_buffer_width(bT);
+	int i,j;
+	for(i = x - radius; i < x + radius; i++){
+		for(j = y-radius; j < y + radius; j++){
+			if((i-x)*(i-x) + (j-y)*(j-y) <= (radius-1) * radius){
+				DrawPixel(P_Buffer,coords(i,j,P_BufferW),color);
+			}
+		}
 	}
 
 }
