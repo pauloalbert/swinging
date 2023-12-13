@@ -41,9 +41,7 @@ typedef struct{
 
 void Map_Init();
 
-float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, int* wall_type);
-
-void Render_map(enum BUFFER_TYPE bT, Camera player);
+float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, int* wall_type, int pz, float tilt);
 
 MAC_EXTERN inline s8 getBuilding(int x, int y);
 

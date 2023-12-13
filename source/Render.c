@@ -35,7 +35,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 
 		int wall_type = 0;
 		bool is_x_wall = false;
-		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &wall_type);
+		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &wall_type, 0, 0);
 
 		u16 wall_color = color_from_wall(wall_type, !is_x_wall);
 
@@ -57,7 +57,6 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 
 void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right, int bottom){
 
-	int map_border = 0;
 	int i = 0;
 	for(i = 0; i < MAP_WIDTH; i++){
 		int j;

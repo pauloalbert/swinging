@@ -15,8 +15,8 @@
 #define WORLD_BLOCK_SIZE 32//(2<<MAZE_BLOCK_BITS);
 #define MAP_HEIGHT 10
 #define MAP_WIDTH 10
-extern int map[];
+extern u16 map[];
 
-#define BUILDINGS_MAX_HEIGHT 2560
+#define BUILDINGS_MAX_HEIGHT 640
 /* MOVEMENT */
 

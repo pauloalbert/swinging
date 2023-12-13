@@ -42,11 +42,19 @@ void Map_Init(){
  * If <is_x_wall> is supplied, the wall face will be returned.
  * */
 
-float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int* wall_type){
+float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int* wall_type, int pz, float tilt){
+	//Constants for the traversal.
 	float slope = tan(angle);
 	bool facing_down = sin(angle) > 0;
 	bool facing_right = cos(angle) > 0;
 
+	//Constants for the vertical height gain.
+	float vert_slope = tan(tilt);
+	//storage for x ray and y ray
+	float x_pz = pz;
+	float y_pz = pz;
+
+	//Storage values
 	float x_distance = 0;
 	float y_distance = 0;
 
@@ -54,8 +62,8 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int
 	float float_py = py;
 	float float_px = px;
 
-	int x_wall_type = 0;
-	int y_wall_type = 0;
+	u16 x_wall_type = 0;
+	u16 y_wall_type = 0;
 
 	for(i = 0; i < RAYCAST_RECURSION && (y_distance < 1000000 || x_distance < 1000000); i++){
 		//Advance the shorter ray of the two
@@ -72,7 +80,11 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int
 			int last_px = px;
 			px = (((px+(facing_right ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS))<<WORLD_BLOCK_BITS;
 			float_py += slope*(px - last_px);
-			x_distance += sqrt( (1+slope*slope)*(px-last_px)*(px-last_px) );
+			float ddist = sqrt( (1+slope*slope)*(px-last_px)*(px-last_px) );
+			x_distance += ddist;
+
+			//Z height climbing!!
+			x_pz += vert_slope * ddist;
 
 			//allow loop-around for the rays
 			px = mod(px - !facing_right, MAP_WIDTH<<WORLD_BLOCK_BITS) + !facing_right;
@@ -102,7 +114,11 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, int
 			int last_py = py;
 			py = ((py+(facing_down ? WORLD_BLOCK_SIZE : -1))>>WORLD_BLOCK_BITS)<<WORLD_BLOCK_BITS;
 			float_px += (1/slope)*(py - last_py);
-			y_distance += sqrt( (1+(1/slope)*(1/slope))*(py-last_py)*(py-last_py) );
+			float ddist = sqrt( (1+(1/slope)*(1/slope))*(py-last_py)*(py-last_py) );
+			y_distance += ddist;
+
+			//Z Climbing!!
+			y_pz += vert_slope*ddist;
 
 			//Loop around
 			py = mod(py - !facing_down, MAP_HEIGHT<<WORLD_BLOCK_BITS) + !facing_down;
