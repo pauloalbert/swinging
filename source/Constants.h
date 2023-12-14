@@ -25,5 +25,9 @@
 #define BUILDING_HEIGHT_UNITS 1
 
 #define BUILDING(color, height) (((color)<<BUILDING_COLOR_BITS) | (height)<<BUILDING_HEIGHT_BITS)
+
+/* GRAPHICS */
+#define HORIZON_DISTANCE WORLD_BLOCK_SIZE*30
+#define IS_SCREEN_FLIPPED true
 /* MOVEMENT */
 

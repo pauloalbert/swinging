@@ -24,8 +24,6 @@ typedef struct{
 
 	float fov_width;
 	float fov_height;
-
-	bool is_flipped;
 } Camera;
 
 typedef struct{

@@ -62,12 +62,13 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	}
 
 	//Move the horizon (bring it to me)
-	int horizon_distance = WORLD_BLOCK_SIZE*30;
-	float horizon_height = (horizon_distance * tan(camera.fov_height/2 - camera.tilt)) + camera.z;
-	int pixel_height = (91 - (192 * (horizon_height) / (horizon_distance * 2*tan(camera.fov_height/2))));
+	float horizon_height = (HORIZON_DISTANCE * tan(camera.fov_height/2 - camera.tilt)) + camera.z;
+	int pixel_height = (91 - (192 * (horizon_height) / (HORIZON_DISTANCE * 2*tan(camera.fov_height/2))));
 
-
-	REG_BG0VOFS = -92 - pixel_height;
+	if(IS_SCREEN_FLIPPED)
+		REG_BG0VOFS = -92 - pixel_height;
+	else
+		REG_BG0VOFS = 92 + pixel_height;
 }
 
 void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right, int bottom){
