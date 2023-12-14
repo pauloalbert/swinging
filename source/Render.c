@@ -35,7 +35,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 
 		Building building = {0};
 		bool is_x_wall = false;
-		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0);
+		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0, NULL);
 
 		u16 wall_color = color_from_wall(building.color, !is_x_wall);
 

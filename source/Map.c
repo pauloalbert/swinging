@@ -46,7 +46,7 @@ MAC_EXTERN inline Building getBuildingFromFXP(int x, int y){
  * If <is_x_wall> is supplied, the wall face will be returned.
  * */
 
-float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Building* wall_type, int pz, float tilt){
+float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Building* wall_type, int pz, float tilt, Pos* pos){
 	//Constants for the traversal.
 	float slope = tan(angle);
 	bool facing_down = sin(angle) > 0;
