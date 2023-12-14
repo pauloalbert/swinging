@@ -225,6 +225,7 @@ void swap_buffers(enum BUFFER_TYPE bT){
 
 
 #ifdef ROTOSCALE
+#define SUB_SECOND_FRAME 5
 	switch(bT){
 	case MAIN:
 		//set the new buffer to be OFFSET 4 or OFFSET 1
@@ -241,14 +242,14 @@ void swap_buffers(enum BUFFER_TYPE bT){
 		main_graphics_frame = !main_graphics_frame;
 		break;
 	case SUB:
-		if(sub_graphics_frame) P_Graphics_assignBuffer(SUB,OFFSET_POINTER(BG_GFX_SUB,5*0x4000),256,192);
+		if(sub_graphics_frame) P_Graphics_assignBuffer(SUB,OFFSET_POINTER(BG_GFX_SUB,SUB_SECOND_FRAME*0x4000),256,192);
 		else P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
 
-		if(sub_graphics_frame) memset(OFFSET_POINTER(BG_GFX_SUB,5*0x4000),0,256*192);
-		else memset(BG_GFX_SUB,0,256*192);
+		if(sub_graphics_frame) memset(OFFSET_POINTER(BG_GFX_SUB,SUB_SECOND_FRAME*0x4000),0,256*100);
+		else memset(BG_GFX_SUB,0,256*100);
 
 		if(sub_graphics_frame) BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
-		else BGCTRL_SUB[2] = BG_BMP_BASE(5) | BG_BMP8_256x256;
+		else BGCTRL_SUB[2] = BG_BMP_BASE(SUB_SECOND_FRAME) | BG_BMP8_256x256;
 		sub_graphics_frame = !sub_graphics_frame;
 	}
 #endif
