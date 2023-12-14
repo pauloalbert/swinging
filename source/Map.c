@@ -68,15 +68,21 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 
 	Building x_wall_type = {0};
 	Building y_wall_type = {0};
-
 	for(i = 0; i < RAYCAST_RECURSION && (y_distance < 1000000 || x_distance < 1000000); i++){
+
 		//Advance the shorter ray of the two
 		if(x_distance <= y_distance){
+
 			//If a wall on this axis was discovered, return it.
 			//(The theory here is, this will only be reached if the y ray is at least longer).
 			if(x_wall_type.u16){
 				if(wall_type) *(wall_type) = x_wall_type;
 				if(is_x_wall) *(is_x_wall) = true;
+				if(pos){
+					pos->x = px;
+					pos->y = float_py;
+					pos->z = x_pz;
+				}
 				return x_distance;
 			}
 
@@ -115,6 +121,11 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			if(y_wall_type.u16){
 				if(wall_type) *(wall_type) = y_wall_type;
 				if(is_x_wall) *(is_x_wall) = false;
+				if(pos){
+					pos->x = float_px;
+					pos->y = py;
+					pos->z = y_pz;
+				}
 				return y_distance;
 			}
 
@@ -156,13 +167,13 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
 
 	//Calculate the vertical and horizontal angle from the touch position:
-	float angle_horizontal = touch.px * camera.fov_width / 256;
-	float angle_vertical = touch.py * camera.fov_height / 192;
+	float angle_horizontal = (touch.px-128) * camera.fov_width / 256;
+	float angle_vertical = (touch.py-96) * camera.fov_height / 192;
 
-	//get the grip from raycasting
-	Pos get_grip = {-1,-1,-1};
-
-	return 0;
+	//get the grip from ray casting
+	printf("%d, %.2f, %.2f\n",camera.z,camera.tilt, angle_vertical);
+	float distance = Map_get_raycast_distance(camera.x,camera.y,angle_horizontal - camera.pan, NULL, NULL, camera.z, camera.tilt - angle_vertical, grip);
+	return distance;
 }
 
 
