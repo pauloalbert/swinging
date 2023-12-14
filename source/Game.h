@@ -10,3 +10,4 @@
 
 void redraw_screen();
 
+void try_sling(touchPosition t);

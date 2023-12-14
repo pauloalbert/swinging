@@ -8,11 +8,10 @@
 #include <math.h>
 
 void ISR_KEYS(){
-	extern u16 screen_index;
-	extern Camera camera;
+	/*extern Camera camera;
 	u16 keys = ~REG_KEYINPUT;
-
-	redraw_screen();
+*/
+	//...
 }
 
 void initInput(){
@@ -35,6 +34,13 @@ void handleInput(Camera* camera, Player* player){
 	}
 	if(keys_pressed & KEY_A){
 		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
+	}
+
+	// read the touch and try slinging
+	if(keys_pressed & KEY_TOUCH){
+		touchPosition touch;
+		touchRead(&touch);
+		try_sling(touch);
 	}
 
 }
