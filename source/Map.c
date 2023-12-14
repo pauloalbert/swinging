@@ -171,8 +171,7 @@ float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
 	float angle_vertical = (touch.py-96) * camera.fov_height / 192;
 
 	//get the grip from ray casting
-	printf("%d, %.2f, %.2f\n",camera.z,camera.tilt, angle_vertical);
-	float distance = Map_get_raycast_distance(camera.x,camera.y,angle_horizontal - camera.pan, NULL, NULL, camera.z, camera.tilt - angle_vertical, grip);
+	float distance = Map_get_raycast_distance(camera.x,camera.y,camera.pan + angle_horizontal, NULL, NULL, camera.z, -camera.tilt - angle_vertical, grip);
 	return distance;
 }
 

@@ -43,7 +43,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 
 		//should be sourced elsewhere
 		float wall_height = building.height;
-		float camera_height = 60;
+		float camera_height = camera.z;
 
 		float vert_fov = 3*camera.fov_width/4;
 		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
