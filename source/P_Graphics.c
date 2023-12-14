@@ -65,10 +65,12 @@ void P_Graphics_setup_main()
 	BG_PALETTE[15] = RGB15(23,23,30);
 	BG_PALETTE[31] = RGB15(15,11,15);
 	//P_Graphics_assignBuffer(MAIN, (u16*)BG_GFX,256,192);
-	REG_BG2PA = 256;
-	REG_BG2PC = 0;
+	REG_BG2PA = -256;
 	REG_BG2PB = 0;
-	REG_BG2PD = 256;
+	REG_BG2PC = 0;
+	REG_BG2PD = -256;
+	REG_BG2X = 256*256;
+	REG_BG2Y = 256*192;
 
 	/*Tilemap*/
 	BGCTRL[0] = BG_MAP_BASE(1) | BG_32x32 | BG_COLOR_16 | BG_TILE_BASE(0) | BG_PRIORITY_1;
@@ -225,6 +227,7 @@ void swap_buffers(enum BUFFER_TYPE bT){
 
 
 #ifdef ROTOSCALE
+	//The sub engine uses two
 #define SUB_SECOND_FRAME 5
 	switch(bT){
 	case MAIN:

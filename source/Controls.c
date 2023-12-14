@@ -40,6 +40,10 @@ void handleInput(Camera* camera, Player* player){
 	if(keys_pressed & KEY_TOUCH){
 		touchPosition touch;
 		touchRead(&touch);
+		if(camera->is_flipped){
+			touch.px = 255 - touch.px;
+			touch.py = 191 - touch.py;
+		}
 		try_sling(touch);
 	}
 
