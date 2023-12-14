@@ -96,12 +96,14 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			//Z height climbing!!
 			x_pz += vert_slope * ddist;
 
+#ifdef MAP_LOOPS
 			//allow loop-around for the rays
 			px = mod(px - !facing_right, MAP_WIDTH<<WORLD_BLOCK_BITS) + !facing_right;
 			float_py = mod_float(float_py,MAP_HEIGHT<<WORLD_BLOCK_BITS);
+#endif
 
 			//This should never happen but is here just incase i want to remove the top line.
-			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS > MAP_HEIGHT ||
+			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS >= MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS >= MAP_HEIGHT ||
 					x_pz > BUILDINGS_MAX_HEIGHT || x_pz < 0){
 				x_distance = 1000000;
 				continue;
@@ -139,12 +141,14 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			//Z Climbing!!
 			y_pz += vert_slope*ddist;
 
+#ifdef MAP_LOOPS
 			//Loop around
 			py = mod(py - !facing_down, MAP_HEIGHT<<WORLD_BLOCK_BITS) + !facing_down;
 			float_px = mod_float(float_px,MAP_WIDTH<<WORLD_BLOCK_BITS);
+#endif
 
 			//Out of bounds sanity check
-			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS > MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS > MAP_HEIGHT
+			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS >= MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS >= MAP_HEIGHT
 					|| y_pz > BUILDINGS_MAX_HEIGHT || y_pz < 0){
 				y_distance = 1000000;
 				continue;
@@ -171,7 +175,12 @@ float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
 	float angle_vertical = (touch.py-96) * camera.fov_height / 192;
 
 	//get the grip from ray casting
-	float distance = Map_get_raycast_distance(camera.x,camera.y,camera.pan + angle_horizontal, NULL, NULL, camera.z, -camera.tilt - angle_vertical, grip);
+
+	printf("%d, %f, %f\n",camera.z,camera.pan, angle_horizontal);
+	Building b = {0};
+	bool is_x = false;
+	float distance = Map_get_raycast_distance(camera.x,camera.y,camera.pan + angle_horizontal, &is_x, &b, camera.z, -camera.tilt - angle_vertical, grip);
+	printf("%d,%d,%d\n",b.color,b.height,is_x);
 	return distance;
 }
 

@@ -16,6 +16,8 @@
 #define MAP_HEIGHT 10
 #define MAP_WIDTH 10
 
+//#define MAP_LOOPS
+
 /* BUILDING */
 #define BUILDINGS_MAX_HEIGHT 128
 #define BUILDING_COLOR_BITS 12
