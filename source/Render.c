@@ -31,28 +31,43 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
 	int i = 0;
 	for(i = 0; i < columns; i++){
+		//calculate the pan angle of the current beam
 		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
+		//get the building, distance, and face of the ray
 		Building building = {0};
 		bool is_x_wall = false;
 		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0, NULL);
 
+		//color from palette
 		u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
+		//adjust for fish-eye effect
 		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
-		//should be sourced elsewhere
+		//Stats for the render
 		float wall_height = building.height;
 		float camera_height = camera.z;
+		float vert_fov = camera.fov_height;
 
-		float vert_fov = 3*camera.fov_width/4;
+		//The top bottom real world distance of the screen, when at the distance of the wall
 		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
 
+		//real world height of the bottom of the rendered building, relatively to the camera (+angle)
 		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera.tilt)) + camera_height;
+		//calculate the length of the building in pixels on screen.
 		int bottom = 192 * (bottom_wall) / screen_height_at_wall;
 		int top = 192 * (bottom_wall - wall_height) / screen_height_at_wall;
 		FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 	}
+
+	//Move the horizon (bring it to me)
+	int horizon_distance = WORLD_BLOCK_SIZE*30;
+	float horizon_height = (horizon_distance * tan(camera.fov_height/2 - camera.tilt)) + camera.z;
+	int pixel_height = (91 - (192 * (horizon_height) / (horizon_distance * 2*tan(camera.fov_height/2))));
+
+
+	REG_BG0VOFS = -92 - pixel_height;
 }
 
 void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right, int bottom){

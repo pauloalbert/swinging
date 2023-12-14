@@ -73,15 +73,15 @@ void P_Graphics_setup_main()
 	REG_BG2Y = 256*192;
 
 	/*Tilemap*/
-	BGCTRL[0] = BG_MAP_BASE(1) | BG_32x32 | BG_COLOR_16 | BG_TILE_BASE(0) | BG_PRIORITY_1;
+	BGCTRL[0] = BG_MAP_BASE(1) | BG_32x64 | BG_COLOR_16 | BG_TILE_BASE(0) | BG_PRIORITY_1;
 	P_Graphics_assignBuffer(MAIN,BG_GFX+0x2000,256,192);
 
 
 	dmaCopy(A16, &BG_TILE_RAM(0)[0], 32);
 
 	int i;
-	for(i=0;i<32*32;i++){
-		BG_MAP_RAM(1)[i] = 0 | (i>=32*12 ? BIT(12) : 0);
+	for(i=0;i<32*64;i++){
+		BG_MAP_RAM(1)[i] = 0 | (i>=32*32 ? BIT(12) : 0);
 	}
 #endif
 }
