@@ -26,7 +26,7 @@ void handleInput(Camera* camera, Player* player){
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
 
-	if(keys & KEY_LEFT){
+  if(keys & KEY_LEFT){
 		camera->pan -= 0.12;
 	}
 	if(keys & KEY_RIGHT){
@@ -42,5 +42,4 @@ void handleInput(Camera* camera, Player* player){
 		touchRead(&touch);
 		try_sling(touch);
 	}
-
 }
