@@ -17,6 +17,7 @@ Player player = {60,140,0};
 int main(void)
 {
 	consoleDemoInit();
+	REG_POWERCNT &= ~POWER_SWAP_LCDS;
 	Map_Init();
 	initInput();
 	P_Graphics_setup_main();
