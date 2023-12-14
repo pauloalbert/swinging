@@ -35,7 +35,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 
 		Building building = {0};
 		bool is_x_wall = false;
-		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0);
+		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0, NULL);
 
 		u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
@@ -43,7 +43,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 
 		//should be sourced elsewhere
 		float wall_height = building.height;
-		float camera_height = 60;
+		float camera_height = camera.z;
 
 		float vert_fov = 3*camera.fov_width/4;
 		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
