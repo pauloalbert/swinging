@@ -68,7 +68,7 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	if(IS_SCREEN_FLIPPED)
 		REG_BG0VOFS = -92 - pixel_height;
 	else
-		REG_BG0VOFS = 92 + pixel_height;
+		REG_BG0VOFS = 150 + pixel_height;
 }
 
 void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right, int bottom){

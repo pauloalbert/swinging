@@ -74,10 +74,10 @@ void P_Graphics_setup_main()
 	REG_BG2Y = 256*192;
 	}
 	else{
-		REG_BG2PA = 0256;
+		REG_BG2PA = 256;
 		REG_BG2PB = 0;
 		REG_BG2PC = 0;
-		REG_BG2PD = 0256;
+		REG_BG2PD = 256;
 		REG_BG2X = 0;
 		REG_BG2Y = 0;
 	}
