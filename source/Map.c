@@ -18,7 +18,7 @@ Building map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
 		B1,0,0,0,0, 0,0,0,0,B1,
 		B1,0,0,0,0, 0,0,0,0,B2,
 		B1,0,0,0,0, 0,0,0,0,B3,
-		B1,0,0,0,0, 0,0,0,0,B5,
+		B1,0,0,0,0, B1,0,0,0,B5,
 		B1,0,0,0,0, 0,0,0,0,B4,
 		B1,0,0,0,0, 0,0,0,0,B5,
 		B1,0,0,0,0, 0,0,0,0,B2,
@@ -168,7 +168,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 	return 1000000;
 }
 
-float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
+float get_grip_position (Camera camera, touchPosition touch, Pos * grip){
 
 	//Calculate the vertical and horizontal angle from the touch position:
 	float angle_horizontal = (touch.px-128) * camera.fov_width / 256;

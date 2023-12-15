@@ -10,7 +10,7 @@ float dl = 0;				// web length delta
 float UpOffset = 0;			// initial Offset when changing web (bounce up)
 float DOffset = 0;			// initial Offset when Fallinging on web (bounce down)
 
-float dt = 1.14;				// time interval per loop
+float dt = 0.5;				// time interval per loop
 
 float a = 0.999;			// rope shortening factor
 
@@ -19,22 +19,23 @@ float sinT = 0;
 float cosF = 0;
 float sinF = 0;
 
-int front = 1;
-
-enum STATE Transit(Player *player, Grip *grip, enum STATE state)
+enum STATE Transit(Player* player, Grip* grip, enum STATE state)
 {
 	touchPosition touch;
 	touchRead(&touch);
+
+	DrawLine(MAIN, 128/2, 191/2, touch.px/2, touch.py/2, ARGB16(1,31,31,31));
 
 	player->vx = 0; //(grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
 	player->vy = 0; //(grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
 	player->vz = 0; //(- grip->vd * sinF + grip->d*grip->vtheta * cosF);
 
-// call raycasting and get grip position + distance by inputing touch XXXXXX
+	Pos pos = try_sling(touch);
 
-	grip->x= 0 + player->x;
-	grip->y= front*10 + player->y;
-	grip->z= 100 + player->z;
+	grip->x = pos.x;
+	grip->y = pos.y;
+	grip->z = pos.z;
+
 	grip->d=mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
 	if(grip->d<MAXWEB)
@@ -43,24 +44,24 @@ enum STATE Transit(Player *player, Grip *grip, enum STATE state)
 		grip->d_rest = grip->d - UpOffset;
 		dl = grip->d - grip->d_rest;
 
-		if(grip->z<player->z)
-			state = Falling;
-		else
-		{
+		//if(grip->z<player->z)
+		//	state = Falling;
+		//else
+		//{
 			state = Swinging;
 
 			cosT = (grip->z - player->z)/grip->d;
 			grip->theta = acos( cosT );
 			sinT = sin(grip->theta);
 
-			cosF = ( (grip->y<player->y) ? -1 : 1) * (grip->x-player->x) / sqrt(sqr(grip->x-player->x) + sqr(grip->y-player->y) );
+			cosF = ( (grip->y<player->y) ? -1 : 1) * (player->x-grip->x) / sqrt(sqr(grip->x-player->x) + sqr(grip->y-player->y) );
 			grip->phi = acos( cosF );
 			sinF = sin(grip->phi);
 
 			grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF + player->vz*cosT;
 			grip->vtheta = player->vx*cosT*cosF + player->vy*cosT*sinF - player->vz*sinT;
 			grip->vphi = - player->vx*sinF + player->vy*cosF;
-		}
+		//}
 	}
 	else
 	{
@@ -70,9 +71,9 @@ enum STATE Transit(Player *player, Grip *grip, enum STATE state)
 	return state;
 }
 
-void Swing(Player *player, Grip *grip)
+void Swing(Player* player, Grip* grip)
 {
-	grip->vphi = grip->vphi - 2*grip->vtheta*grip->vphi*cosT/sinT;
+	grip->vphi = grip->vphi - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
 	grip->phi = grip->phi + grip->vphi*dt/2;
 
 	cosF = cos(grip->phi);
@@ -88,6 +89,8 @@ void Swing(Player *player, Grip *grip)
 	player->y = grip->d*sinT*sinF + grip->y;
 	player->z = grip->d*(1-cosT) + grip->z;				// MAYBE NOT 1-cos just cos->->->
 
+	//DrawLine(MAIN, 128/2, 191/2, (grip->z-player->z), sqrt(sqr(player->x-grip->x)+sqr(player->y-grip->y))*cosF, ARGB16(1,31,31,31));
+
 	player->vx = (grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
 	player->vy = (grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
 	player->vz = (- grip->vd * sinF + grip->d*grip->vtheta * cosF);
@@ -102,12 +105,12 @@ void Swing(Player *player, Grip *grip)
 	dl =  grip->d - grip->d_rest;
 }
 
-float FallBounce(Player *player, Grip *grip)
+float FallBounce(Player* player, Grip* grip)
 {
 	return (grip->z - sqrt(sqr(grip->d+DOffset)-sqr(grip->d*sinT)));
 }
 
-enum STATE Fall(Player *player, Grip *grip, enum STATE state)
+enum STATE Fall(Player* player, Grip* grip, enum STATE state)
 {
 	if(player->z <= FallBounce(player, grip) && grip->ON)
 	{
@@ -138,7 +141,7 @@ enum STATE Fall(Player *player, Grip *grip, enum STATE state)
 	return state;
 }
 
-enum STATE game(Camera *camera, Player *player, Grip *grip, enum STATE state)
+enum STATE game(Camera* camera, Player* player, Grip* grip, enum STATE state)
 {
 //---------------------------------------------------------------------------------
 
@@ -148,9 +151,6 @@ enum STATE game(Camera *camera, Player *player, Grip *grip, enum STATE state)
 	if(keyss == KEY_TOUCH)
 	{
 	state = Transition;
-	front = front*(-1);
-
-	// HERE erase previous web XXXXXXXX
 
 	state = Transit(player, grip, state);
 	}
@@ -164,9 +164,10 @@ enum STATE game(Camera *camera, Player *player, Grip *grip, enum STATE state)
 
 	camera->x = player->x;
 	camera->y = player->y;
-	camera->z = player->z;
+	camera->z = player->z + 50;
 
-	camera->pan = camera->pan - grip->vphi*dt;
+	//camera->pan = camera->pan + grip->vphi*dt;
+	//camera->tilt = camera->tilt + grip->vtheta*dt;
 
 	return state;
 }

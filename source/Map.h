@@ -72,7 +72,7 @@ void Map_Init();
 
 float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, Building* wall_type, int pz, float tilt, Pos* pos);
 
-float get_grip_position(Camera camera, touchPosition touch, Pos* pos);
+float get_grip_position(Camera camera, touchPosition touch, Pos * pos);
 
 MAC_EXTERN inline Building getBuilding(int x, int y);
 

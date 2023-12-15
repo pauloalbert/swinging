@@ -64,8 +64,7 @@ void DrawAngledLine(enum BUFFER_TYPE bT, int x, int y, float angle,
 /*
  *
  */
-void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
-		u16 color) 
+void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2, u16 color)
 {
 
 	u16* P_Buffer = get_buffer_pointer(bT);

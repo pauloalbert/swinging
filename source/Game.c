@@ -11,12 +11,18 @@ void redraw_screen(){
 
 //try slinging with a touch position.
 //(moved to its own file so that controls doesn't have to deal with many other files)
-void try_sling(touchPosition t){
+Pos try_sling(touchPosition t){
 	extern Camera camera;
 	Pos pos = {0,0,0};
 
 	float dist = get_grip_position(camera,t, &pos);
+	if(dist>=100000)
+	{
+		pos.x = 0;
+		pos.y = 0;
+		pos.z = 0;
+	}
 
 	//TODO: call here functions that need pos and dist.
-	printf("(%.2f,%.2f,%.2f) - %.2f\n",pos.x,pos.y,pos.z, dist);
+	return pos;
 }

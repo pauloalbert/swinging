@@ -11,4 +11,4 @@
 void redraw_screen();
 
 //called by Controls, does game logic when attempting to sling
-void try_sling(touchPosition t);
+Pos try_sling(touchPosition t);
