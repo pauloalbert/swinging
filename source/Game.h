@@ -7,8 +7,11 @@
 #include "Controls.h"
 #include "P_Audio.h"
 #include "Render.h"
+#include "gameplay.h"
 
 void redraw_screen();
 
 //called by Controls, does game logic when attempting to sling
 Pos try_sling(touchPosition t);
+
+void game_loop(Camera* camera, Player* player, Grip* grip);

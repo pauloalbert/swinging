@@ -26,3 +26,32 @@ Pos try_sling(touchPosition t){
 	//TODO: call here functions that need pos and dist.
 	return pos;
 }
+
+void game_loop(Camera* camera, Player* player, Grip* grip)
+{
+//---------------------------------------------------------------------------------
+
+	scanKeys();
+	u16 keyss = keysHeld();					// handle input ?
+
+	if(keyss == KEY_TOUCH)
+	{
+	player->state = Transition;
+
+	Transit(player, grip);
+	}
+
+
+	if(player->state == Falling)
+		Fall(player, grip);
+
+	if(player->state == Swinging)
+		Swing(player, grip);
+
+	camera->x = player->x;
+	camera->y = player->y;
+	camera->z = player->z + 50;
+
+	//camera->pan = camera->pan + grip->vphi*dt;
+	//camera->tilt = camera->tilt + grip->vtheta*dt;
+}

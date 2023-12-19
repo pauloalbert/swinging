@@ -15,19 +15,11 @@
 #define MINZMAP 0
 #define MAXZMAP 10000
 
-enum STATE {
-	GameOff,
-	Transition,
-	Swinging,
-	Falling
-};
-
-enum STATE Transit(Player* player, Grip* grip, enum STATE state);
+void Transit(Player* player, Grip* grip);
 
 void Swing(Player* player, Grip* grip);
 
 float FallBounce(Grip* grip);
 
-enum STATE Fall(Player* player, Grip* grip, enum STATE state);
+void Fall(Player* player, Grip* grip);
 
-enum STATE game(Camera* camera, Player* player, Grip* grip, enum STATE state);
