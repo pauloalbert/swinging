@@ -45,7 +45,7 @@ void game_loop(Camera* camera, Player* player, Grip* grip)
 	if(player->state == Falling)
 		Fall(player, grip);
 
-	if(player->state == Swinging)
+	else if(player->state == Swinging)
 		Swing(player, grip);
 
 	camera->x = player->x;

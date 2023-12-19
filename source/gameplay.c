@@ -118,9 +118,9 @@ void Swing(Player* player, Grip* grip)
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
 
-	player->x = clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
-	player->y = clamp_float(-grip->d*sinT*sinF + grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS);
-	player->z = clamp_float(-grip->d*cosT + grip->z, MINZMAP, MAXZMAP);
+	player->x = -grip->d*sinT*cosF + grip->x;
+	player->y = -grip->d*sinT*sinF + grip->y;
+	player->z = -grip->d*cosT + grip->z;
 
 	//DrawLine(MAIN, 128/2, 191/2, (grip->z-player->z), sqrt(sqr(player->x-grip->x)+sqr(player->y-grip->y))*cosF, ARGB16(1,31,31,31));
 

@@ -11,7 +11,7 @@
 #define	RED ARGB16(1,31,0,0)
 #define	BLUE ARGB16(1,0,0,31)
 
-#define MAXWEB 99999999999999
+#define MAXWEB 999999
 #define MINZMAP 0
 #define MAXZMAP 10000
 
