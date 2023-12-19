@@ -30,6 +30,9 @@ int main(void)
 	Audio_Init();
 
 	while(1) {
+		t += 0.1;
+		camera.tilt += sin(2*t)/30.;
+		camera.pan -= (((int)(t*10))%10 - 5)/400.;
 		redraw_screen();
 		game_loop(&camera, &player, &grip);
 
