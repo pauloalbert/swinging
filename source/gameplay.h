@@ -26,7 +26,7 @@ enum STATE Transit(Player* player, Grip* grip, enum STATE state);
 
 void Swing(Player* player, Grip* grip);
 
-float FallBounce(Player* player, Grip* grip);
+float FallBounce(Grip* grip);
 
 enum STATE Fall(Player* player, Grip* grip, enum STATE state);
 

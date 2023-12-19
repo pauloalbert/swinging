@@ -71,14 +71,14 @@ enum STATE Transit(Player* player, Grip* grip, enum STATE state)
 	return state;
 }
 
-float FallBounce(Player* player, Grip* grip)
+float FallBounce(Grip* grip)
 {
 	return (grip->z - sqrt(sqr(grip->d+DOffset)-sqr(grip->d*sinT)));
 }
 
 enum STATE Fall(Player* player, Grip* grip, enum STATE state)
 {
-	if(player->z <= FallBounce(player, grip) && grip->ON)
+	if(player->z <= FallBounce(grip) && grip->ON)
 	{
 			grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 			grip->d_rest = grip->d+DOffset;
