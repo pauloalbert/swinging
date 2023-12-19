@@ -116,8 +116,8 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2, u16 color)
 			level = (y1<y2) ? x1 : x2 ;
 
 			t = (x1<x2) ? ((level==x1) ? 1 : -1) : ((level==x1) ? -1 : 1) ;
-
-				for(int j = min(y1,y2); j<=max(y1,y2); j++)
+				int j;
+				for(j = min(y1,y2); j<=max(y1,y2); j++)
 				{
 					if(P<0)
 					{
@@ -168,8 +168,8 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2, u16 color)
 					level = (x1<x2) ? y1 : y2 ;
 
 					t = (y1<y2) ? ((level==y1) ? 1 : -1) : ((level==y1) ? -1 : 1) ;
-
-						for(int j = min(x1,x2); j<=max(x1,x2); j++)
+						int j;
+						for(j = min(x1,x2); j<=max(x1,x2); j++)
 						{
 							if(P<0)
 							{
