@@ -12,6 +12,8 @@
 #define	BLUE ARGB16(1,0,0,31)
 
 #define MAXWEB 99999999999999
+#define MINZMAP 0
+#define MAXZMAP 10000
 
 enum STATE {
 	GameOff,

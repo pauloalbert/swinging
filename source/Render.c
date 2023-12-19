@@ -74,7 +74,7 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 	int y = convert_ranges(camera.y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS, top, bottom);
 	FillCircle(bT,x,y,4,3);
 	float angle = (camera.pan);
-	DrawAngledLine(bT,x,y,angle,50,5);
+	DrawAngledLine(bT,x,y,angle,50,ARGB16(1,31,31,31));
 	//FillCircle(bT,x+10*cos(6.28+angle),y+10*sin(6.28+angle),3,5);
 }
 

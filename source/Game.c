@@ -16,7 +16,7 @@ Pos try_sling(touchPosition t){
 	Pos pos = {0,0,0};
 
 	float dist = get_grip_position(camera,t, &pos);
-	if(dist>=100000)
+	if(dist>=100000000)
 	{
 		pos.x = 0;
 		pos.y = 0;
