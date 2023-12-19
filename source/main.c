@@ -27,8 +27,8 @@ int main(void)
 	//camera.tilt = 0;
 	while(1) {
 		t += 0.1;
-		//camera.tilt -= sin(2*t)/70.;
-		//camera.pan -= (((int)(t*10))%10 - 5)/400.;
+		camera.tilt += sin(2*t)/30.;
+		camera.pan -= (((int)(t*10))%10 - 5)/400.;
 		redraw_screen();
 		handleInput(&camera, &player);
 		swiWaitForVBlank();
