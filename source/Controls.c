@@ -45,6 +45,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			touch.px = 255 - touch.px;
 			touch.py = 191 - touch.py;
 		}
+
 		try_sling(touch, camera, grip);
 	}
 

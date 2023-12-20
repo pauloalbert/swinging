@@ -43,6 +43,7 @@ void Transit(Player* player, Grip* grip)
 	grip->vtheta = player->vx*cosT*cosF + player->vy*cosT*sinF - player->vz*sinT;
 	grip->vphi = - player->vx*sinF + player->vy*cosF;
 
+
 }
 
 float FallBounce(Grip* grip)
@@ -52,6 +53,8 @@ float FallBounce(Grip* grip)
 
 void Fall(Player* player, Grip* grip)
 {
+
+	printf("%.2f %.2f %.2f %d\n",player->z, grip->z, FallBounce(grip), grip->ON);
 	if(player->z <= FallBounce(grip) && grip->ON)
 	{
 			grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));

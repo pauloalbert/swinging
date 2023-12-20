@@ -12,9 +12,9 @@
 
 	float fov_width;
 	float fov_height;
-Camera camera= {90,90,60,3.141592*10/180.,-3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
+Camera camera= {90,90,50,3.141592*10/180.,-3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
 Player player = {60,140,0, 0,0,0,Paused};
-Grip grip = {false,1,1,1,0,0,0,0,0,0,0};
+Grip grip = {false,0,0,0,0,0,0,0,0,0,0};
 int main(void)
 {
 	consoleDemoInit();
@@ -24,7 +24,6 @@ int main(void)
 	P_Graphics_setup_main();
 	P_Graphics_setup_sub();
 	Audio_Init();
-	float t = 0;
 	//camera.tilt = 0;
 	while(1){
 		handleInput(&camera, &player, &grip);
