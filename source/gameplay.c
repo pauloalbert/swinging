@@ -1,6 +1,3 @@
-#include <nds.h>
-#include <stdio.h>
-#include <math.h>
 #include "gameplay.h"
 
 float g = 9.81;				// gravity acceleration
@@ -29,30 +26,22 @@ void Transit(Player* player, Grip* grip)
 	//calculate the initial length of the rope to maintain
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
-	//
+	//Bounce constants
 	grip->d_rest = grip->d - UpOffset;
 	dl = grip->d - grip->d_rest;
 
-	//if(grip->z<player->z)
-	//	{
-	//	printf("Too low");
-	//	state = Falling;
-	//	}
-	//else
-	//{
-		player->state = Swinging;
+	//calculate initial positions
+	cosT = (grip->z - player->z)/grip->d;
+	grip->theta = ( ( grip->y<player->y ) ? -1 : 1) * acos( cosT );
+	sinT = sin(grip->theta);
 
-		cosT = (grip->z - player->z)/grip->d;
-		grip->theta = ( ( grip->y<player->y ) ? -1 : 1) * acos( cosT );
-		sinT = sin(grip->theta);
+	cosF = (grip->x-player->x) / sqrt( sqr(grip->x-player->x) + sqr(grip->y-player->y) );
+	grip->phi = ( ( grip->y<player->y ) ? -1 : 1) * acos( cosF );
+	sinF = sin(grip->phi);
 
-		cosF = (grip->x-player->x) / sqrt( sqr(grip->x-player->x) + sqr(grip->y-player->y) );
-		grip->phi = ( ( grip->y<player->y ) ? -1 : 1) * acos( cosF );
-		sinF = sin(grip->phi);
-
-		grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF + player->vz*cosT;
-		grip->vtheta = player->vx*cosT*cosF + player->vy*cosT*sinF - player->vz*sinT;
-		grip->vphi = - player->vx*sinF + player->vy*cosF;
+	grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF + player->vz*cosT;
+	grip->vtheta = player->vx*cosT*cosF + player->vy*cosT*sinF - player->vz*sinT;
+	grip->vphi = - player->vx*sinF + player->vy*cosF;
 
 }
 

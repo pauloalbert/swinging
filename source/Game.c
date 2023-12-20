@@ -35,5 +35,7 @@ void do_sling(Player* player, Grip* grip, Pos pos){
 	grip->y = pos.y;
 	grip->z = pos.z;
 
+
+	player->state = Swinging;
 	Transit(player, grip);
 }
