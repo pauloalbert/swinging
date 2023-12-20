@@ -62,8 +62,8 @@ void P_Graphics_setup_main()
 	BG_PALETTE[9] = RGB15(31,31,2);
 	BG_PALETTE[10] = RGB15(25,25,1);
 	//roof floor (if needed)
-	BG_PALETTE[15] = RGB15(23,23,30);
-	BG_PALETTE[31] = RGB15(15,11,15);
+	BG_PALETTE[0xef] = RGB15(23,23,30);
+	BG_PALETTE[0xff] = RGB15(15,11,15);
 	//P_Graphics_assignBuffer(MAIN, (u16*)BG_GFX,256,192);
 	if(IS_SCREEN_FLIPPED){
 	REG_BG2PA = -256;
@@ -91,7 +91,7 @@ void P_Graphics_setup_main()
 
 	int i;
 	for(i=0;i<32*64;i++){
-		BG_MAP_RAM(1)[i] = 0 | (i>=32*32 ? BIT(12) : 0);
+		BG_MAP_RAM(1)[i] = BIT(15) | BIT(14) | BIT(13) | (i>=32*32 ? BIT(12) : 0);
 	}
 #endif
 }
