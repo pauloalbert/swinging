@@ -31,3 +31,5 @@
 #define IS_SCREEN_FLIPPED false
 /* MOVEMENT */
 
+#define RAYCAST_ERROR_DISTANCE 1000000.
+

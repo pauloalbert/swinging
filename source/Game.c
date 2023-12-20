@@ -16,6 +16,16 @@ void try_sling(touchPosition t,Camera* camera, Grip* grip){
 
 	float dist = get_grip_position(*camera,t, &pos);
 
+	//If no grip found
+	if(dist >= RAYCAST_ERROR_DISTANCE){
+		grip->ON = false;
+		return;
+	}
+
 	//TODO: call here functions that need pos and dist.
 	printf("(%.2f,%.2f,%.2f) - %.2f\n",pos.x,pos.y,pos.z, dist);
+
+
+
+
 }
