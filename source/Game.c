@@ -18,3 +18,7 @@ void try_sling(touchPosition t, Camera* camera, Grip* grip){
 
 	//TODO: call here functions that need pos and dist.
 }
+
+void GameLogic(Player* player, Camera* camera, Grip* grip){
+
+}

@@ -27,7 +27,7 @@ int main(void)
 	//camera.tilt = 0;
 	while(1) {
 		handleInput(&camera, &player, &grip);
-		gameLogic(&camera, &player, &grip);
+		GameLogic(&camera, &player, &grip);
 
 		redraw_screen();
 		swiWaitForVBlank();
