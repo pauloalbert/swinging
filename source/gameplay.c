@@ -19,7 +19,7 @@ float sinT = 0;
 float cosF = 0;
 float sinF = 0;
 
-enum STATE Transit(Player* player, Grip* grip, enum STATE state)
+void Transit(Player* player, Grip* grip)
 {
 	touchPosition touch;
 	touchRead(&touch);
@@ -70,9 +70,8 @@ enum STATE Transit(Player* player, Grip* grip, enum STATE state)
 	else
 	{
 		grip->ON = 0;
-		state = Falling;
+		player->state = Falling;
 	}
-	return state;
 }
 
 float FallBounce(Grip* grip)
@@ -80,7 +79,7 @@ float FallBounce(Grip* grip)
 	return (grip->z - sqrt(sqr(grip->d+DOffset)-sqr(grip->d*sinT)));
 }
 
-enum STATE Fall(Player* player, Grip* grip, enum STATE state)
+void Fall(Player* player, Grip* grip)
 {
 	if(player->z <= FallBounce(grip) && grip->ON)
 	{
@@ -96,7 +95,7 @@ enum STATE Fall(Player* player, Grip* grip, enum STATE state)
 			grip->phi = ( ( grip->x<player->x ) ? 1 : -1) * acos( cosF );
 			sinF = sin(grip->phi);
 
-			state = Swinging;
+			player->state = Swinging;
 	}
 	else
 	{
@@ -106,7 +105,7 @@ enum STATE Fall(Player* player, Grip* grip, enum STATE state)
 		player->y = player->y + player->vy*dt;
 		player->z = player->z + player->vz*dt;
 	}
-	return state;
+
 }
 
 void Swing(Player* player, Grip* grip)
@@ -142,35 +141,3 @@ void Swing(Player* player, Grip* grip)
 	grip->d  = grip->d + grip->vd*dt;
 	dl =  grip->d - grip->d_rest;
 }
-
-enum STATE game(Camera* camera, Player* player, Grip* grip, enum STATE state)
-{
-//---------------------------------------------------------------------------------
-
-	scanKeys();
-	u16 keyss = keysHeld();					// handle input ?
-
-	if(keyss == KEY_TOUCH)
-	{
-	state = Transition;
-
-	state = Transit(player, grip, state);
-	}
-
-
-	if(state == Falling)
-		state = Fall(player, grip, state);
-
-	if(state == Swinging)
-		Swing(player, grip);
-
-	camera->x = player->x;
-	camera->y = player->y;
-	camera->z = player->z + 256/2;
-
-	//camera->pan = camera->pan + grip->vphi*dt;
-	//camera->tilt = camera->tilt + grip->vtheta*dt;
-
-	return state;
-}
-

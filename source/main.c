@@ -28,12 +28,10 @@ int main(void)
 	P_Graphics_setup_main();
 	P_Graphics_setup_sub();
 	Audio_Init();
-  
-  enum STATE state = GameOff;
 
 	while(1) {
-		state = game(&camera, &player, &grip, state);
 		redraw_screen();
+		game_loop(&camera, &player, &grip);
 
 		//if(state != GameOff)
 		//	printf("%lf\n",player.z);
