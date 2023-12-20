@@ -5,7 +5,7 @@
 
 float g = 9.81;				// gravity acceleration
 
-float k = 1;				// spring constant
+float k = 0;				// spring constant
 float dl = 0;				// web length delta
 float UpOffset = 0;			// initial Offset when changing web (bounce up)
 float DOffset = 0;			// initial Offset when Fallinging on web (bounce down)
@@ -37,31 +37,35 @@ enum STATE Transit(Player* player, Grip* grip, enum STATE state)
 	grip->z = pos.z;
 
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
+	printf("%f\n",grip->d);
 
-	if(grip->d<MAXWEB)
+	if(grip->x || grip->y || grip->z)
 	{
 		grip->ON = 1;
 		grip->d_rest = grip->d - UpOffset;
 		dl = grip->d - grip->d_rest;
 
-		if(grip->z<player->z)
-			state = Falling;
-		else
-		{
+		//if(grip->z<player->z)
+		//	{
+		//	printf("Too low");
+		//	state = Falling;
+		//	}
+		//else
+		//{
 			state = Swinging;
 
 			cosT = (grip->z - player->z)/grip->d;
-			grip->theta = acos( cosT );
+			grip->theta = ( ( grip->y<player->y ) ? -1 : 1) * acos( cosT );
 			sinT = sin(grip->theta);
 
 			cosF = (grip->x-player->x) / sqrt( sqr(grip->x-player->x) + sqr(grip->y-player->y) );
-			grip->phi = acos( cosF );
+			grip->phi = ( ( grip->y<player->y ) ? -1 : 1) * acos( cosF );
 			sinF = sin(grip->phi);
 
 			grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF + player->vz*cosT;
 			grip->vtheta = player->vx*cosT*cosF + player->vy*cosT*sinF - player->vz*sinT;
 			grip->vphi = - player->vx*sinF + player->vy*cosF;
-		}
+		//}
 	}
 	else
 	{
@@ -85,18 +89,18 @@ enum STATE Fall(Player* player, Grip* grip, enum STATE state)
 			dl = grip->d - grip->d_rest;
 
 			cosT = (grip->z - player->z)/grip->d;
-			grip->theta = acos( cosT );
+			grip->theta = ( ( grip->y<player->y ) ? 1 : -1) * acos( cosT );
 			sinT = sin(grip->theta);
 
-			cosF = ( (grip->y<player->y) ? -1 : 1) * (grip->x-player->x) / sqrt(sqr(grip->x-player->x) + sqr(grip->y-player->y) );
-			grip->phi = acos( cosF );
+			cosF = (grip->x-player->x) / sqrt(sqr(grip->x-player->x) + sqr(grip->y-player->y) );
+			grip->phi = ( ( grip->x<player->x ) ? 1 : -1) * acos( cosF );
 			sinF = sin(grip->phi);
 
 			state = Swinging;
 	}
 	else
 	{
-		player->vz = player->vz - g*dt;
+		//player->vz = player->vz - g*dt;
 
 		player->x = player->x + player->vx*dt;
 		player->y = player->y + player->vy*dt;
@@ -119,9 +123,9 @@ void Swing(Player* player, Grip* grip)
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
 
-	player->x = clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
-	player->y = clamp_float(-grip->d*sinT*sinF + grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS);
-	player->z = clamp_float(-grip->d*cosT + grip->z, MINZMAP, MAXZMAP);
+	player->x = -grip->d*sinT*cosF + grip->x; //clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
+	player->y = -grip->d*sinT*sinF + grip->y; //clamp_float(-grip->d*sinT*sinF + grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS);
+	player->z = -grip->d*cosT + grip->z; //clamp_float(-grip->d*cosT + grip->z, MINZMAP, MAXZMAP);
 
 	//DrawLine(MAIN, 128/2, 191/2, (grip->z-player->z), sqrt(sqr(player->x-grip->x)+sqr(player->y-grip->y))*cosF, ARGB16(1,31,31,31));
 
@@ -162,7 +166,7 @@ enum STATE game(Camera* camera, Player* player, Grip* grip, enum STATE state)
 
 	camera->x = player->x;
 	camera->y = player->y;
-	camera->z = player->z + 50;
+	camera->z = player->z + 256/2;
 
 	//camera->pan = camera->pan + grip->vphi*dt;
 	//camera->tilt = camera->tilt + grip->vtheta*dt;

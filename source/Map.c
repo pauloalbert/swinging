@@ -68,7 +68,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 
 	Building x_wall_type = {0};
 	Building y_wall_type = {0};
-	for(i = 0; i < RAYCAST_RECURSION && (y_distance < 1000000 || x_distance < 1000000); i++){
+	for(i = 0; i < RAYCAST_RECURSION && (y_distance < 10000000 || x_distance < 1000000); i++){
 
 		//Advance the shorter ray of the two
 		if(x_distance <= y_distance){
