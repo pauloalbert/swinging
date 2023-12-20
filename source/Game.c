@@ -25,7 +25,15 @@ void try_sling(touchPosition t,Camera* camera, Grip* grip){
 	//TODO: call here functions that need pos and dist.
 	printf("(%.2f,%.2f,%.2f) - %.2f\n",pos.x,pos.y,pos.z, dist);
 
+	extern Player player;
+	do_sling(&player, &grip, pos);
+}
 
+void do_sling(Player* player, Grip* grip, Pos pos){
 
+	grip->x = pos.x;
+	grip->y = pos.y;
+	grip->z = pos.z;
 
+	Transit(player, grip);
 }

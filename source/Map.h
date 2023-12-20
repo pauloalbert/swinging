@@ -14,6 +14,14 @@
 //         south (+y)
 //player lives in 256 by 256 grid, but each block is 16*16
 
+typedef enum{
+	Paused,
+	Swinging,
+	Falling
+
+} State;
+
+
 typedef struct{
 	int x;
 	int y;
@@ -29,7 +37,13 @@ typedef struct{
 typedef struct{
 	float x;
 	float y;
+	float z;
+
+	float vx;
+	float vy;
+	float vz;
 	float angle;
+	State state;
 	//TODO: store for the player
 } Player;
 
