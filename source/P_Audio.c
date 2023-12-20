@@ -5,10 +5,8 @@ void Audio_Init()
 	//Init the sound library
 	mmInitDefaultMem((mm_addr)soundbank_bin);
 	//Load module
-	//mmLoad(ID);
+	mmLoad(MOD_BARTMAN___HEROES);
 	//Load effects
-	mmLoadEffect(SFX_LASER);
-	mmLoadEffect(SFX_SWISH);
 }
 
 void Audio_PlaySoundEX( int i , u8 volume, u8 panning)
@@ -32,8 +30,19 @@ void Audio_PlaySoundEX( int i , u8 volume, u8 panning)
 void Audio_PlayMusic()
 {
 	//Start playing music in a loop
-	//mmStart(ID,MM_PLAY_LOOP);
-	//Set module volume to 512 (range 0...1024) using the function mmSetModuleVolume(...)
-	mmSetModuleVolume(512);
-	//...
+		mmStart(MOD_BARTMAN___HEROES,MM_PLAY_LOOP);
+		//Set module volume to 512 (range 0...1024) using the function mmSetModuleVolume(...)
+		mmSetModuleVolume(1024);
+}
+
+void SlowTempo()
+{
+mmSetModuleTempo(300);
+mmSetModulePitch(300);
+}
+
+void NormalTempo()
+{
+mmSetModuleTempo(1024);
+mmSetModulePitch(1024);
 }

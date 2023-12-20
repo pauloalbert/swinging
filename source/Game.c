@@ -17,12 +17,13 @@ void slowdown_ISR(bool slow)
 	{
 		dt = dt * 3;
 		irqDisable(IRQ_TIMER0);
+		NormalTempo();
 	}
 	else
 	{
 		slow = 1;
 		dt = dt/3;
-		//slow down music
+		SlowTempo();
 	}
 }
 
