@@ -4,7 +4,7 @@
 #include <nds.h>
 #include "P_Util.h"
 #include "Constants.h"
-#include "ball.h"
+#include "swing.h"
 
 #define ROTOSCALE
 

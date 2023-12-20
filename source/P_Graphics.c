@@ -17,13 +17,13 @@ u8 A16[32] = {
 		0xff,0xff,0xff,0xff
 };
 
-u8 char_sprite[16*16] = {
+u8 char_sprite[] = {
 		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
 		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 1,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,1,0,0, 0,1,0,1, 0,0,0,0,
 
-		0,0,0,0, 0,0,1,1, 1,1,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,1,1, 1,1,0,1, 0,0,0,1,
 		0,0,0,0, 0,2,1,1, 1,1,1,0, 0,0,0,0,
 		0,0,0,0, 0,2,1,1, 1,1,1,0, 0,0,0,0,
 		0,0,0,0, 0,0,1,1, 1,1,1,0, 0,0,0,0,
@@ -146,8 +146,8 @@ void P_Graphics_setup_sprites(){
 
 	char_sprite_ptr = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
 
-	swiCopy(ballPal, SPRITE_PALETTE, ballPalLen/2);
-	swiCopy(ballTiles, char_sprite_ptr, ballTilesLen/2);
+	swiCopy(swingPal, SPRITE_PALETTE, swingPalLen/2);
+	swiCopy(swingTiles, char_sprite_ptr, swingTilesLen/2);
 }
 
 MAC_EXTERN inline int* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
