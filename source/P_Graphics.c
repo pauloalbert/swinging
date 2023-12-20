@@ -66,6 +66,25 @@ void P_Graphics_setup_main()
 	//wall 7
 	BG_PALETTE[13] = RGB15(31,0,13);
 	BG_PALETTE[14] = RGB15(25,0,7);
+
+	int c,p;
+	//set other palettes
+	for(c = 1; c <= 14; c++){
+		u16 base = BG_PALETTE[c];
+		//fxp 5
+		u8 base_red = ((base)&0b11111)<<5;
+		u8 base_green = (base&0b1111100000);
+		u8 base_blue = (base&0b111110000000000)>>5;
+
+		for(p=1;p <8; p++){
+			u8 gradient_amount = 15;
+			BG_PALETTE[c+16*(8-p)] = RGB15((p*(base_red/gradient_amount))>>5,(p*(base_green/gradient_amount))>>5,(p*(base_blue/gradient_amount))>>5);
+
+			if(c==1){
+				printf("%d ",BG_PALETTE[c+16*p]);
+			}
+		}
+	}
 	//roof floor (if needed)
 	BG_PALETTE[0xef] = RGB15(23,23,30);
 	BG_PALETTE[0xff] = RGB15(15,11,15);

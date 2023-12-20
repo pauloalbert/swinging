@@ -42,6 +42,9 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		//color from palette
 		u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
+		//adjust by distance
+		u8 distance_shift = clamp((int)(distance/64),0,8);
+		wall_color += distance_shift*16;
 		//adjust for fish-eye effect
 		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
