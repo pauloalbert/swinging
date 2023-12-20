@@ -138,33 +138,18 @@ void P_Graphics_setup_sub(){
 	}
 }
 void P_Graphics_setup_sprites(){
+	extern u16* char_sprite_ptr;
 	//assign the vram
-	VRAM_F_CR = VRAM_ENABLE | VRAM_F_MAIN_SPRITE_0x06404000;
+	VRAM_F_CR = VRAM_ENABLE | VRAM_F_MAIN_SPRITE;
 
 	oamInit(&oamMain, SpriteMapping_1D_32, false);
 
-	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_256Color);
-	dmaCopy(char_sprite, gfx, 32);
+	char_sprite_ptr = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_256Color);
 
-	oamRotateScale(&oamMain, 0, 3, 1<<8, 1<<8);
+	dmaCopy(char_sprite, char_sprite_ptr, 64);
 
-	oamSet(
-			&oamMain,
-			0,
-			50,
-			50,
-			0,
-			0,
-			SpriteSize_16x16,
-			SpriteColorFormat_256Color,
-			gfx,
-			0,
-			0,
-			false,
-			false, //hflip
-			false, //vflip
-			false
-			);
+	SPRITE_PALETTE[1] = RGB15(31,31,31);
+	SPRITE_PALETTE[2] = RGB15(0,31,31);
 }
 
 MAC_EXTERN inline int* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
