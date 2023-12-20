@@ -5,6 +5,8 @@ void redraw_screen(){
 	swap_buffers(SUB);
 	swap_buffers(MAIN);
 	//FillRectangle(SUB,0,100,0,100,1);
+
+	Render_Sprites(camera);
 	Render_3D(MAIN,camera,32);
 	Render_2D(SUB,camera,0,0,128,92);
 }

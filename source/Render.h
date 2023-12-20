@@ -22,3 +22,5 @@
 void Render_3D(enum BUFFER_TYPE bT, Camera player, int columns);
 
 void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right, int bottom);
+
+void Render_Sprites(Camera camera);
