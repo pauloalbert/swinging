@@ -106,7 +106,7 @@ void Render_Sprites(Camera camera){
 			50,
 			0,
 			0,
-			SpriteSize_16x16,
+			SpriteSize_32x32,
 			SpriteColorFormat_256Color,
 			char_sprite_ptr,
 			-1,

@@ -144,12 +144,10 @@ void P_Graphics_setup_sprites(){
 
 	oamInit(&oamMain, SpriteMapping_1D_32, false);
 
-	char_sprite_ptr = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_256Color);
+	char_sprite_ptr = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
 
-	dmaCopy(char_sprite, char_sprite_ptr, 64);
-
-	SPRITE_PALETTE[1] = RGB15(31,31,31);
-	SPRITE_PALETTE[2] = RGB15(0,31,31);
+	swiCopy(ballPal, SPRITE_PALETTE, ballPalLen/2);
+	swiCopy(ballTiles, char_sprite_ptr, ballTilesLen/2);
 }
 
 MAC_EXTERN inline int* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
