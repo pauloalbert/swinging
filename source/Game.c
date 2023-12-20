@@ -29,18 +29,40 @@ void try_sling(touchPosition t, Camera* camera, Grip* grip){
 }
 
 void GameLogic(Camera* camera,Player* player,  Grip* grip){
-	if(!grip->ON){
-		player->vx = 0;
-		player->vy = 0;
-		player->vz = 0;
+	if(!grip->ON || player->z > grip->z){
+		//player->vx = 0;
+		//player->vy = 0;
+		player->vz += -5;
 	}
 	else{
-		player->vz = 0;
+		float tension = 0.25;
+		float dx = grip->x - player->x;
+		float dy = grip->y - player->y;
+		float dz = grip->z - player->z;
+
+		float length = sqrt(sqr(dx) + sqr(dy) + sqr(dz));
+		float pull = tension*(length - 64);
+		if(pull < 0)
+			pull = 0;
+		pull = 1;
+
+		printf("%.2f %.2f %.2f \n",length, pull, dz);
+
+		player->vx += pull * dx / length;
+		player->vy += pull * dy / length;
+		player->vz += pull * dz / length;
 	}
 
+	player->vx *= 0.95;
+	player->vy *= 0.95;
+	player->vz *= 0.95;
 	player->x += player->vx;
 	player->y += player->vy;
 	player->z += player->vz;
+	if(player->z < 0){
+		player->z = 0;
+		player->vz = 0;
+	}
 
 	camera->x = player->x;
 	camera->y = player->y;
