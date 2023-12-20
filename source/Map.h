@@ -30,6 +30,10 @@ typedef struct{
 	float x;
 	float y;
 	float z;
+
+	float vx;
+	float vy;
+	float vz;
 	float angle;
 	//TODO: store for the player
 } Player;
@@ -54,10 +58,6 @@ typedef struct{
 	float x;
 	float y;
 	float z;
-
-	float vx;
-	float vy;
-	float vz;
 	bool ON;
 } Grip;
 

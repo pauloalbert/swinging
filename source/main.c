@@ -13,7 +13,7 @@
 	float fov_width;
 	float fov_height;
 Camera camera= {90,90,60,3.141592*10/180.,-3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
-Player player = {60,140,0};
+Player player = {90,90,60};
 Grip grip = {0,0,0,false};
 int main(void)
 {

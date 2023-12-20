@@ -28,6 +28,21 @@ void try_sling(touchPosition t, Camera* camera, Grip* grip){
 	//TODO: call here functions that need pos and dist.
 }
 
-void GameLogic(Player* player, Camera* camera, Grip* grip){
+void GameLogic(Camera* camera,Player* player,  Grip* grip){
+	if(!grip->ON){
+		player->vx = 0;
+		player->vy = 0;
+		player->vz = 0;
+	}
+	else{
+		player->vz = 0;
+	}
 
+	player->x += player->vx;
+	player->y += player->vy;
+	player->z += player->vz;
+
+	camera->x = player->x;
+	camera->y = player->y;
+	camera->z = player->z + 50;
 }
