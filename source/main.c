@@ -25,10 +25,7 @@ int main(void)
 	Audio_Init();
 	float t = 0;
 	//camera.tilt = 0;
-	while(1) {
-		t += 0.1;
-		camera.tilt += sin(2*t)/30.;
-		camera.pan -= (((int)(t*10))%10 - 5)/400.;
+	while(1){
 		redraw_screen();
 		handleInput(&camera, &player);
 		swiWaitForVBlank();

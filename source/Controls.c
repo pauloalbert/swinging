@@ -21,7 +21,6 @@ void initInput(){
 }
 
 void handleInput(Camera* camera, Player* player){
-	extern u16 screen_index;
 	scanKeys();
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
