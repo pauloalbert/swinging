@@ -18,5 +18,5 @@ void try_sling(touchPosition t){
 	float dist = get_grip_position(camera,t, &pos);
 
 	//TODO: call here functions that need pos and dist.
-	printf("(%.2f,%.2f,%.2f) - %.2f\n",pos.x,pos.y,pos.z, dist);
+	extern Pos grip;
 }
