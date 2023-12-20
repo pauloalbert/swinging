@@ -57,6 +57,7 @@ float FallBounce(Grip* grip)
 
 void Fall(Player* player, Grip* grip)
 {
+
 	if(player->z <= FallBounce(grip) && grip->ON)
 	{
 			grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
