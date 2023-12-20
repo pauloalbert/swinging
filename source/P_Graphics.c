@@ -57,10 +57,15 @@ void P_Graphics_setup_main()
 	//wall 4
 	BG_PALETTE[7] = RGB15(0,15,15);
 	BG_PALETTE[8] = RGB15(0,8,8);
-
-	//GOAL
+	//wall 5
 	BG_PALETTE[9] = RGB15(31,31,2);
 	BG_PALETTE[10] = RGB15(25,25,1);
+	//wall 6
+	BG_PALETTE[11] = RGB15(0,31,2);
+	BG_PALETTE[12] = RGB15(0,25,1);
+	//wall 7
+	BG_PALETTE[13] = RGB15(31,0,13);
+	BG_PALETTE[14] = RGB15(25,0,7);
 	//roof floor (if needed)
 	BG_PALETTE[0xef] = RGB15(23,23,30);
 	BG_PALETTE[0xff] = RGB15(15,11,15);
