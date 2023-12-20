@@ -16,6 +16,15 @@ void try_sling(touchPosition t, Camera* camera, Grip* grip){
 
 	float dist = get_grip_position(*camera,t, &pos);
 
+	if(dist >= 1000000){
+		grip->ON = false;
+	}
+	else{
+		grip->x = pos.x;
+		grip->y = pos.y;
+		grip->z = pos.z;
+		grip->ON = true;
+	}
 	//TODO: call here functions that need pos and dist.
 }
 

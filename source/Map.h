@@ -54,6 +54,10 @@ typedef struct{
 	float x;
 	float y;
 	float z;
+
+	float vx;
+	float vy;
+	float vz;
 	bool ON;
 } Grip;
 
