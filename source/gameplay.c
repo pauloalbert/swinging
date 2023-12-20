@@ -81,19 +81,21 @@ void Fall(Player* player, Grip* grip)
 
 void Swing(Player* player, Grip* grip)
 {
+	if(abs(sinT) > 0.01){
+		grip->vphi = grip->vphi - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
+		grip->phi = grip->phi + grip->vphi*dt;
+	}
+	else{
+		grip->vphi = 0;
+	}
 
 	printf("A~%.2f, %.2f:%.2f, %.2f\n",grip->phi, grip->theta, cosT, cosF);
-	grip->vphi = grip->vphi - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
-	grip->phi = grip->phi + grip->vphi*dt;
-
-	printf("B~%.2f, %.2f:%.2f, %.2f\n",grip->phi, grip->theta, cosT, cosF);
 	cosF = cos(grip->phi);
 	sinF = sin(grip->phi);
 
 	grip->vtheta = grip->vtheta - g*sinT*dt/grip->d + sqr(grip->vphi)*cosT*sinT*dt;
 	grip->theta = grip->theta + grip->vtheta*dt;
 
-	printf("C~%.2f, %.2f:%.2f, %.2f\n",grip->phi, grip->theta, cosT, cosF);
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
 	player->x = -grip->d*sinT*cosF + grip->x; 	//clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
