@@ -24,6 +24,7 @@ int main(void)
 	P_Graphics_setup_main();
 	P_Graphics_setup_sub();
 	Audio_Init();
+	Audio_PlayMusic();
 	//camera.tilt = 0;
 	while(1){
 		handleInput(&camera, &player, &grip);

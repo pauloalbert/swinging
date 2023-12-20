@@ -34,6 +34,17 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	if(keys_pressed & KEY_A){
 		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
 	}
+	if(keys_pressed & KEY_B){
+		bool slow = 0;
+		slowdown_ISR(slow);
+		TIMER_DATA(0) = TIMER_FREQ_1024(0.5);
+
+		TIMER0_CR = TIMER_ENABLE | TIMER_DIV_1024 | TIMER_IRQ_REQ;
+
+		irqSet(IRQ_TIMER0, &slowdown_ISR);
+		irqEnable(IRQ_TIMER0);
+		}
+
 
 	// read the touch and try slinging
 	if(keys_pressed & KEY_TOUCH){

@@ -9,6 +9,24 @@ void redraw_screen(){
 	Render_2D(SUB,camera,0,0,128,92);
 }
 
+// slows down for 2 second
+void slowdown_ISR(bool slow)
+{
+	extern float dt;
+	if(slow)
+	{
+		dt = dt * 3;
+		irqDisable(IRQ_TIMER0);
+		NormalTempo();
+	}
+	else
+	{
+		slow = 1;
+		dt = dt/3;
+		SlowTempo();
+	}
+}
+
 //try slinging with a touch position.
 //(moved to its own file so that controls doesn't have to deal with many other files)
 void try_sling(touchPosition t,Camera* camera, Grip* grip){
