@@ -20,6 +20,7 @@ typedef enum{
 	Falling
 
 } State;
+
 typedef struct{
 	int x;
 	int y;

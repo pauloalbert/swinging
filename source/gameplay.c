@@ -37,7 +37,7 @@ void Transit(Player* player, Grip* grip)
 	grip->z = pos.z;
 
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
-	printf("%f\n",grip->d);
+	printf("%f\n%f\n%f\n",grip->d,grip->x,grip->z);
 
 	if(grip->x || grip->y || grip->z)
 	{
@@ -52,7 +52,7 @@ void Transit(Player* player, Grip* grip)
 		//	}
 		//else
 		//{
-			state = Swinging;
+			player->state = Swinging;
 
 			cosT = (grip->z - player->z)/grip->d;
 			grip->theta = ( ( grip->y<player->y ) ? -1 : 1) * acos( cosT );
@@ -122,9 +122,9 @@ void Swing(Player* player, Grip* grip)
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
 
-	player->x = -grip->d*sinT*cosF + grip->x; //clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
-	player->y = -grip->d*sinT*sinF + grip->y; //clamp_float(-grip->d*sinT*sinF + grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS);
-	player->z = -grip->d*cosT + grip->z; //clamp_float(-grip->d*cosT + grip->z, MINZMAP, MAXZMAP);
+	player->x = -grip->d*sinT*cosF + grip->x; 	//clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
+	player->y = -grip->d*sinT*sinF + grip->y; 	//clamp_float(-grip->d*sinT*sinF + grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS);
+	player->z = -grip->d*cosT + grip->z; 		//clamp_float(-grip->d*cosT + grip->z, MINZMAP, MAXZMAP);
 
 	//DrawLine(MAIN, 128/2, 191/2, (grip->z-player->z), sqrt(sqr(player->x-grip->x)+sqr(player->y-grip->y))*cosF, ARGB16(1,31,31,31));
 
