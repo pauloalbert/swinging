@@ -15,6 +15,7 @@
 Camera camera= {60,140,50,3.141592*10/180.,-3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
 Player player = {60,140,0, 0,0,0,Paused};
 Grip grip = {false,0,0,0,0,0,0,0,0,0,0};
+
 int main(void)
 {
 	consoleDemoInit();

@@ -1,5 +1,8 @@
 #include "Game.h"
 
+int count;
+extern bool power;
+
 void redraw_screen(){
 	extern Camera camera;
 	swap_buffers(SUB);
@@ -10,21 +13,45 @@ void redraw_screen(){
 }
 
 // slows down for 2 second
-void slowdown_ISR(bool slow)
+void slowdown_ISR()
 {
+	count = count + 1;
 	extern float dt;
-	if(slow)
+
+	if(count<=1)
 	{
-		dt = dt * 3;
-		irqDisable(IRQ_TIMER0);
-		NormalTempo();
+		dt = DEFAULT_DT/3;					// slow down motion
+		SlowTempo();				// slow down music
 	}
 	else
 	{
-		slow = 1;
-		dt = dt/3;
-		SlowTempo();
+		if(count==TIME_POWER*2)
+		{
+			dt = DEFAULT_DT;
+			NormalTempo();
+		}
+		else
+		{
+			if(count>=(TIME_POWER+TIME_POWER_BACK)*2)
+			{
+				irqDisable(IRQ_TIMER0);
+				power = 1;
+				Audio_PlaySoundEX(SFX_BOOP, 255, 127);
+			}
+		}
 	}
+}
+
+void slowdown()
+{
+	power = 0;
+	TIMER_DATA(0) = TIMER_FREQ_256(2);
+	TIMER0_CR = TIMER_ENABLE | TIMER_DIV_256 | TIMER_IRQ_REQ;
+
+	irqSet(IRQ_TIMER0, &slowdown_ISR);
+
+	count = 0;
+	irqEnable(IRQ_TIMER0);
 }
 
 //try slinging with a touch position.
@@ -57,6 +84,7 @@ void do_sling(Player* player, Grip* grip, Pos pos){
 	grip->z = pos.z;
 
 	player->state = Falling;
+	Audio_PlaySoundEX(SFX_WEBSHOOT, 255, 127);
 	Transit(player, grip);
 }
 
