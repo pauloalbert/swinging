@@ -9,3 +9,5 @@
 void Audio_Init();
 void Audio_PlaySoundEX( int i , u8 volume, u8 panning);
 void Audio_PlayMusic();
+void SlowTempo();
+void NormalTempo();

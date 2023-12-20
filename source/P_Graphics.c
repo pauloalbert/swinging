@@ -16,6 +16,28 @@ u8 A16[32] = {
 		0xff,0xff,0xff,0xff,
 		0xff,0xff,0xff,0xff
 };
+
+u8 char_sprite[] = {
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 1,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,1,0,0, 0,1,0,1, 0,0,0,0,
+
+		0,0,0,0, 0,0,1,1, 1,1,0,1, 0,0,0,1,
+		0,0,0,0, 0,2,1,1, 1,1,1,0, 0,0,0,0,
+		0,0,0,0, 0,2,1,1, 1,1,1,0, 0,0,0,0,
+		0,0,0,0, 0,0,1,1, 1,1,1,0, 0,0,0,0,
+
+		0,0,0,0, 0,0,0,1, 1,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,1, 1,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
+};
 bool main_graphics_frame = true;
 bool sub_graphics_frame = true;
 void P_Graphics_setup_main()
@@ -65,21 +87,33 @@ void P_Graphics_setup_main()
 	BG_PALETTE[15] = RGB15(23,23,30);
 	BG_PALETTE[31] = RGB15(15,11,15);
 	//P_Graphics_assignBuffer(MAIN, (u16*)BG_GFX,256,192);
-	REG_BG2PA = 256;
-	REG_BG2PC = 0;
+	if(IS_SCREEN_FLIPPED){
+	REG_BG2PA = -256;
 	REG_BG2PB = 0;
-	REG_BG2PD = 256;
+	REG_BG2PC = 0;
+	REG_BG2PD = -256;
+	REG_BG2X = 256*256;
+	REG_BG2Y = 256*192;
+	}
+	else{
+		REG_BG2PA = 256;
+		REG_BG2PB = 0;
+		REG_BG2PC = 0;
+		REG_BG2PD = 256;
+		REG_BG2X = 0;
+		REG_BG2Y = 0;
+	}
 
 	/*Tilemap*/
-	BGCTRL[0] = BG_MAP_BASE(1) | BG_32x32 | BG_COLOR_16 | BG_TILE_BASE(0) | BG_PRIORITY_1;
+	BGCTRL[0] = BG_MAP_BASE(1) | BG_32x64 | BG_COLOR_16 | BG_TILE_BASE(0) | BG_PRIORITY_1;
 	P_Graphics_assignBuffer(MAIN,BG_GFX+0x2000,256,192);
 
 
 	dmaCopy(A16, &BG_TILE_RAM(0)[0], 32);
 
 	int i;
-	for(i=0;i<32*32;i++){
-		BG_MAP_RAM(1)[i] = 0 | (i>=32*12 ? BIT(12) : 0);
+	for(i=0;i<32*64;i++){
+		BG_MAP_RAM(1)[i] = 0 | (i>=32*32 ? BIT(12) : 0);
 	}
 #endif
 }
@@ -88,21 +122,34 @@ void P_Graphics_setup_sub(){
 	// Sub screen
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
 	//
-	REG_DISPCNT_SUB = MODE_5_2D | DISPLAY_BG2_ACTIVE;
+	REG_DISPCNT_SUB = MODE_5_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG0_ACTIVE;
 	//
 	BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
 
-	REG_BG2PA_SUB = 256;
+	REG_BG2PA_SUB = 128;
 	REG_BG2PC_SUB = 0;
 	REG_BG2PB_SUB = 0;
-	REG_BG2PD_SUB = 256;
+	REG_BG2PD_SUB = 120;
 
-	P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
+	P_Graphics_assignBuffer(SUB,BG_GFX_SUB+0x0000,256,192);
 	int i;
 	for(i = 0; i < 15; i++){
 		BG_PALETTE_SUB[i] = BG_PALETTE[i];
 	}
 }
+void P_Graphics_setup_sprites(){
+	extern u16* char_sprite_ptr;
+	//assign the vram
+	VRAM_F_CR = VRAM_ENABLE | VRAM_F_MAIN_SPRITE;
+
+	oamInit(&oamMain, SpriteMapping_1D_32, false);
+
+	char_sprite_ptr = oamAllocateGfx(&oamMain, SpriteSize_64x64, SpriteColorFormat_256Color);
+
+	swiCopy(swingPal, SPRITE_PALETTE, swingPalLen/2);
+	swiCopy(swingTiles, char_sprite_ptr, swingTilesLen/2);
+}
+
 MAC_EXTERN inline int* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
 MAC_EXTERN inline int get_buffer_width(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainW : P_Graphics_subW;}
 MAC_EXTERN inline int get_buffer_height(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainH : P_Graphics_subH;}
@@ -203,6 +250,7 @@ void DrawRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right
 
 }
 
+#define OFFSET_POINTER(pointer,offset) ((u16*)((u32)(pointer) + (u32)(offset)))
 void swap_buffers(enum BUFFER_TYPE bT){
 
 #ifdef FB0
@@ -224,27 +272,32 @@ void swap_buffers(enum BUFFER_TYPE bT){
 
 
 #ifdef ROTOSCALE
+	//The sub engine uses two
+#define SUB_SECOND_FRAME 5
 	switch(bT){
 	case MAIN:
-		if(main_graphics_frame) P_Graphics_assignBuffer(MAIN,BG_GFX+0x8000,256,192);
-		else P_Graphics_assignBuffer(MAIN,BG_GFX+0x2000,256,192);
+		//set the new buffer to be OFFSET 4 or OFFSET 1
+		if(main_graphics_frame) P_Graphics_assignBuffer(MAIN,OFFSET_POINTER(BG_GFX, 4 *0x4000),256,192);
+		else P_Graphics_assignBuffer(MAIN,OFFSET_POINTER(BG_GFX, 1 *0x4000),256,192);
 
-		if(main_graphics_frame) memset(BG_GFX + 0x8000,0,256*192);
-		else memset(BG_GFX+0x2000,0,256*192);
+		//clear the newly set buffer (OFFSET 4 or OFFSET 1)
+		if(main_graphics_frame) memset(OFFSET_POINTER(BG_GFX, 4 *0x4000),0,256*192);
+		else memset(OFFSET_POINTER(BG_GFX, 1 *0x4000),0,256*192);
 
+		//display the old buffer (OFFSET 1 or OFFSET 4)
 		if(main_graphics_frame) BGCTRL[2] = BG_BMP_BASE(1) | BG_BMP8_256x256;
 		else BGCTRL[2] = BG_BMP_BASE(4) | BG_BMP8_256x256;
 		main_graphics_frame = !main_graphics_frame;
 		break;
 	case SUB:
-		if(sub_graphics_frame) P_Graphics_assignBuffer(SUB,BG_GFX_SUB + 0x6000,256,192);
+		if(sub_graphics_frame) P_Graphics_assignBuffer(SUB,OFFSET_POINTER(BG_GFX_SUB,SUB_SECOND_FRAME*0x4000),256,192);
 		else P_Graphics_assignBuffer(SUB,BG_GFX_SUB,256,192);
 
-		if(sub_graphics_frame) memset(BG_GFX_SUB + 0x6000,0,256*192);
-		else memset(BG_GFX_SUB,0,256*192);
+		if(sub_graphics_frame) memset(OFFSET_POINTER(BG_GFX_SUB,SUB_SECOND_FRAME*0x4000),0,256*100);
+		else memset(BG_GFX_SUB,0,256*100);
 
 		if(sub_graphics_frame) BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
-		else BGCTRL_SUB[2] = BG_BMP_BASE(3) | BG_BMP8_256x256;
+		else BGCTRL_SUB[2] = BG_BMP_BASE(SUB_SECOND_FRAME) | BG_BMP8_256x256;
 		sub_graphics_frame = !sub_graphics_frame;
 	}
 #endif

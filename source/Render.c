@@ -24,59 +24,98 @@ u16 color_from_wall(int wall_type, bool is_x_wall){
 #endif
 }
 
+
+
 void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 0,85,0,255, RGB15(20,25,31));
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
 	int i = 0;
 	for(i = 0; i < columns; i++){
-		float angle = camera.tilt + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
+		//calculate the pan angle of the current beam
+		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		int x_wall_type = 0;
-		int y_wall_type = 0;
-		float x_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, true, &x_wall_type);
-		float y_wall_distance = Map_get_raycast_distance(camera.x, camera.y, angle, false, &y_wall_type);
+		//get the building, distance, and face of the ray
+		Building building = {0};
+		bool is_x_wall = false;
+		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0, NULL);
 
-		float distance = x_wall_distance < y_wall_distance ? x_wall_distance : y_wall_distance;
+		//color from palette
+		u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
-		//int color_falloff = ((int)distance / 30) & 0x1f;
-		u16 wall_color = color_from_wall(x_wall_distance < y_wall_distance ? x_wall_type : y_wall_type, x_wall_distance > y_wall_distance);
+		//adjust for fish-eye effect
+		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
-		float adjusted_distance = (distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
+		//Stats for the render
+		float wall_height = building.height;
+		float camera_height = camera.z;
+		float vert_fov = camera.fov_height;
 
-		//should be sourced elsewhere
-		float camera_tilt = 30/360;
-		float wall_height = 128;
-		float camera_height = 60;
+		//The top bottom real world distance of the screen, when at the distance of the wall
+		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
 
-		float vert_fov = 3*camera.fov_width/4;
-		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera_tilt);
-
-		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera_tilt)) - camera_height;
-		int top = 192 * (wall_height + bottom_wall) / screen_height_at_wall;
-		int bottom = 192 * bottom_wall / screen_height_at_wall;
-		FillRectangle(bT, clamp(bottom,0,191), clamp(top,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+		//real world height of the bottom of the rendered building, relatively to the camera (+angle)
+		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera.tilt)) + camera_height;
+		//calculate the length of the building in pixels on screen.
+		int bottom = 192 * (bottom_wall) / screen_height_at_wall;
+		int top = 192 * (bottom_wall - wall_height) / screen_height_at_wall;
+		FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 	}
+
+	//Move the horizon (bring it to me)
+	float horizon_height = (HORIZON_DISTANCE * tan(camera.fov_height/2 - camera.tilt)) + camera.z;
+	int pixel_height = (91 - (192 * (horizon_height) / (HORIZON_DISTANCE * 2*tan(camera.fov_height/2))));
+
+	if(IS_SCREEN_FLIPPED)
+		REG_BG0VOFS = -92 - pixel_height;
+	else
+		REG_BG0VOFS = 150 + pixel_height;
 }
 
 void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right, int bottom){
 
-	int map_border = 0;
 	int i = 0;
 	for(i = 0; i < MAP_WIDTH; i++){
 		int j;
 		for(j=0; j < MAP_HEIGHT; j++){
-			int color = color_from_wall(getBuilding(i,j), false);
+			int color = color_from_wall(getBuilding(i,j).color, false);
 			int x = convert_ranges(i,0,MAP_WIDTH,left,right);
 			int y = convert_ranges(j,0,MAP_HEIGHT,top,bottom);
 			int x1 = convert_ranges(i+1,0,MAP_WIDTH,left,right) - 1;
 			int y1 = convert_ranges(j+1,0,MAP_HEIGHT,top,bottom) - 1;
 			if(color < 300) FillRectangle(bT,y,y1,x,x1,color);
+			else DrawRectangle(bT,y,y1,x,x1,4);
 		}
 	}
-	int x = convert_ranges(camera.x, 0, MAP_WIDTH << FXP_DECIMAL_BITS, left, right);
-	int y = convert_ranges(camera.y, 0, MAP_HEIGHT << FXP_DECIMAL_BITS, top, bottom);
-	DrawCircle(bT,x,y,4,3);
-	DrawCircle(bT,x,y,3.5,3);
-	DrawAngledLine(bT,x,y,camera.tilt,10,5);
+	int x = convert_ranges(camera.x, 0, MAP_WIDTH << WORLD_BLOCK_BITS, left, right);
+	int y = convert_ranges(camera.y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS, top, bottom);
+	FillCircle(bT,x,y,4,3);
+	float angle = (camera.pan);
+	DrawAngledLine(bT,x,y,angle,50,5);
+	//FillCircle(bT,x+10*cos(6.28+angle),y+10*sin(6.28+angle),3,5);
 }
 
+int t = 0;
+
+void Render_Sprites(Camera camera){
+	extern u16* char_sprite_ptr;
+
+	oamRotateScale(&oamMain, 0, t*64, 1<<8, 1<<8);
+	t = t- 3;
+	oamSet(
+			&oamMain,
+			0,
+			140,
+			140,
+			0,
+			0,
+			SpriteSize_64x64,
+			SpriteColorFormat_256Color,
+			char_sprite_ptr,
+			0,
+			0,
+			false,
+			false, //hflip
+			false, //vflip
+			false
+			);
+}
