@@ -17,11 +17,12 @@ Pos try_sling(touchPosition t){
 
 	float dist = get_grip_position(camera,t, &pos);
 	if(dist>=100000000)
-	{
-		pos.x = 0;
-		pos.y = 0;
-		pos.z = 0;
-	}
+		printf("%f\n", dist);
+	//{
+	//	pos.x = 0;
+	//	pos.y = 0;
+	//	pos.z = 0;
+	//}
 
 	//TODO: call here functions that need pos and dist.
 	return pos;
