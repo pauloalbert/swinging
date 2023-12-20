@@ -55,7 +55,7 @@ void Fall(Player* player, Grip* grip)
 {
 
 	printf("%.2f %.2f %.2f %d\n",player->z, grip->z, FallBounce(grip), grip->ON);
-	if(player->z <= FallBounce(grip) && grip->ON)
+	if(player->z <= grip->z && grip->ON)
 	{
 			grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 			grip->d_rest = grip->d+DOffset;
