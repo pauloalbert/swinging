@@ -13,8 +13,8 @@
 /* MAZE */
 #define WORLD_BLOCK_BITS 5
 #define WORLD_BLOCK_SIZE 32//(2<<MAZE_BLOCK_BITS);
-#define MAP_HEIGHT 10
-#define MAP_WIDTH 10
+#define MAP_HEIGHT 25
+#define MAP_WIDTH 25
 
 //#define MAP_LOOPS
 

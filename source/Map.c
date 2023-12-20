@@ -14,19 +14,34 @@
 #define B5 {BUILDING(5,128)}
 #define B4 {BUILDING(1,64)}
 
-Building map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
-		B1,0,0,0,0, 0,0,0,0,B1,
-		B1,0,0,0,0, 0,0,0,0,0,
-		B1,0,0,0,B1, 0,0,0,0,0,
-		B1,0,0,0,0, 0,B1,0,0,B5,
-		B1,0,0,0,0, 0,0,0,0,B4,
-		B1,0,B1,0,0, 0,0,0,0,B5,
-		B1,0,0,0,0, 0,0,0,0,0,
-		B1,0,0,0,0, 0,0,0,0,B3,
-		B1,B1,B1,B1,B1, B1,B1,B1,B1,B1
-};
+Building map[MAP_HEIGHT*MAP_WIDTH];
 
 void Map_Init(){
+	int i,j;
+	for(i = 0; i < MAP_HEIGHT; i++){
+		for(j = 0; j < MAP_WIDTH; j++){
+			Building b;
+			b.u16 = 0;
+			//Make the edges all buildings of the same height
+			if(i == 0 || j == 0 || i == MAP_HEIGHT-1 || j == MAP_WIDTH - 1){
+				b.u16 = BUILDING(1,128+(rng()%64)-20);
+			}
+			else {
+
+				//vaccum, set to building on random chance
+				if(rng() % 10 < 2){
+					b.u16 = BUILDING(2,64);
+				}
+
+				//clear the starting area
+				if(i < 6 && j < 6)
+					b.u16 = 0;
+			}
+
+
+			map[coords(i,j,MAP_WIDTH)] = b;
+		}
+	}
 
 }
 MAC_EXTERN inline Building getBuilding(int x, int y){
