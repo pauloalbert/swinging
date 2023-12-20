@@ -144,7 +144,7 @@ void P_Graphics_setup_sprites(){
 
 	oamInit(&oamMain, SpriteMapping_1D_32, false);
 
-	char_sprite_ptr = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
+	char_sprite_ptr = oamAllocateGfx(&oamMain, SpriteSize_64x64, SpriteColorFormat_256Color);
 
 	swiCopy(swingPal, SPRITE_PALETTE, swingPalLen/2);
 	swiCopy(swingTiles, char_sprite_ptr, swingTilesLen/2);

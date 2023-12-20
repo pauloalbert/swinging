@@ -3,13 +3,13 @@
 
 //======================================================================
 //
-//	swing, 32x32@8, 
+//	swing, 64x64@8, 
 //	Transparent color : 00,FF,00
-//	+ palette 16 entries, not compressed
-//	+ 16 tiles not compressed
-//	Total size: 32 + 1024 = 1056
+//	+ palette 256 entries, not compressed
+//	+ 64 tiles not compressed
+//	Total size: 512 + 4096 = 4608
 //
-//	Time-stamp: 2023-12-20, 16:50:31
+//	Time-stamp: 2023-12-20, 17:05:41
 //	Exported by Cearn's GBA Image Transmogrifier, v0.8.3
 //	( http://www.coranac.com/projects/#grit )
 //
@@ -18,11 +18,11 @@
 #ifndef GRIT_SWING_H
 #define GRIT_SWING_H
 
-#define swingTilesLen 1024
-extern const unsigned int swingTiles[256];
+#define swingTilesLen 4096
+extern const unsigned int swingTiles[1024];
 
-#define swingPalLen 32
-extern const unsigned short swingPal[16];
+#define swingPalLen 512
+extern const unsigned short swingPal[256];
 
 #endif // GRIT_SWING_H
 
