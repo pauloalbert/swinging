@@ -28,8 +28,15 @@
 
 /* GRAPHICS */
 #define HORIZON_DISTANCE WORLD_BLOCK_SIZE*30
+
 #define IS_SCREEN_FLIPPED true
 /* MOVEMENT */
 
 #define RAYCAST_ERROR_DISTANCE 1000000.
+#define DEFAULT_DT 0.3
+
+/* GAME */
+
+#define TIME_POWER 3			//counted in 500ms
+#define TIME_POWER_BACK 5
 
