@@ -39,3 +39,17 @@ void do_sling(Player* player, Grip* grip, Pos pos){
 	player->state = Swinging;
 	Transit(player, grip);
 }
+
+void gameLogic(Camera* camera, Player* player, Grip* grip){
+	if(player->state == Falling){
+		Fall(player, grip);
+	}
+
+	else if(player->state == Swinging){
+		Swing(player, grip);
+	}
+
+	camera->x = player->x;
+	camera->y = player->y;
+	camera->z = player->z + 50;
+}

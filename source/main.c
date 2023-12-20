@@ -13,7 +13,7 @@
 	float fov_width;
 	float fov_height;
 Camera camera= {90,90,60,3.141592*10/180.,-3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
-Player player = {60,140,0};
+Player player = {60,140,0, 0,0,0,Paused};
 Grip grip = {false,1,1,1,0,0,0,0,0,0,0};
 int main(void)
 {
@@ -27,8 +27,9 @@ int main(void)
 	float t = 0;
 	//camera.tilt = 0;
 	while(1){
-		redraw_screen();
 		handleInput(&camera, &player, &grip);
+		gameLogic(&camera, &player, &grip);
+		redraw_screen();
 		swiWaitForVBlank();
 	}
 }

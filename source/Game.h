@@ -13,3 +13,8 @@ void redraw_screen();
 
 //called by Controls, does game logic when attempting to sling
 void try_sling(touchPosition t,Camera* camera, Grip* grip);
+
+void do_sling(Player* player, Grip* grip, Pos pos);
+
+
+void gameLogic(Camera* camera, Player* player, Grip* grip);
