@@ -16,6 +16,28 @@ u8 A16[32] = {
 		0xff,0xff,0xff,0xff,
 		0xff,0xff,0xff,0xff
 };
+
+u8 char_sprite[16*16] = {
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
+		0,0,0,0, 0,0,1,1, 1,1,0,0, 0,0,0,0,
+		0,0,0,0, 0,2,1,1, 1,1,1,0, 0,0,0,0,
+		0,0,0,0, 0,2,1,1, 1,1,1,0, 0,0,0,0,
+		0,0,0,0, 0,0,1,1, 1,1,1,0, 0,0,0,0,
+
+		0,0,0,0, 0,0,0,1, 1,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,1, 1,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
+};
 bool main_graphics_frame = true;
 bool sub_graphics_frame = true;
 void P_Graphics_setup_main()
@@ -115,6 +137,36 @@ void P_Graphics_setup_sub(){
 		BG_PALETTE_SUB[i] = BG_PALETTE[i];
 	}
 }
+void P_Graphics_setup_sprites(){
+	//assign the vram
+	VRAM_F_CR = VRAM_ENABLE | VRAM_F_MAIN_SPRITE_0x06404000;
+
+	oamInit(&oamMain, SpriteMapping_1D_32, false);
+
+	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_256Color);
+	dmaCopy(char_sprite, gfx, 32);
+
+	oamRotateScale(&oamMain, 0, 3, 1<<8, 1<<8);
+
+	oamSet(
+			&oamMain,
+			0,
+			50,
+			50,
+			0,
+			0,
+			SpriteSize_16x16,
+			SpriteColorFormat_256Color,
+			gfx,
+			0,
+			0,
+			false,
+			false, //hflip
+			false, //vflip
+			false
+			);
+}
+
 MAC_EXTERN inline int* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
 MAC_EXTERN inline int get_buffer_width(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainW : P_Graphics_subW;}
 MAC_EXTERN inline int get_buffer_height(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainH : P_Graphics_subH;}
