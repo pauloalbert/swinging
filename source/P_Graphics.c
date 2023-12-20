@@ -88,6 +88,8 @@ void P_Graphics_setup_main()
 	//roof floor (if needed)
 	BG_PALETTE[0xef] = RGB15(23,23,30);
 	BG_PALETTE[0xff] = RGB15(15,11,15);
+
+
 	//P_Graphics_assignBuffer(MAIN, (u16*)BG_GFX,256,192);
 	if(IS_SCREEN_FLIPPED){
 	REG_BG2PA = -256;
@@ -180,6 +182,14 @@ void FillScreen(enum BUFFER_TYPE t, u16 color)
 
 }
 
+void FillColors(enum BUFFER_TYPE t){
+	int p,o;
+	for(p = 0; p < 16 ; p++){
+		for(o=0; o < 16; o++){
+			FillRectangle(t,12*o,12*o+12,16*p,16*p+16,p+16*o);
+		}
+	}
+}
 void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right, u16 color)
 {
 #ifdef FB0
@@ -206,13 +216,16 @@ void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right
 		i = left;
 		//if i'm on an odd pixel, draw only the second one of the pair.
 		if(i%2 == 1)
+			P_Buffer[coords(i++,j,P_BufferW)/2] &= 0xff;
 			P_Buffer[coords(i++,j,P_BufferW)/2] |= (color<<8);
 
 		for(; i < right; i+=2){
-			P_Buffer[coords(i,j,P_BufferW)/2] |= color+(color<<8);
+			P_Buffer[coords(i,j,P_BufferW)/2] = color+(color<<8);
 		}
 		if(i == right)
-			P_Buffer[coords(i,j,P_BufferW)/2] = color;
+
+			P_Buffer[coords(i++,j,P_BufferW)/2] &= 0xff00;
+			P_Buffer[coords(i,j,P_BufferW)/2] |= color;
 	}
 }
 

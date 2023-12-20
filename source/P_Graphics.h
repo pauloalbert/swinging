@@ -47,6 +47,7 @@ void P_Graphics_assignBuffer(enum BUFFER_TYPE bT, u16* buffer, int w, int h);
  */
 void FillScreen(enum BUFFER_TYPE t, u16 color);
 
+void FillColors(enum BUFFER_TYPE t);
 
 /*
 	This function fills a rectangle specified by the coordinates (top,left)
