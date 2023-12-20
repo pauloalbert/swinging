@@ -11,4 +11,4 @@
 #include "P_Util.h"
 #include "Game.h"
 void initInput();
-void handleInput(Camera* camera, Player* player);
+void handleInput(Camera* camera, Player* player, Grip* grip);

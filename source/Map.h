@@ -29,6 +29,7 @@ typedef struct{
 typedef struct{
 	float x;
 	float y;
+	float z;
 	float angle;
 	//TODO: store for the player
 } Player;
@@ -48,6 +49,14 @@ typedef union{
 		u16 color : 4;
 	};
 } Building;
+
+typedef struct{
+	float x;
+	float y;
+	float z;
+	bool ON;
+} Grip;
+
 void Map_Init();
 
 float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, Building* wall_type, int pz, float tilt, Pos* pos);

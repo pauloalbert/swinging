@@ -11,12 +11,10 @@ void redraw_screen(){
 
 //try slinging with a touch position.
 //(moved to its own file so that controls doesn't have to deal with many other files)
-void try_sling(touchPosition t){
-	extern Camera camera;
+void try_sling(touchPosition t, Camera* camera, Grip* grip){
 	Pos pos = {0,0,0};
 
-	float dist = get_grip_position(camera,t, &pos);
+	float dist = get_grip_position(*camera,t, &pos);
 
 	//TODO: call here functions that need pos and dist.
-	extern Pos grip;
 }

@@ -20,7 +20,7 @@ void initInput(){
 	irqEnable(IRQ_KEYS);*/
 }
 
-void handleInput(Camera* camera, Player* player){
+void handleInput(Camera* camera, Player* player, Grip* grip){
 	extern u16 screen_index;
 	scanKeys();
 	u16 keys = keysHeld();
@@ -46,7 +46,7 @@ void handleInput(Camera* camera, Player* player){
 			touch.px = 255 - touch.px;
 			touch.py = 191 - touch.py;
 		}
-		try_sling(touch);
+		try_sling(touch, camera, grip);
 	}
 
 }
