@@ -24,7 +24,7 @@ void Map_Init(){
 			b.u16 = 0;
 			//Make the edges all buildings of the same height
 			if(i == 0 || j == 0 || i == MAP_HEIGHT-1 || j == MAP_WIDTH - 1){
-				b.u16 = BUILDING(1,128+(rng()%64)-20);
+				b.u16 = BUILDING(1,128);//+(rng()%64)-20);
 			}
 			else {
 
