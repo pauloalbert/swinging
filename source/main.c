@@ -6,13 +6,10 @@
 #include "Controls.h"
 #include "P_Audio.h"
 #include "Render.h"
-<<<<<<< HEAD
+#include "Game.h"
 
 #define	RED ARGB16(1,31,0,0)
 
-=======
-#include "Game.h"
->>>>>>> d6adb1fd084a7eba92b774f0713af84c02a7949f
 	float pan;
 	float tilt;
 

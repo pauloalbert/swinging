@@ -18,7 +18,6 @@ typedef enum{
 	Paused,
 	Swinging,
 	Falling
-
 } State;
 
 

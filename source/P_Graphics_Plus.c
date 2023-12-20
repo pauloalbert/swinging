@@ -109,7 +109,6 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
 			y2 = x;
 			}
 
-<<<<<<< HEAD
 			A = 2*abs(x1-x2);
 			B = A - 2*abs(y1-y2);
 			P = A - abs(y1-y2);
@@ -131,12 +130,6 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
 					}
 					P_Buffer[coords(level,j,P_BufferW)] = color;
 				}
-=======
-		int draw_x;
-		for(draw_x = x; draw_x*sign(dx) <= x2 * sign(dx) && sign(dx); draw_x += sign(dx)){
-			DrawPixel(P_Buffer,coords(draw_x,draw_y,P_BufferW),color);
-			draw_y += slope*sign(dx);
->>>>>>> d6adb1fd084a7eba92b774f0713af84c02a7949f
 		}
 		else
 		{
@@ -156,7 +149,6 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
 			y1 = x;
 			}
 
-<<<<<<< HEAD
 			if(x2<0 || x2>P_BufferW)
 			{
 			int x = clamp(x2, 0, P_BufferW);
@@ -190,12 +182,6 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
 							}
 							P_Buffer[coords(j,level,P_BufferW)] = color;
 						}
-=======
-		int draw_y;
-		for(draw_y = y; draw_y*sign(dy) <= y2*sign(dy) && sign(dy); draw_y += sign(dy)){
-			DrawPixel(P_Buffer,coords(draw_x,draw_y,P_BufferW),color);
-			draw_x += slope*sign(dy);
->>>>>>> d6adb1fd084a7eba92b774f0713af84c02a7949f
 		}
 }
 
