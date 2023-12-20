@@ -14,6 +14,14 @@
 //         south (+y)
 //player lives in 256 by 256 grid, but each block is 16*16
 
+typedef enum{
+	Paused,
+	Swinging,
+	Falling
+
+} State;
+
+
 typedef struct{
 	int x;
 	int y;
@@ -29,7 +37,13 @@ typedef struct{
 typedef struct{
 	float x;
 	float y;
+	float z;
+
+	float vx;
+	float vy;
+	float vz;
 	float angle;
+	State state;
 	//TODO: store for the player
 } Player;
 
@@ -48,6 +62,22 @@ typedef union{
 		u16 color : 4;
 	};
 } Building;
+
+typedef struct{
+	bool ON;
+	float x;
+	float y;
+	float z;
+	float d_rest;
+	float d;
+	float vd;
+	float theta;
+	float vtheta;
+	float phi;
+	float vphi;
+	//TODO: store for the player
+} Grip;
+
 void Map_Init();
 
 float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, Building* wall_type, int pz, float tilt, Pos* pos);

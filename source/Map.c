@@ -8,7 +8,7 @@
 #include "Map.h"
 #include "P_Util.h"
 
-#define B1 {BUILDING(1,128)}
+#define B1 {BUILDING(1,256)}
 #define B2 {BUILDING(2,128)}
 #define B3 {BUILDING(3,128)}
 #define B5 {BUILDING(5,128)}
@@ -17,10 +17,10 @@
 Building map[] = {B1,B1,B1,B1,B1, B1,B1,B1,B1,B1,
 		B1,0,0,0,0, 0,0,0,0,B1,
 		B1,0,0,0,0, 0,0,0,0,0,
-		B1,0,0,0,0, 0,0,0,0,0,
-		B1,0,0,0,0, 0,0,0,0,B5,
+		B1,0,0,0,B1, 0,0,0,0,0,
+		B1,0,0,0,0, 0,B1,0,0,B5,
 		B1,0,0,0,0, 0,0,0,0,B4,
-		B1,0,0,0,0, 0,0,0,0,B5,
+		B1,0,B1,0,0, 0,0,0,0,B5,
 		B1,0,0,0,0, 0,0,0,0,0,
 		B1,0,0,0,0, 0,0,0,0,B3,
 		B1,B1,B1,B1,B1, B1,B1,B1,B1,B1
@@ -68,7 +68,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 
 	Building x_wall_type = {0};
 	Building y_wall_type = {0};
-	for(i = 0; i < RAYCAST_RECURSION && (y_distance < 1000000 || x_distance < 1000000); i++){
+	for(i = 0; i < RAYCAST_RECURSION && (y_distance < RAYCAST_ERROR_DISTANCE || x_distance < RAYCAST_ERROR_DISTANCE); i++){
 
 		//Advance the shorter ray of the two
 		if(x_distance <= y_distance){
@@ -105,7 +105,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			//This should never happen but is here just incase i want to remove the top line.
 			if(px < 0 || (int)float_py < 0 || px>>WORLD_BLOCK_BITS >= MAP_WIDTH || (int)float_py>>WORLD_BLOCK_BITS >= MAP_HEIGHT ||
 					x_pz > BUILDINGS_MAX_HEIGHT || x_pz < 0){
-				x_distance = 1000000;
+				x_distance = RAYCAST_ERROR_DISTANCE;
 				continue;
 			}
 
@@ -150,7 +150,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 			//Out of bounds sanity check
 			if(py < 0 || (int)float_px < 0 || py>>WORLD_BLOCK_BITS >= MAP_WIDTH || (int)float_px>>WORLD_BLOCK_BITS >= MAP_HEIGHT
 					|| y_pz > BUILDINGS_MAX_HEIGHT || y_pz < 0){
-				y_distance = 1000000;
+				y_distance = RAYCAST_ERROR_DISTANCE;
 				continue;
 			}
 
@@ -165,7 +165,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 	}
 
 	//If both rays have missed, return very large distance.
-	return 1000000;
+	return RAYCAST_ERROR_DISTANCE;
 }
 
 float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
