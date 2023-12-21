@@ -34,6 +34,8 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 		int z = 0;
 		int highest_building = 0;
 		int lowest_pixel = 192;
+		float ray_x = camera.x;
+		float ray_y = camera.y;
 		for(z = 0; z < VISION_HEIGHT_ITERATIONS;z ++){
 			//calculate the pan angle of the current beam
 			float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
@@ -41,7 +43,8 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 			//get the building, distance, and face of the ray
 			Building building = {0};
 			bool is_x_wall = false;
-			float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, highest_building, 0, NULL,VISION_RAYCAST_RECURSION);
+			Pos hitpoint = {0,0,0};
+			float distance = Map_get_raycast_distance(ray_x, ray_y, angle, &is_x_wall, &building, highest_building, 0, &hitpoint,VISION_RAYCAST_RECURSION - 20 * z);
 
 			if(distance >= RAYCAST_ERROR_DISTANCE){
 				break;
