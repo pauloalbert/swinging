@@ -115,3 +115,28 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 	//FillCircle(bT,x+10*cos(6.28+angle),y+10*sin(6.28+angle),3,5);
 }
 
+int t = 0;
+
+void Render_Sprites(Camera camera){
+	extern u16* char_sprite_ptr;
+
+	oamRotateScale(&oamMain, 0, t*64, 1<<8, 1<<8);
+	t = t- 3;
+	oamSet(
+			&oamMain,
+			0,
+			140,
+			140,
+			0,
+			0,
+			SpriteSize_64x64,
+			SpriteColorFormat_256Color,
+			char_sprite_ptr,
+			0,
+			0,
+			false,
+			false, //hflip
+			false, //vflip
+			false
+			);
+}

@@ -95,7 +95,7 @@ endif
 export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
 					$(PNGFILES:.png=.o) \
 					$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)\
-					#$(PRECFILES)					
+					$(PRECFILES)					
  
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
@@ -120,7 +120,7 @@ clean:
 #---------------------------------------------------------------------------------
 else
  
-DEPENDS	:=	$(OFILES:.o=.d) #precompiled
+DEPENDS	:=	$(OFILES:.o=.d) precompiled
  
 #---------------------------------------------------------------------------------
 # main targets

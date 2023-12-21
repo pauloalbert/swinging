@@ -4,6 +4,7 @@
 #include <nds.h>
 #include "P_Util.h"
 #include "Constants.h"
+#include "swing.h"
 
 #define ROTOSCALE
 
@@ -35,6 +36,8 @@ MAC_EXTERN inline int get_buffer_height(enum BUFFER_TYPE bT);
 void P_Graphics_setup_main();
 
 void P_Graphics_setup_sub();
+
+void P_Graphics_setup_sprites();
 /*
  	 Function that assigns the buffer (already implemented) and its size
  */

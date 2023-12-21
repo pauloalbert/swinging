@@ -11,7 +11,10 @@
 
 void redraw_screen();
 
-void slowdown_ISR(bool slow);
+void slowdown_ISR();
+void countdown_ISR();
+
+void slowdown();
 
 //called by Controls, does game logic when attempting to sling
 void try_sling(touchPosition t,Camera* camera, Grip* grip);

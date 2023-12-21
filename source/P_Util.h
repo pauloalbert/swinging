@@ -27,6 +27,9 @@ MAC_EXTERN inline int round_float(float b);
 
 int rng();
 
+float min(float a, float b);
+float max(float a, float b);
+
 void set_seed(int new_seed);
 
 MAC_EXTERN inline int mod(int x, int amount);
@@ -44,4 +47,5 @@ MAC_EXTERN inline int convert_ranges(int number, int origin_min, int origin_max,
 #define fxp_to_float(fxp,bits) ((fxp)/((float)(1<<(bits))))
 
 #define sqr(x) ((x)*(x))
+
 #define mag(x,y,z) (sqrt(sqr(x) + sqr(y) + sqr(z)))

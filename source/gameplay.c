@@ -7,7 +7,7 @@ float dl = 0;				// web length delta
 float UpOffset = 0;			// initial Offset when changing web (bounce up)
 float DOffset = 0;			// initial Offset when Fallinging on web (bounce down)
 
-float dt = 0.3;				// time interval per loop
+float dt = DEFAULT_DT;				// time interval per loop
 
 float a = 0.95;			// rope shortening factor
 

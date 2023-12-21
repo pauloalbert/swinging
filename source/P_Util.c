@@ -45,6 +45,14 @@ int rng(){
 	return seed < 0 ? -seed : seed;
 }
 
+float min(float a,float b)
+{return ((a<b)*a+(a>=b)*b);
+
+}
+float max(float a,float b)
+{return ((a>b)*a+(a<=b)*b);
+}
+
 MAC_EXTERN inline int convert_ranges(int number, int origin_min, int origin_max, int target_min, int target_max){
 	//this function converts a number from one range to another
 	return (number - origin_min) * (target_max - target_min) / (origin_max - origin_min) + target_min;
