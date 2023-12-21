@@ -61,7 +61,7 @@ MAC_EXTERN inline Building getBuildingFromFXP(int x, int y){
  * If <is_x_wall> is supplied, the wall face will be returned.
  * */
 
-float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Building* wall_type, int pz, float tilt, Pos* pos){
+float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Building* wall_type, int pz, float tilt, Pos* pos, u8 raycast_recursion){
 	//Constants for the traversal.
 	float slope = tan(angle);
 	bool facing_down = sin(angle) > 0;
@@ -83,7 +83,7 @@ float Map_get_raycast_distance(int px, int py, float angle, bool* is_x_wall, Bui
 
 	Building x_wall_type = {0};
 	Building y_wall_type = {0};
-	for(i = 0; i < RAYCAST_RECURSION && (y_distance < RAYCAST_ERROR_DISTANCE || x_distance < RAYCAST_ERROR_DISTANCE); i++){
+	for(i = 0; i < raycast_recursion && (y_distance < RAYCAST_ERROR_DISTANCE || x_distance < RAYCAST_ERROR_DISTANCE); i++){
 
 		//Advance the shorter ray of the two
 		if(x_distance <= y_distance){
@@ -190,7 +190,7 @@ float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
 	float angle_vertical = (touch.py-96) * camera.fov_height / 192;
 
 	//get the grip from ray casting
-	float distance = Map_get_raycast_distance(camera.x,camera.y,camera.pan + angle_horizontal, NULL, NULL, camera.z, -camera.tilt - angle_vertical, grip);
+	float distance = Map_get_raycast_distance(camera.x,camera.y,camera.pan + angle_horizontal, NULL, NULL, camera.z, -camera.tilt - angle_vertical, grip,GRIP_RAYCAST_RECURSION);
 	return distance;
 }
 
