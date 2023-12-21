@@ -31,35 +31,56 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
 	int i = 0;
 	for(i = 0; i < columns; i++){
-		//calculate the pan angle of the current beam
-		float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
+		int z = 0;
+		int highest_building = 0;
+		int lowest_pixel = 192;
+		float ray_x = camera.x;
+		float ray_y = camera.y;
+		for(z = 0; z < VISION_HEIGHT_ITERATIONS;z ++){
+			//calculate the pan angle of the current beam
+			float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
 
-		//get the building, distance, and face of the ray
-		Building building = {0};
-		bool is_x_wall = false;
-		float distance = Map_get_raycast_distance(camera.x, camera.y, angle, &is_x_wall, &building, 0, 0, NULL);
+			//get the building, distance, and face of the ray
+			Building building = {0};
+			bool is_x_wall = false;
+			Pos hitpoint = {0,0,0};
+			float distance = Map_get_raycast_distance(ray_x, ray_y, angle, &is_x_wall, &building, highest_building, 0, &hitpoint,VISION_RAYCAST_RECURSION - 20 * z);
 
-		//color from palette
-		u16 wall_color = color_from_wall(building.color, !is_x_wall);
+			if(distance >= RAYCAST_ERROR_DISTANCE){
+				break;
+			}
 
-		//adjust for fish-eye effect
-		float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
-		//Stats for the render
-		float wall_height = building.height;
-		float camera_height = camera.z;
-		float vert_fov = camera.fov_height;
+			//color from palette
+			u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
-		//The top bottom real world distance of the screen, when at the distance of the wall
-		float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
+			//adjust by distance
+			u8 distance_shift = clamp((int)(distance/COLOR_FALLOFF_PER_DISTANCE),0,8);
+			wall_color += distance_shift*16;	//shift by palette
+			//adjust for fish-eye effect
+			float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
-		//real world height of the bottom of the rendered building, relatively to the camera (+angle)
-		float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera.tilt)) + camera_height;
-		//calculate the length of the building in pixels on screen.
-		int bottom = 192 * (bottom_wall) / screen_height_at_wall;
-		int top = 192 * (bottom_wall - wall_height) / screen_height_at_wall;
-		FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+			//Stats for the render
+			float wall_height = building.height;
+			float camera_height = camera.z;
+			float vert_fov = camera.fov_height;
+
+			//The top bottom real world distance of the screen, when at the distance of the wall
+			float screen_height_at_wall = (adjusted_distance * 2*tan(vert_fov/2)) / cos(camera.tilt);
+
+			//real world height of the bottom of the rendered building, relatively to the camera (+angle)
+			float bottom_wall = (adjusted_distance * tan(vert_fov/2 - camera.tilt)) + camera_height;
+			//calculate the length of the building in pixels on screen.
+			int bottom = 192 * (bottom_wall) / screen_height_at_wall;
+			int top = 192 * (bottom_wall - wall_height) / screen_height_at_wall;
+
+			bottom = bottom <= lowest_pixel ? bottom : lowest_pixel;
+			FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+
+			highest_building = building.height + 1;
+			lowest_pixel = top + 1;
 	}
+}
 
 	//Move the horizon (bring it to me)
 	float horizon_height = (HORIZON_DISTANCE * tan(camera.fov_height/2 - camera.tilt)) + camera.z;

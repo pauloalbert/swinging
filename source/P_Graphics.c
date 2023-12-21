@@ -79,13 +79,35 @@ void P_Graphics_setup_main()
 	//wall 4
 	BG_PALETTE[7] = RGB15(0,15,15);
 	BG_PALETTE[8] = RGB15(0,8,8);
-
-	//GOAL
+	//wall 5
 	BG_PALETTE[9] = RGB15(31,31,2);
 	BG_PALETTE[10] = RGB15(25,25,1);
+	//wall 6
+	BG_PALETTE[11] = RGB15(0,31,2);
+	BG_PALETTE[12] = RGB15(0,25,1);
+	//wall 7
+	BG_PALETTE[13] = RGB15(31,0,13);
+	BG_PALETTE[14] = RGB15(25,0,7);
+
+	int c,p;
+	//set other palettes
+	for(c = 1; c <= 14; c++){
+		u16 base = BG_PALETTE[c];
+		//fxp 5
+		u16 base_red = ((base)&0b11111)<<5;
+		u16 base_green = (base&0b1111100000);
+		u16 base_blue = (base&0b111110000000000)>>5;
+		for(p=1;p <8; p++){
+
+			u8 tint = COLOR_FALLOFF_GRADIENT_RANGE - p + 1;
+			BG_PALETTE[c+16*(p)] = RGB15((tint*(base_red/COLOR_FALLOFF_GRADIENT_RANGE))>>5,(tint*(base_green/COLOR_FALLOFF_GRADIENT_RANGE))>>5,(tint*(base_blue/COLOR_FALLOFF_GRADIENT_RANGE))>>5);
+		}
+	}
 	//roof floor (if needed)
-	BG_PALETTE[15] = RGB15(23,23,30);
-	BG_PALETTE[31] = RGB15(15,11,15);
+	BG_PALETTE[0xef] = RGB15(23,23,30);
+	BG_PALETTE[0xff] = RGB15(15,11,15);
+
+
 	//P_Graphics_assignBuffer(MAIN, (u16*)BG_GFX,256,192);
 	if(IS_SCREEN_FLIPPED){
 	REG_BG2PA = -256;
@@ -113,7 +135,7 @@ void P_Graphics_setup_main()
 
 	int i;
 	for(i=0;i<32*64;i++){
-		BG_MAP_RAM(1)[i] = 0 | (i>=32*32 ? BIT(12) : 0);
+		BG_MAP_RAM(1)[i] = BIT(15) | BIT(14) | BIT(13) | (i>=32*32 ? BIT(12) : 0);
 	}
 #endif
 }
@@ -191,6 +213,14 @@ void FillScreen(enum BUFFER_TYPE t, u16 color)
 
 }
 
+void FillColors(enum BUFFER_TYPE t){
+	int p,o;
+	for(p = 0; p < 16 ; p++){
+		for(o=0; o < 16; o++){
+			FillRectangle(t,12*o,12*o+12,16*p,16*p+16,p+16*o);
+		}
+	}
+}
 void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right, u16 color)
 {
 #ifdef FB0
@@ -220,9 +250,10 @@ void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right
 			P_Buffer[coords(i++,j,P_BufferW)/2] |= (color<<8);
 
 		for(; i < right; i+=2){
-			P_Buffer[coords(i,j,P_BufferW)/2] |= color+(color<<8);
+			P_Buffer[coords(i,j,P_BufferW)/2] = color+(color<<8);
 		}
 		if(i == right)
+
 			P_Buffer[coords(i,j,P_BufferW)/2] = color;
 	}
 }

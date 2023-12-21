@@ -7,7 +7,10 @@
 #pragma once
 /* VISUALS */
 
-#define RAYCAST_RECURSION 20
+#define GRIP_RAYCAST_RECURSION 20
+#define VISION_RAYCAST_RECURSION 60
+#define VISION_SECOND_RAYCAST_RECURSION 30
+#define VISION_HEIGHT_ITERATIONS 3
 #define MAX_INT (0xffff)
 
 /* MAZE */
@@ -19,7 +22,7 @@
 //#define MAP_LOOPS
 
 /* BUILDING */
-#define BUILDINGS_MAX_HEIGHT 128
+#define BUILDINGS_MAX_HEIGHT 300
 #define BUILDING_COLOR_BITS 12
 #define BUILDING_HEIGHT_BITS 0
 #define BUILDING_HEIGHT_UNITS 1
@@ -27,7 +30,11 @@
 #define BUILDING(color, height) (((color)<<BUILDING_COLOR_BITS) | (height)<<BUILDING_HEIGHT_BITS)
 
 /* GRAPHICS */
-#define HORIZON_DISTANCE WORLD_BLOCK_SIZE*30
+#define HORIZON_DISTANCE WORLD_BLOCK_SIZE*100
+/* COLOR DROPOFF */
+//Amount of 8+ how much to do a gradient on colors (0..8..x) where x is black
+#define COLOR_FALLOFF_GRADIENT_RANGE 13
+#define COLOR_FALLOFF_PER_DISTANCE 64
 
 #define IS_SCREEN_FLIPPED true
 /* MOVEMENT */
