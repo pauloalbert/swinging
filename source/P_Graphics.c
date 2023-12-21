@@ -75,21 +75,11 @@ void P_Graphics_setup_main()
 		u16 base_red = ((base)&0b11111)<<5;
 		u16 base_green = (base&0b1111100000);
 		u16 base_blue = (base&0b111110000000000)>>5;
-		if(c == 1){
-			printf("START %x %d %d %d : %d %d %d \n",base, base_red,base_green,base_blue,base_red>>5,base_green>>5,base_blue>>5);
-		}
 		for(p=1;p <8; p++){
 
 			u8 gradient_amount = 15;
 			u8 tint = gradient_amount - p + 1;
 			BG_PALETTE[c+16*(p)] = RGB15((tint*(base_red/gradient_amount))>>5,(tint*(base_green/gradient_amount))>>5,(tint*(base_blue/gradient_amount))>>5);
-
-			if(c==1){
-				u16 color = BG_PALETTE[c+16*p];
-				printf("%d(%d,%d,%d)",tint,(color & 0b11111), (color&0b1111100000)>>5, (color&0b111110000000000)>>10);
-
-				printf("%d %d %d\n",base_red,(tint*(base_red/gradient_amount)),(tint*(base_red/gradient_amount))>>5);
-			}
 		}
 	}
 	//roof floor (if needed)
