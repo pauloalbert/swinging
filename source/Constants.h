@@ -7,7 +7,7 @@
 #pragma once
 /* VISUALS */
 
-#define RAYCAST_RECURSION 30
+#define RAYCAST_RECURSION 60
 #define MAX_INT (0xffff)
 
 /* MAZE */
@@ -27,7 +27,7 @@
 #define BUILDING(color, height) (((color)<<BUILDING_COLOR_BITS) | (height)<<BUILDING_HEIGHT_BITS)
 
 /* GRAPHICS */
-#define HORIZON_DISTANCE WORLD_BLOCK_SIZE*90
+#define HORIZON_DISTANCE WORLD_BLOCK_SIZE*100
 #define IS_SCREEN_FLIPPED false
 /* COLOR DROPOFF */
 //Amount of 8+ how much to do a gradient on colors (0..8..x) where x is black
