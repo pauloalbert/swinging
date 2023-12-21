@@ -77,9 +77,8 @@ void P_Graphics_setup_main()
 		u16 base_blue = (base&0b111110000000000)>>5;
 		for(p=1;p <8; p++){
 
-			u8 gradient_amount = 15;
-			u8 tint = gradient_amount - p + 1;
-			BG_PALETTE[c+16*(p)] = RGB15((tint*(base_red/gradient_amount))>>5,(tint*(base_green/gradient_amount))>>5,(tint*(base_blue/gradient_amount))>>5);
+			u8 tint = COLOR_FALLOFF_GRADIENT_RANGE - p + 1;
+			BG_PALETTE[c+16*(p)] = RGB15((tint*(base_red/COLOR_FALLOFF_GRADIENT_RANGE))>>5,(tint*(base_green/COLOR_FALLOFF_GRADIENT_RANGE))>>5,(tint*(base_blue/COLOR_FALLOFF_GRADIENT_RANGE))>>5);
 		}
 	}
 	//roof floor (if needed)
@@ -213,7 +212,6 @@ void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right
 		i = left;
 		//if i'm on an odd pixel, draw only the second one of the pair.
 		if(i%2 == 1)
-			P_Buffer[coords(i++,j,P_BufferW)/2] &= 0xff;
 			P_Buffer[coords(i++,j,P_BufferW)/2] |= (color<<8);
 
 		for(; i < right; i+=2){
@@ -221,8 +219,7 @@ void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right
 		}
 		if(i == right)
 
-			P_Buffer[coords(i++,j,P_BufferW)/2] &= 0xff00;
-			P_Buffer[coords(i,j,P_BufferW)/2] |= color;
+			P_Buffer[coords(i,j,P_BufferW)/2] = color;
 	}
 }
 

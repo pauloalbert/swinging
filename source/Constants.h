@@ -29,6 +29,10 @@
 /* GRAPHICS */
 #define HORIZON_DISTANCE WORLD_BLOCK_SIZE*30
 #define IS_SCREEN_FLIPPED false
+/* COLOR DROPOFF */
+//Amount of 8+ how much to do a gradient on colors (0..8..x) where x is black
+#define COLOR_FALLOFF_GRADIENT_RANGE 15
+#define COLOR_FALLOFF_PER_DISTANCE 64
 /* MOVEMENT */
 
 #define RAYCAST_ERROR_DISTANCE 1000000.
