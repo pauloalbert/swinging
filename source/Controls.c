@@ -27,17 +27,19 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
 
-	if(keys & KEY_LEFT){
-		camera->pan -= 0.12;
+	if(keys & KEY_LEFT || keys & KEY_A){
+		camera->pan -= 0.19;
 	}
 
-	if(keys & KEY_RIGHT){
-		camera->pan += 0.12;
+	if(keys & KEY_RIGHT || keys & KEY_Y){
+		camera->pan += 0.19;
 	}
 
-	if(keys_pressed & KEY_A){
+	/*
+	 * toggle the prints
+	 * if(keys_pressed & KEY_A){
 		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
-	}
+	}*/
 
 	if((keys_pressed & KEY_B) && power){
 		slowdown();

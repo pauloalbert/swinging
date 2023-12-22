@@ -128,7 +128,7 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
 						level = level + t;
 						P = P + B;
 					}
-					P_Buffer[coords(level,j,P_BufferW)] = color;
+					DrawPixel(P_Buffer,coords(j,level,P_BufferW),color);
 				}
 		}
 		else
@@ -180,7 +180,7 @@ void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
 								level = level + t;
 								P = P + B;
 							}
-							P_Buffer[coords(j,level,P_BufferW)] = color;
+							DrawPixel(P_Buffer,coords(j,level,P_BufferW),color);
 						}
 		}
 }
