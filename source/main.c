@@ -28,7 +28,7 @@ int main(void)
 	initInput();
 	P_Graphics_setup_main();
 	P_Graphics_setup_sub();
-	P_Graphics_setup_sprites();
+	//P_Graphics_setup_sprites();
 	Audio_Init();
 	Audio_PlayMusic();
 	//camera.tilt = 0;
@@ -37,6 +37,6 @@ int main(void)
 		gameLogic(&camera, &player, &grip);
 		redraw_screen();
 		swiWaitForVBlank();
-		oamUpdate(&oamMain);
+		//oamUpdate(&oamMain);
 	}
 }
