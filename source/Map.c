@@ -30,7 +30,7 @@ void Map_Init(){
 
 				//vaccum, set to building on random chance
 				if(rng() % 7 == 0){
-					b.u16 = BUILDING(2,64);
+					b.u16 = BUILDING(2,64 + (rng()%2)*30);
 				}
 
 				if(rng() % 13 == 0){
