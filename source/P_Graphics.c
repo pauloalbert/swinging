@@ -221,6 +221,17 @@ void FillColors(enum BUFFER_TYPE t){
 		}
 	}
 }
+
+void FillBuilding(enum BUFFER_TYPE bT, int top, int bottom, int left, int right, u16 color)
+{
+	u16 delta = (bottom - top)/5;
+	FillRectangle(bT, top, top+delta,left,right,color);
+	FillRectangle(bT, top+delta+1, top+2*delta,left,right,color+32);
+	FillRectangle(bT, top+2*delta+1, top+3*delta,left,right,color);
+	FillRectangle(bT, top+3*delta+1, top+4*delta,left,right,color+32);
+	FillRectangle(bT, top+4*delta, bottom,left,right,color);
+
+}
 void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right, u16 color)
 {
 #ifdef FB0

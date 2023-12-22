@@ -50,15 +50,19 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 				break;
 			}
 
+			float percent_on_wall = is_x_wall ? hitpoint.y : hitpoint.x;
+			percent_on_wall -= (int)percent_on_wall;
 
 			//color from palette
 			u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
+			//adjust for fish-eye effect
+			float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
+
+
 			//adjust by distance
 			u8 distance_shift = clamp((int)(distance/COLOR_FALLOFF_PER_DISTANCE),0,8);
 			wall_color += distance_shift*16;	//shift by palette
-			//adjust for fish-eye effect
-			float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
 			//Stats for the render
 			float wall_height = building.height;
@@ -79,6 +83,9 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 			if (top > bottom)
 				continue;
 
+			if((int)(percent_on_wall*6)%3 == 1)
+					FillBuilding(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+			else
 			FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 
 			highest_building = building.height + 1;
