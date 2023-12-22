@@ -75,6 +75,10 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 			int top = 192 * (bottom_wall - wall_height) / screen_height_at_wall;
 
 			bottom = bottom <= lowest_pixel ? bottom : lowest_pixel;
+
+			if (top > bottom)
+				continue;
+
 			FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 
 			highest_building = building.height + 1;
