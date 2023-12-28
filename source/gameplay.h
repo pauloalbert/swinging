@@ -23,3 +23,5 @@ float FallBounce(Grip* grip, Player* player);
 
 void Fall(Player* player, Grip* grip);
 
+void CrashTest(Player* player, Grip* grip);
+

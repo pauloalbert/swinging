@@ -85,7 +85,6 @@ void do_sling(Player* player, Grip* grip, Pos pos){
 	grip->y = pos.y;
 	grip->z = pos.z;
 
-	player->state = Falling;
 	Audio_PlaySoundEX(SFX_WEBSHOOT, 255, 127);
 	Transit(player, grip);
 }
@@ -95,11 +94,13 @@ void gameLogic(Camera* camera, Player* player, Grip* grip){
 		Fall(player, grip);
 	}
 
-	else if(player->state == Swinging){
+	else if(player->state == Swinging && grip->ON){
 		Swing(player, grip);
 	}
 
 	camera->x = player->x;
 	camera->y = player->y;
 	camera->z = player->z + 50;
+
+	CrashTest(player, grip);
 }

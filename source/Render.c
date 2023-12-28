@@ -119,3 +119,13 @@ void Render_Sprites(Camera camera){
 			false
 			);
 }
+
+void draw_Pause()
+{
+
+}
+
+void draw_GameOver()
+{
+
+}

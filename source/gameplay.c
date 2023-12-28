@@ -96,10 +96,6 @@ void Swing(Player* player, Grip* grip)
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
 
-	//player->x = -grip->d*sinT*cosF + grip->x; 	//clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
-	//player->y = -grip->d*sinT*sinF + grip->y; 	//clamp_float(-grip->d*sinT*sinF + grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS);
-	//player->z = -grip->d*cosT + grip->z; 		//clamp_float(-grip->d*cosT + grip->z, MINZMAP, MAXZMAP);
-
 	player->vx = -(grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
 	player->vy = -(grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
 	player->vz = (- grip->vd * cosT + grip->d*grip->vtheta * sinT);
@@ -107,4 +103,27 @@ void Swing(Player* player, Grip* grip)
 	player->x = player->x + player->vx*dt;
 	player->y = player->y + player->vy*dt;
 	player->z = player->z + player->vz*dt;
+}
+
+void CrashTest(Player* player, Grip* grip)
+{
+
+	if(player->z <= -100)
+	{
+		player->state = Paused;
+		grip->ON = false;
+		draw_GameOver();
+	}
+	else
+		{
+		if(getBuildingFromWorld(player->x,player->y).u16 != 0)
+			{
+			if(getBuildingFromWorld(player->x,player->y).height > player->z)
+			{
+				player->state = Paused;
+				grip->ON = false;
+				draw_GameOver();
+				}
+			}
+		}
 }

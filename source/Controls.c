@@ -5,7 +5,6 @@
  *      Author: nds
  */
 #include "Controls.h"
-#include <math.h>
 
 bool power = 1;
 float dpan = 0;
@@ -27,6 +26,17 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	scanKeys();
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
+
+	if( (keys & KEY_START))
+	{
+		//if((player->state != Paused))
+		//{
+		//	player->state = Paused;
+		//	draw_Pause();
+		//}
+		//else
+		{player->state = Swinging;}
+	}
 
 	if(keys & KEY_LEFT){
 		camera->pan -= 0.12;
