@@ -8,6 +8,7 @@
 #include <math.h>
 
 bool power = 1;
+float dpan = 0;
 
 void ISR_KEYS(){
 	/*extern Camera camera;
@@ -57,5 +58,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 		try_sling(touch, camera, grip);
 	}
+
+	//camera->pan = (player->vx ? atan(player->vy/player->vx) : 0) + dpan;
 
 }

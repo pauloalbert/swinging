@@ -33,7 +33,7 @@
 /* MOVEMENT */
 
 #define RAYCAST_ERROR_DISTANCE 1000000.
-#define DEFAULT_DT 0.3
+#define DEFAULT_DT 0.2
 
 /* GAME */
 

@@ -4,12 +4,14 @@ float g = 9.81;				// gravity acceleration
 
 float k = 1;				// spring constant
 float dl = 0;				// web length delta
-float UpOffset = 0;			// initial Offset when changing web (bounce up)
-float DOffset = 0;			// initial Offset when Fallinging on web (bounce down)
+float UpOffset = 20;			// initial Offset when changing web (bounce up)
+float DOffset = 20;			// initial Offset when Fallinging on web (bounce down)
 
 float dt = DEFAULT_DT;				// time interval per loop
 
 float a = 0.95;			// rope shortening factor
+float damping = 0.005;
+float TwoPi = 2*3.1415;
 
 float cosT = 0;
 float sinT = 0;
@@ -18,11 +20,6 @@ float sinF = 0;
 
 void Transit(Player* player, Grip* grip)
 {
-	//TEMP initial velocity when swinging
-	//player->vx = 0; //(grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
-	//player->vy = 0; //(grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
-	//player->vz = 0; //(- grip->vd * sinF + grip->d*grip->vtheta * cosF);
-
 	//calculate the initial length of the rope to maintain
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
@@ -44,7 +41,7 @@ void Transit(Player* player, Grip* grip)
 	grip->phi = ( (cosF > 0) ? ( (sinF>0) ? acos(cosF) : -acos(cosF)) : ( (sinF>0) ? acos(cosF) : -acos(cosF)));
 
 
-	grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF - player->vz*cosT;				//correct
+	grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF - player->vz*cosT - UpOffset;				//correct
 	grip->vtheta = (player->vx*cosT*cosF + player->vy*cosT*sinF + player->vz*sinT)/grip->d;	//correct
 	grip->vphi = (-player->vx*sinF + player->vy*cosF)/grip->d; 								//correct
 
@@ -77,18 +74,24 @@ void Fall(Player* player, Grip* grip)
 
 void Swing(Player* player, Grip* grip)
 {
-	grip->vd = grip->vd - k * dl * dt;
+	grip->vd = grip->vd*(1-damping) - k * dl * dt;
+
 	grip->d  = grip->d + grip->vd*dt;
 	dl =  grip->d - grip->d_rest;
 
-	grip->vphi = grip->vphi - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
-	grip->phi = grip->phi + grip->vphi*dt;
+	if(abs(cosT/sinT) < 80)
+	grip->vphi = grip->vphi*(1-damping) - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
+	else
+	grip->vphi =grip->vphi*(1-damping);
+
+	grip->phi = fmodf(grip->phi + grip->vphi*dt,TwoPi);
 
 	cosF = cos(grip->phi);
 	sinF = sin(grip->phi);
 
-	grip->vtheta = grip->vtheta - g*sinT*dt/grip->d + sqr(grip->vphi)*cosT*sinT*dt;
-	grip->theta = grip->theta + grip->vtheta*dt;
+	grip->vtheta = grip->vtheta*(1-damping) - g*sinT*dt/grip->d + sqr(grip->vphi)*cosT*sinT*dt;
+	grip->theta = fmodf(grip->theta + grip->vtheta*dt,TwoPi);
+
 
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
