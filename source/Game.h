@@ -21,4 +21,6 @@ void try_sling(touchPosition t,Camera* camera, Grip* grip);
 
 void do_sling(Player* player, Grip* grip, Pos pos);
 
+void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip);
+
 void gameLogic(Camera* camera, Player* player, Grip* grip);

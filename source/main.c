@@ -30,10 +30,11 @@ int main(void)
 	P_Graphics_setup_sub();
 	P_Graphics_setup_sprites();
 	Audio_Init();
-	Audio_PlayMusic();
 	//camera.tilt = 0;
 
 	draw_Pause();
+	Audio_PlayMusic();
+	mmPause();
 	while(1){
 		handleInput(&camera, &player, &grip);
 		if(player.state != Paused)

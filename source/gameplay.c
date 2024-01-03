@@ -50,7 +50,7 @@ void Transit(Player* player, Grip* grip)
 
 float FallBounce(Grip* grip, Player* player)
 {
-	cosT = (grip->z - player->z)/grip->d;
+	cosT = (grip->z - player->z)/mag(grip->x - player->x,grip->y - player->y,grip->z - player->z);
 	return (-grip->d*cosT + grip->z);
 }
 
@@ -103,18 +103,22 @@ void Swing(Player* player, Grip* grip)
 	player->x = player->x + player->vx*dt;
 	player->y = player->y + player->vy*dt;
 	player->z = player->z + player->vz*dt;
+
 }
 
 void CrashTest(Player* player, Grip* grip)
 {
 
-	if(player->z <= -100)
+/*	if(player->z <= -100)
 	{
 		player->state = Paused;
 		grip->ON = false;
+		mmPause();
 		draw_GameOver();
 	}
+
 	else
+
 		{
 		if(getBuildingFromWorld(player->x,player->y).u16 != 0)
 			{
@@ -122,8 +126,10 @@ void CrashTest(Player* player, Grip* grip)
 			{
 				player->state = Paused;
 				grip->ON = false;
+				mmPause();
 				draw_GameOver();
 				}
 			}
 		}
+*/
 }

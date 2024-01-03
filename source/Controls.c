@@ -27,17 +27,12 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
 
-	if( (keys & KEY_START))
-	{
-		//if((player->state != Paused))
-		//{
-		//	player->state = Paused;
-		//	draw_Pause();
-		//}
-		//else
-		{player->state = Swinging;}
+	if(player->state == Paused && (keys & KEY_START)) {
+			mmResume();
+			player->state = Swinging;
 	}
 
+	if(player->state != Paused) {
 	if(keys & KEY_LEFT){
 		camera->pan -= 0.12;
 	}
@@ -56,9 +51,10 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 
 	// read the touch and try slinging
-	if(keys_pressed & KEY_TOUCH){
-		touchPosition touch;
-		touchRead(&touch);
+	touchPosition touch;
+	touchRead(&touch);
+
+	if(touch.px || touch.py){
 
 
 		if(IS_SCREEN_FLIPPED){
@@ -67,6 +63,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 		}
 
 		try_sling(touch, camera, grip);
+	}
 	}
 
 	//camera->pan = (player->vx ? atan(player->vy/player->vx) : 0) + dpan;

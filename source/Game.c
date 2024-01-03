@@ -89,7 +89,17 @@ void do_sling(Player* player, Grip* grip, Pos pos){
 	Transit(player, grip);
 }
 
+void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip) {
+	int x = 0;
+	int y = 0;
+
+	DrawLine(MAIN, 128, 190, x, y, ARGB16(1,0,0,0));
+}
+
 void gameLogic(Camera* camera, Player* player, Grip* grip){
+	if(grip->ON)
+		DrawWeb(MAIN, camera, player, grip);
+
 	if(player->state == Falling){
 		Fall(player, grip);
 	}
