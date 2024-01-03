@@ -33,19 +33,20 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	}
 
 	if(player->state != Paused) {
-	if(keys & KEY_LEFT){
-		camera->pan -= 0.12;
+
+	if(keys & KEY_A){
+	camera->pan = fmod(camera->pan - 0.12, 2*3.141592);
 	}
 
-	if(keys & KEY_RIGHT){
-		camera->pan += 0.12;
+	if(keys & KEY_Y){
+	camera->pan = fmod(camera->pan + 0.12, 2*3.141592);
 	}
 
 	if(keys_pressed & KEY_A){
 		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
 	}
 
-	if((keys_pressed & KEY_B) && power){
+	if((keys_pressed & KEY_X) && power){
 		slowdown();
 		}
 

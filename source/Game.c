@@ -61,6 +61,7 @@ void slowdown()
 void try_sling(touchPosition t,Camera* camera, Grip* grip){
 	Pos pos = {0,0,0};
 
+	Audio_PlaySoundEX(SFX_WEBSHOOT, 255, 127);
 	float dist = get_grip_position(*camera,t, &pos);
 
 	//If no grip found
@@ -68,10 +69,6 @@ void try_sling(touchPosition t,Camera* camera, Grip* grip){
 		grip->ON = false;
 		return;
 	}
-
-	//TODO: call here functions that need pos and dist.
-	//printf("(%.2f,%.2f,%.2f) - %.2f\n",pos.x,pos.y,pos.z, dist);
-
 
 	grip->ON = true;
 
@@ -85,15 +82,23 @@ void do_sling(Player* player, Grip* grip, Pos pos){
 	grip->y = pos.y;
 	grip->z = pos.z;
 
-	Audio_PlaySoundEX(SFX_WEBSHOOT, 255, 127);
 	Transit(player, grip);
 }
 
 void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip) {
-	int x = 0;
-	int y = 0;
+	float webx = (grip->x - camera->x);
+	float weby = (grip->y - camera->y);
+	float webz = (grip->z - camera->z);
 
-	DrawLine(MAIN, 128, 190, x, y, ARGB16(1,0,0,0));
+	int x = (256*(atan(weby/webx)-camera->pan)/camera->fov_width + 128)/2;
+	int y = (192*(-camera->tilt - webz / mag(webx,weby,0))/camera->fov_height + 96)/2;
+
+	if(y>=0)
+	DrawLine(MAIN, 128/2, 0, x, y, ARGB16(1,0,0,0));
+
+	x = convert_ranges(grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS, 0, 128);
+	y = convert_ranges(grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS, 0, 92);
+	FillCircle(SUB,x,y,2,0);
 }
 
 void gameLogic(Camera* camera, Player* player, Grip* grip){
@@ -110,7 +115,7 @@ void gameLogic(Camera* camera, Player* player, Grip* grip){
 
 	camera->x = player->x;
 	camera->y = player->y;
-	camera->z = player->z + 50;
+	camera->z = player->z;
 
 	CrashTest(player, grip);
 }

@@ -5,13 +5,11 @@ float g = 9.81;				// gravity acceleration
 float k = 1;				// spring constant
 float dl = 0;				// web length delta
 float UpOffset = 20;			// initial Offset when changing web (bounce up)
-float DOffset = 20;			// initial Offset when Fallinging on web (bounce down)
 
 float dt = DEFAULT_DT;				// time interval per loop
 
-float a = 0.95;			// rope shortening factor
-float damping = 0.005;
-float TwoPi = 2*3.1415;
+float damping = 0.02;
+float TwoPi = 2*3.141592;
 
 float cosT = 0;
 float sinT = 0;
@@ -24,14 +22,15 @@ void Transit(Player* player, Grip* grip)
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
 	//Bounce constants
-	grip->d_rest = grip->d - UpOffset;
+	if(grip->d > 150)
+		grip->d_rest = grip->d/2;
+	else
+		grip->d_rest = grip->d - UpOffset;
+
 	dl = grip->d - grip->d_rest;
 
 	//calculate initial positions
 	cosT = (grip->z - player->z)/grip->d;
-
-	if(cosT>0)
-		player->state = Swinging;
 
 	grip->theta = acos( cosT );
 	sinT = sin(grip->theta);
@@ -41,7 +40,7 @@ void Transit(Player* player, Grip* grip)
 	grip->phi = ( (cosF > 0) ? ( (sinF>0) ? acos(cosF) : -acos(cosF)) : ( (sinF>0) ? acos(cosF) : -acos(cosF)));
 
 
-	grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF - player->vz*cosT - UpOffset;				//correct
+	grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF - player->vz*cosT; // - UpOffset;				//correct
 	grip->vtheta = (player->vx*cosT*cosF + player->vy*cosT*sinF + player->vz*sinT)/grip->d;	//correct
 	grip->vphi = (-player->vx*sinF + player->vy*cosF)/grip->d; 								//correct
 
@@ -51,7 +50,10 @@ void Transit(Player* player, Grip* grip)
 float FallBounce(Grip* grip, Player* player)
 {
 	cosT = (grip->z - player->z)/mag(grip->x - player->x,grip->y - player->y,grip->z - player->z);
-	return (-grip->d*cosT + grip->z);
+	if(cosT<0)
+		return -100;
+	else
+		return (-grip->d*cosT + grip->z);
 }
 
 void Fall(Player* player, Grip* grip)
@@ -59,7 +61,8 @@ void Fall(Player* player, Grip* grip)
 
 	if(player->z <= FallBounce(grip, player) && grip->ON)
 	{
-			Transit(player, grip);
+		player->state = Swinging;
+		Transit(player, grip);
 	}
 	else
 	{
@@ -74,7 +77,7 @@ void Fall(Player* player, Grip* grip)
 
 void Swing(Player* player, Grip* grip)
 {
-	grip->vd = grip->vd*(1-damping) - k * dl * dt;
+	grip->vd = grip->vd*(1-damping) - k * dl * dt -1;
 
 	grip->d  = grip->d + grip->vd*dt;
 	dl =  grip->d - grip->d_rest;
@@ -103,7 +106,6 @@ void Swing(Player* player, Grip* grip)
 	player->x = player->x + player->vx*dt;
 	player->y = player->y + player->vy*dt;
 	player->z = player->z + player->vz*dt;
-
 }
 
 void CrashTest(Player* player, Grip* grip)
