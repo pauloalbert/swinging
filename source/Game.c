@@ -58,7 +58,7 @@ void slowdown()
 
 //try slinging with a touch position.
 //(moved to its own file so that controls doesn't have to deal with many other files)
-void try_sling(touchPosition t,Camera* camera, Grip* grip){
+void try_sling(touchPosition t,Camera* camera, Player* player, Grip* grip){
 	Pos pos = {0,0,0};
 
 	Audio_PlaySoundEX(SFX_WEBSHOOT, 255, 127);
@@ -67,13 +67,12 @@ void try_sling(touchPosition t,Camera* camera, Grip* grip){
 	//If no grip found
 	if(dist >= RAYCAST_ERROR_DISTANCE){
 		grip->ON = false;
+		player->state = Falling;
 		return;
 	}
 
 	grip->ON = true;
-
-	extern Player player;
-	do_sling(&player, grip, pos);
+	do_sling(player, grip, pos);
 }
 
 void do_sling(Player* player, Grip* grip, Pos pos){
@@ -119,20 +118,20 @@ void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip) {
 }
 
 void gameLogic(Camera* camera, Player* player, Grip* grip){
-	if(grip->ON)
-		DrawWeb(MAIN, camera, player, grip);
-
 	if(player->state == Falling){
 		Fall(player, grip);
 	}
 
-	else if(player->state == Swinging && grip->ON){
+	if(player->state == Swinging && grip->ON){
 		Swing(player, grip);
 	}
 
 	camera->x = player->x;
 	camera->y = player->y;
 	camera->z = player->z;
+
+	if(grip->ON)
+		DrawWeb(MAIN, camera, player, grip);
 
 	CrashTest(player, grip);
 }

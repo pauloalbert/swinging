@@ -2,7 +2,7 @@
 
 float g = 9.81;				// gravity acceleration
 
-float k = 1;				// spring constant
+float k = 0.1;				// spring constant
 float dl = 0;				// web length delta
 float UpOffset = 30;			// initial Offset when changing web (bounce up)
 
@@ -79,10 +79,10 @@ void Swing(Player* player, Grip* grip)
 {
 	grip->vd = grip->vd*(1-damping) - k * dl * dt;
 
-	grip->d  = grip->d + grip->vd*dt;
+	grip->d  = abs(grip->d + grip->vd*dt);
 	dl =  grip->d - grip->d_rest;
 
-	if(abs(cosT/sinT) < 80)
+	if(abs(cosT/sinT) < 100)
 	grip->vphi = grip->vphi*(1-damping) - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
 	else
 	grip->vphi =grip->vphi*(1-damping);
@@ -106,7 +106,10 @@ void Swing(Player* player, Grip* grip)
 	player->x = player->x + player->vx*dt;
 	player->y = player->y + player->vy*dt;
 	player->z = player->z + player->vz*dt;
-}
+
+	if(grip->theta>0 || grip->theta<=0)
+		printf("%.4f, %.4f\n", g*sinT*dt/grip->d, sqr(grip->vphi)*cosT*sinT*dt);
+	}
 
 void CrashTest(Player* player, Grip* grip)
 {

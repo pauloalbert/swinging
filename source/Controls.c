@@ -63,7 +63,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			touch.py = 191 - touch.py;
 		}
 
-		try_sling(touch, camera, grip);
+		try_sling(touch, camera, player, grip);
 	}
 	}
 
