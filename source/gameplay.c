@@ -3,12 +3,15 @@
 float g = 9.81;				// gravity acceleration
 
 float k = 0.1;				// spring constant
+float spring_max = 2.0;		// force clamping
+float vphi_max = 5;		// v phi max clamping
+float vtheta_max = 5;		// v theta max clamping
 float dl = 0;				// web length delta
 float UpOffset = 30;			// initial Offset when changing web (bounce up)
 
 float dt = DEFAULT_DT;				// time interval per loop
 
-float damping = 0.005;
+float damping = 0.0005;
 float TwoPi = 2*3.141592;
 
 float cosT = 0;
@@ -22,10 +25,8 @@ void Transit(Player* player, Grip* grip)
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
 	//Bounce constants
-	if(grip->d > 150)
-		grip->d_rest = grip->d/3;
-	else
-		grip->d_rest = grip->d - UpOffset;
+
+	grip->d_rest = grip->d - UpOffset;
 
 	dl = grip->d - grip->d_rest;
 
@@ -75,17 +76,20 @@ void Fall(Player* player, Grip* grip)
 
 }
 
+
 void Swing(Player* player, Grip* grip)
 {
-	grip->vd = grip->vd*(1-damping) - k * dl * dt;
+	grip->vd = grip->vd*(1-damping) - clamp_float(k * dl * dt,-spring_max,spring_max);
 
-	grip->d  = abs(grip->d + grip->vd*dt);
+	grip->d  = fabs(grip->d + grip->vd*dt);
 	dl =  grip->d - grip->d_rest;
 
-	if(abs(cosT/sinT) < 100)
+	if(fabs(cosT/sinT) < 100)
 	grip->vphi = grip->vphi*(1-damping) - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
 	else
 	grip->vphi =grip->vphi*(1-damping);
+
+	grip->vphi = clamp_float(grip->vphi,-vphi_max,vphi_max);
 
 	grip->phi = grip->phi + grip->vphi*dt;
 
@@ -93,11 +97,13 @@ void Swing(Player* player, Grip* grip)
 	sinF = sin(grip->phi);
 
 	grip->vtheta = grip->vtheta*(1-damping) - g*sinT*dt/grip->d + sqr(grip->vphi)*cosT*sinT*dt;
+	grip->vtheta = clamp_float(grip->vtheta,-vtheta_max,vtheta_max);
 	grip->theta = grip->theta + grip->vtheta*dt;
 
 
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
+
 
 	player->vx = -(grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
 	player->vy = -(grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
@@ -108,7 +114,7 @@ void Swing(Player* player, Grip* grip)
 	player->z = player->z + player->vz*dt;
 
 	if(grip->theta>0 || grip->theta<=0)
-		printf("%.4f, %.4f\n", g*sinT*dt/grip->d, sqr(grip->vphi)*cosT*sinT*dt);
+		printf("%.2f, %.2f, %.2f, %.2f\n", sqr(grip->vphi),  g*sinT*dt/grip->d, sqr(grip->vphi)*cosT*sinT*dt, grip->vtheta);
 	}
 
 void CrashTest(Player* player, Grip* grip)

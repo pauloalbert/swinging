@@ -34,6 +34,21 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 	if(player->state != Paused) {
 
+	if(keys & KEY_B){
+		player->x = 100;
+		player->y = 140;
+		player->z = 60;
+		camera->x = 100;
+		camera->y = 140;
+		camera->z = 60;
+		player->vx = 0;
+		player->vy = 0;
+		player->vz = 0;
+		player->state = Paused;
+		grip->ON = false;
+		redraw_screen();
+	}
+
 	if(keys & KEY_A){
 	camera->pan = fmod(camera->pan - 0.12, 2*3.141592);
 	}
