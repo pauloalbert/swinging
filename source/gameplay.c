@@ -4,11 +4,11 @@ float g = 9.81;				// gravity acceleration
 
 float k = 1;				// spring constant
 float dl = 0;				// web length delta
-float UpOffset = 20;			// initial Offset when changing web (bounce up)
+float UpOffset = 30;			// initial Offset when changing web (bounce up)
 
 float dt = DEFAULT_DT;				// time interval per loop
 
-float damping = 0.02;
+float damping = 0.005;
 float TwoPi = 2*3.141592;
 
 float cosT = 0;
@@ -23,7 +23,7 @@ void Transit(Player* player, Grip* grip)
 
 	//Bounce constants
 	if(grip->d > 150)
-		grip->d_rest = grip->d/2;
+		grip->d_rest = grip->d/3;
 	else
 		grip->d_rest = grip->d - UpOffset;
 
@@ -77,7 +77,7 @@ void Fall(Player* player, Grip* grip)
 
 void Swing(Player* player, Grip* grip)
 {
-	grip->vd = grip->vd*(1-damping) - k * dl * dt -1;
+	grip->vd = grip->vd*(1-damping) - k * dl * dt;
 
 	grip->d  = grip->d + grip->vd*dt;
 	dl =  grip->d - grip->d_rest;
@@ -87,13 +87,13 @@ void Swing(Player* player, Grip* grip)
 	else
 	grip->vphi =grip->vphi*(1-damping);
 
-	grip->phi = fmodf(grip->phi + grip->vphi*dt,TwoPi);
+	grip->phi = grip->phi + grip->vphi*dt;
 
 	cosF = cos(grip->phi);
 	sinF = sin(grip->phi);
 
 	grip->vtheta = grip->vtheta*(1-damping) - g*sinT*dt/grip->d + sqr(grip->vphi)*cosT*sinT*dt;
-	grip->theta = fmodf(grip->theta + grip->vtheta*dt,TwoPi);
+	grip->theta = grip->theta + grip->vtheta*dt;
 
 
 	cosT = cos(grip->theta);

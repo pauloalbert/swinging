@@ -90,11 +90,28 @@ void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip) {
 	float weby = (grip->y - camera->y);
 	float webz = (grip->z - camera->z);
 
+	int xo = 64;
+	int yo = 96;
 	int x = (256*(atan(weby/webx)-camera->pan)/camera->fov_width + 128)/2;
 	int y = (192*(-camera->tilt - webz / mag(webx,weby,0))/camera->fov_height + 96)/2;
 
-	if(y>=0)
-	DrawLine(MAIN, 128/2, 0, x, y, ARGB16(1,0,0,0));
+	if(x<0 || x>255 || y<0 || y>191)
+	{
+		float slope = (y-yo)/(x-xo);
+		if( abs(slope) > (192/128) )
+		{
+			y=0;
+			x=xo+(y-yo)/slope;
+		}
+		else
+		{
+			x=(x<0 ? 0 : 128);
+			y=yo+(x-xo)*slope;
+		}
+	}
+
+	if((webx*cos(camera->pan)+weby*sin(camera->pan))>0 && y<192)
+	DrawLine(MAIN, xo, yo, x, y, ARGB16(1,0,0,0));
 
 	x = convert_ranges(grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS, 0, 128);
 	y = convert_ranges(grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS, 0, 92);
