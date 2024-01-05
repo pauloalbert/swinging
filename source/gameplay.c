@@ -7,7 +7,7 @@
 #define vphi_max 2		// v phi max clamping
 #define vtheta_max 10		// v theta max clamping
 
-#define UpOffset 76			// initial Offset when changing web (bounce up)
+#define UpOffset 80			// initial Offset when changing web (bounce up)
 
 float dt = DEFAULT_DT;				// time interval per loop
 
@@ -29,7 +29,7 @@ void Transit(Player* player, Grip* grip)
 
 	//Bounce constants
 
-	if(grip->d>=2*UpOffset)
+	if(grip->d>=7/4*UpOffset)
 		grip->d_rest = grip->d - UpOffset;
 	else
 		grip->d_rest = grip->d;
@@ -84,7 +84,7 @@ void Fall(Player* player, Grip* grip)
 
 void Swing(Player* player, Grip* grip)
 {
-	if(grip->d>grip->d_rest && grip->d<grip->d_rest+UpOffset)
+	if(grip->d>grip->d_rest && grip->d<=grip->d_rest+UpOffset)
 	{
 		grip->vd = -UpOffset;	//grip->vd*(1-damping) - clamp_float(k * dl * dt,-spring_max,spring_max);
 		grip->d  = fabs(grip->d + grip->vd*dt);
@@ -125,7 +125,7 @@ void Swing(Player* player, Grip* grip)
 	player->y = grip->y - grip->d*sinT*sinF; //clamp_float(player->y + player->vy*dt, grip->y - grip->d, grip->y + grip->d);
 	player->z = grip->z - grip->d*cosT;//clamp_float(player->z + player->vz*dt, grip->z - grip->d, grip->z + grip->d);
 
-	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
+	//grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
 	//if(grip->theta>0 || grip->theta<=0)
 		//printf("%.2f, %.2f, %d, %.2f\n", grip->d,  player->x, grip->ON, grip->vtheta);
