@@ -5,9 +5,9 @@
  *      Author: nds
  */
 #include "Controls.h"
-#include <math.h>
 
 bool power = 1;
+float dpan = 0;
 
 void ISR_KEYS(){
 	/*extern Camera camera;
@@ -27,27 +27,50 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
 
-	if(keys & KEY_LEFT){
-		camera->pan -= 0.12;
+	if(player->state == Paused && (keys & KEY_START)) {
+			mmResume();
+			player->state = Swinging;
 	}
 
-	if(keys & KEY_RIGHT){
-		camera->pan += 0.12;
+	if(player->state != Paused) {
+
+	if(keys & KEY_B){
+		player->x = 100;
+		player->y = 140;
+		player->z = 60;
+		camera->x = 100;
+		camera->y = 140;
+		camera->z = 60;
+		player->vx = 0;
+		player->vy = 0;
+		player->vz = 0;
+		player->state = Paused;
+		grip->ON = false;
+		redraw_screen();
+	}
+
+	if(keys & KEY_A){
+	camera->pan = mod_float(camera->pan - 0.12, 2*3.141592);
+	}
+
+	if(keys & KEY_Y){
+	camera->pan = mod_float(camera->pan + 0.12, 2*3.141592);
 	}
 
 	if(keys_pressed & KEY_A){
 		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
 	}
 
-	if((keys_pressed & KEY_B) && power){
+	if((keys_pressed & KEY_X) && power){
 		slowdown();
 		}
 
 
 	// read the touch and try slinging
-	if(keys_pressed & KEY_TOUCH){
-		touchPosition touch;
-		touchRead(&touch);
+	touchPosition touch;
+	touchRead(&touch);
+
+	if(touch.px || touch.py){
 
 
 		if(IS_SCREEN_FLIPPED){
@@ -55,7 +78,10 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			touch.py = 191 - touch.py;
 		}
 
-		try_sling(touch, camera, grip);
+		try_sling(touch, camera, player, grip);
 	}
+	}
+
+	//camera->pan = (player->vx ? atan(player->vy/player->vx) : 0) + dpan;
 
 }

@@ -1,41 +1,42 @@
 #include "gameplay.h"
 
-float g = 9.81;				// gravity acceleration
+#define g 9.81				// gravity acceleration
 
-float k = 0;				// spring constant
-float dl = 0;				// web length delta
-float UpOffset = 0;			// initial Offset when changing web (bounce up)
-float DOffset = 0;			// initial Offset when Fallinging on web (bounce down)
+#define k 0				// spring constant
+#define spring_max 2		// force clamping
+#define vphi_max 2		// v phi max clamping
+#define vtheta_max 10		// v theta max clamping
+
+#define UpOffset 80			// initial Offset when changing web (bounce up)
 
 float dt = DEFAULT_DT;				// time interval per loop
 
-float a = 0.95;			// rope shortening factor
+#define dampingT 0.0005
+#define dampingF 0.0005
 
 float cosT = 0;
 float sinT = 0;
 float cosF = 0;
 float sinF = 0;
 
+float dl = 0;				// web length delta
+
 void Transit(Player* player, Grip* grip)
 {
-	//TEMP initial velocity when swinging
-	player->vx = 0; //(grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
-	player->vy = 0; //(grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
-	player->vz = 0; //(- grip->vd * sinF + grip->d*grip->vtheta * cosF);
-
 	//calculate the initial length of the rope to maintain
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
 	//Bounce constants
-	//grip->d_rest = grip->d - UpOffset;
+
+	if(grip->d>=7/4*UpOffset)
+		grip->d_rest = grip->d - UpOffset;
+	else
+		grip->d_rest = grip->d;
+
 	//dl = grip->d - grip->d_rest;
 
 	//calculate initial positions
 	cosT = (grip->z - player->z)/grip->d;
-
-	if(cosT>0)
-		player->state = Swinging;
-
 	grip->theta = acos( cosT );
 	sinT = sin(grip->theta);
 
@@ -43,36 +44,30 @@ void Transit(Player* player, Grip* grip)
 	sinF = (grip->y-player->y) / sqrt( sqr(grip->x-player->x) + sqr(grip->y-player->y) );
 	grip->phi = ( (cosF > 0) ? ( (sinF>0) ? acos(cosF) : -acos(cosF)) : ( (sinF>0) ? acos(cosF) : -acos(cosF)));
 
-	grip->vd = player->vx*sinT*cosF + player->vy*sinT*sinF + player->vz*cosT;
-	grip->vtheta = player->vx*cosT*cosF + player->vy*cosT*sinF - player->vz*sinT;
-	grip->vphi = - player->vx*sinF + player->vy*cosF;
+
+	grip->vd = 0; //player->vx*sinT*cosF + player->vy*sinT*sinF - player->vz*cosT; // - UpOffset;		//correct
+	grip->vtheta = (player->vx*cosT*cosF + player->vy*cosT*sinF + player->vz*sinT)/grip->d;	//correct
+	grip->vphi = (-player->vx*sinF + player->vy*cosF)/grip->d; 								//correct
 
 
 }
 
-float FallBounce(Grip* grip)
+float FallBounce(Grip* grip, Player* player)
 {
-	return (grip->z - sqrt(sqr(grip->d+DOffset)-sqr(grip->d*sinT)));
+	cosT = (grip->z - player->z)/mag(grip->x - player->x,grip->y - player->y,grip->z - player->z);
+	if(cosT<0)
+		return -100;
+	else
+		return (-grip->d*cosT + grip->z);
 }
 
 void Fall(Player* player, Grip* grip)
 {
 
-	if(player->z <= FallBounce(grip) && grip->ON)
+	if(player->z <= FallBounce(grip, player) && grip->ON)
 	{
-			grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
-			grip->d_rest = grip->d+DOffset;
-			dl = grip->d - grip->d_rest;
-
-			cosT = (grip->z - player->z)/grip->d;
-			grip->theta = ( ( grip->y<player->y ) ? 1 : -1) * acos( cosT );
-			sinT = sin(grip->theta);
-
-			cosF = (grip->x-player->x) / sqrt(sqr(grip->x-player->x) + sqr(grip->y-player->y) );
-			grip->phi = ( ( grip->x<player->x ) ? 1 : -1) * acos( cosF );
-			sinF = sin(grip->phi);
-
-			player->state = Swinging;
+		player->state = Swinging;
+		Transit(player, grip);
 	}
 	else
 	{
@@ -85,45 +80,80 @@ void Fall(Player* player, Grip* grip)
 
 }
 
+
 void Swing(Player* player, Grip* grip)
 {
-	if(abs(sinT) > 0.01){
-		grip->vphi = grip->vphi - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
-		grip->phi = grip->phi + grip->vphi*dt;
+	if(grip->d>grip->d_rest && grip->d<=grip->d_rest+UpOffset)
+	{
+		grip->vd = -UpOffset;	//grip->vd*(1-damping) - clamp_float(k * dl * dt,-spring_max,spring_max);
+		grip->d  = fabs(grip->d + grip->vd*dt);
 	}
-	else{
-		grip->vphi = 0;
+	else
+	{
+		grip->vd = 0;
+		grip->d = fabs(grip->d + grip->vd*dt);
 	}
+
+
+	if(fabs(cosT/sinT) < 70)
+	grip->vphi = grip->vphi*(1-dampingF) - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
+	else
+	grip->vphi =grip->vphi*(1-dampingF);
+
+	grip->vphi = clamp_float(grip->vphi,-vphi_max,vphi_max);
+
+	grip->phi = fmod(grip->phi + grip->vphi*dt,2*Pi);
 
 	cosF = cos(grip->phi);
 	sinF = sin(grip->phi);
 
-	grip->vtheta = grip->vtheta - g*sinT*dt/grip->d + sqr(grip->vphi)*cosT*sinT*dt;
-	grip->theta = grip->theta + grip->vtheta*dt;
+	grip->vtheta = grip->vtheta*(1-dampingT) - g*sinT*dt/grip->d + sqr(grip->vphi)*cosT*sinT*dt;
+	grip->vtheta = clamp_float(grip->vtheta,-vtheta_max,vtheta_max);
+	grip->theta = fmod(grip->theta + grip->vtheta*dt,Pi);
+
 
 	cosT = cos(grip->theta);
 	sinT = sin(grip->theta);
 
-	player->x = -grip->d*sinT*cosF + grip->x; 	//clamp_float(-grip->d*sinT*cosF + grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS);
-	player->y = -grip->d*sinT*sinF + grip->y; 	//clamp_float(-grip->d*sinT*sinF + grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS);
-	player->z = -grip->d*cosT + grip->z; 		//clamp_float(-grip->d*cosT + grip->z, MINZMAP, MAXZMAP);
 
-	//DrawLine(MAIN, 128/2, 191/2, (grip->z-player->z), sqrt(sqr(player->x-grip->x)+sqr(player->y-grip->y))*cosF, ARGB16(1,31,31,31));
+	player->vx = -(grip->d_rest*grip->vtheta * cosT*cosF - grip->d*grip->vphi* sinF); //-grip->vd * sinT*cosF
+	player->vy = -(grip->d_rest*grip->vtheta * cosT*sinF + grip->d*grip->vphi* cosF); //-grip->vd * sinT*sinF
+	player->vz = grip->d_rest*grip->vtheta * sinT; //-grip->vd * cosT
 
-	player->vx = -(grip->vd * sinT*cosF + grip->d*grip->vtheta * cosT*cosF - grip->d*grip->vphi*sinT * sinF);
-	player->vy = (grip->vd * sinT*sinF + grip->d*grip->vtheta * cosT*sinF + grip->d*grip->vphi*sinT * cosF);
-	player->vz = (- grip->vd * sinF + grip->d*grip->vtheta * cosF);
+	player->x = grip->x - grip->d*sinT*cosF; //clamp_float(player->x + player->vx*dt, grip->x - grip->d, grip->x + grip->d);
+	player->y = grip->y - grip->d*sinT*sinF; //clamp_float(player->y + player->vy*dt, grip->y - grip->d, grip->y + grip->d);
+	player->z = grip->z - grip->d*cosT;//clamp_float(player->z + player->vz*dt, grip->z - grip->d, grip->z + grip->d);
 
-	//player->x = player->x + player->vx*dt;
-	//player->y = player->y + player->vy*dt;
-	//player->z = player->z + player->vz*dt;
+	//grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
 
-	if(grip->d>100)
+	//if(grip->theta>0 || grip->theta<=0)
+		//printf("%.2f, %.2f, %d, %.2f\n", grip->d,  player->x, grip->ON, grip->vtheta);
+	}
+
+void CrashTest(Player* player, Grip* grip)
+{
+
+/*	if(player->z <= -100)
+	{
+		player->state = Paused;
+		grip->ON = false;
+		mmPause();
+		draw_GameOver();
+	}
+
+	else
+
+		{
+		if(getBuildingFromWorld(player->x,player->y).u16 != 0)
 			{
-				grip->d = grip->d*a;
+			if(getBuildingFromWorld(player->x,player->y).height > player->z)
+			{
+				player->state = Paused;
+				grip->ON = false;
+				mmPause();
+				draw_GameOver();
+				}
 			}
-
-	grip->vd = grip->vd - k * dl * dt;
-	grip->d  = grip->d + grip->vd*dt;
-	dl =  grip->d - grip->d_rest;
+		}
+*/
 }

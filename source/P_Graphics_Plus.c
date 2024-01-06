@@ -6,45 +6,6 @@
  */
 #include "P_Graphics_Plus.h"
 
-/*
-# define M_3PI_2   3*M_PI_2
-void DrawAngledLine(enum BUFFER_TYPE bT, int x, int y, double angle,
-		double distance, u16 color) {
-	if (bT == SUB)
-		return;
-
-	//These are the current coordinates in the screen as doubles.
-	double rx = x + 0.5;
-	double ry = y + 0.5;
-
-	//The amount each value will change by moving one unit forwards.
-	double dx = cos(angle);
-	double dy = sin(angle);
-	double dtan = tan(angle);
-	bool ray_facing_down = angle > M_PI;
-	bool ray_facing_right = angle < M_PI_2 || angle > M_3PI_2;
-	bool doing_x = abs(dx) < abs(dy);
-	while(distance > 0){
-		double lrx = rx, lry = ry;
-		if(doing_x){
-			rx = (int)(rx + ray_facing_right*2-1);
-			ry -= dtan*(rx-lrx);
-			DrawVerticalLine(bT, (int)lry, (int)ry, (int)lrx, color);
-			distance -= abs(ry-lry);
-
-		}
-		else{
-			ry = (int)(ry + ray_facing_down*2-1);
-			rx -= (ry-lry)/dtan;
-			DrawHorizontalLine(bT, (int)lrx, (int)rx, (int)lry, color);
-			distance -= abs(rx-lrx);
-		}
-
-		doing_x = !doing_x;
-		//printf("%d #%.2f, %.2f - d: %.2f\n",doing_x, rx-lrx,ry-lry,distance);
-	}
-}
-*/
 void DrawPixel(u16* buffer, int pixel, u16 color){
 	if(pixel % 2 == 0){
 		buffer[pixel/2] &= 0xff00;
@@ -56,16 +17,11 @@ void DrawPixel(u16* buffer, int pixel, u16 color){
 	}
 }
 
-void DrawAngledLine(enum BUFFER_TYPE bT, int x, int y, float angle,
-		float distance, u16 color) {
+void DrawAngledLine(enum BUFFER_TYPE bT, int x, int y, float angle, float distance, u16 color) {
 	DrawLine(bT,x,y,x+cos(angle)*distance,y+sin(angle)*distance,color);
 }
 
-/*
- *
- */
-void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
-		u16 color) {
+void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2, u16 color) {
 
 	u16* P_Buffer = get_buffer_pointer(bT);
 	int P_BufferH = get_buffer_height(bT);
