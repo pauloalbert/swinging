@@ -9,7 +9,6 @@ void redraw_screen(){
 	swap_buffers(MAIN);
 	//FillRectangle(SUB,0,100,0,100,1);
 
-	Render_Sprites(camera);
 	Render_3D(MAIN,camera,32);
 	Render_2D(SUB,camera,0,0,128,92);
 }
@@ -94,14 +93,18 @@ void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip) {
 	int x = (256*(atan(weby/webx)-camera->pan)/camera->fov_width + 128)/2;
 	int y = (192*(-camera->tilt - webz / mag(webx,weby,0))/camera->fov_height + 96)/2;
 
+	float slope = 0;
+	if(x!=xo)
+		slope=(float)(y-yo)/(x-xo);
+
 	if((webx*cos(camera->pan)+weby*sin(camera->pan))>0 && y<192)
 	{
 		if(x<0 || x>127 || y<0 || y>95)
 			{
-				float slope = (y-yo)/(x-xo);
-				if( abs(slope) > (96/64) )
+				if( abs(slope) > (96/64) || x==xo)
 				{
 					y=0;
+					if(x!=xo)
 					x=xo+(y-yo)/slope;
 				}
 				else
@@ -114,8 +117,8 @@ void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip) {
 		DrawCircle(MAIN,2*x,2*y,3,RED);
 
 	DrawLine(MAIN, xo, yo, x, y, ARGB16(1,0,0,0));
+	Render_Sprites(xo, yo, slope);
 	}
-
 	x = convert_ranges(grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS, 0, 128);
 	y = convert_ranges(grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS, 0, 92);
 	FillCircle(SUB,x,y,2,0);

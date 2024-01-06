@@ -94,18 +94,19 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 	//FillCircle(bT,x+10*cos(6.28+angle),y+10*sin(6.28+angle),3,5);
 }
 
-int t = 0;
+int t = 8200;
 
-void Render_Sprites(Camera camera){
+void Render_Sprites(int xo, int yo, float slope){
 	extern u16* char_sprite_ptr;
 
-	oamRotateScale(&oamMain, 0, t*64, 1<<8, 1<<8);
-	t = t- 3;
-	oamSet(
+	if(IS_SCREEN_FLIPPED)
+	{
+		oamRotateScale(&oamMain, 0, (slope>0 ? -8200 : (slope<0 ? 8200 : 16400))-5220*atan(slope), 1<<8, 1<<8);
+		oamSet(
 			&oamMain,
 			0,
-			140,
-			140,
+			256-2*xo-32,
+			192-2*yo-32,
 			0,
 			0,
 			SpriteSize_64x64,
@@ -118,6 +119,28 @@ void Render_Sprites(Camera camera){
 			false, //vflip
 			false
 			);
+	}
+	else
+	{
+		oamRotateScale(&oamMain, 0, (slope>0 ? 8200 : (slope<0 ? -8200 : 0))-5220*atan(slope), 1<<8, 1<<8);
+		oamSet(
+			&oamMain,
+			0,
+			2*xo-32,
+			2*yo-32,
+			0,
+			0,
+			SpriteSize_64x64,
+			SpriteColorFormat_256Color,
+			char_sprite_ptr,
+			0,
+			0,
+			false,
+			false, //hflip
+			false, //vflip
+			false
+			);
+	}
 }
 
 void draw_Pause()

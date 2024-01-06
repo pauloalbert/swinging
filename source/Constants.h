@@ -40,3 +40,6 @@
 #define TIME_POWER 3			//counted in 500ms
 #define TIME_POWER_BACK 5
 
+/* MATH */
+#define Pi 3.141592
+

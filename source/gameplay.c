@@ -13,7 +13,6 @@ float dt = DEFAULT_DT;				// time interval per loop
 
 #define dampingT 0.0005
 #define dampingF 0.0005
-#define Pi 3.141592
 
 float cosT = 0;
 float sinT = 0;

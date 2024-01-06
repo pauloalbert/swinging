@@ -17,13 +17,11 @@ void DrawPixel(u16* buffer, int pixel, u16 color){
 	}
 }
 
-void DrawAngledLine(enum BUFFER_TYPE bT, int x, int y, float angle,
-		float distance, u16 color) {
+void DrawAngledLine(enum BUFFER_TYPE bT, int x, int y, float angle, float distance, u16 color) {
 	DrawLine(bT,x,y,x+cos(angle)*distance,y+sin(angle)*distance,color);
 }
 
-void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2,
-		u16 color) {
+void DrawLine(enum BUFFER_TYPE bT, int x1, int y1, int x2, int y2, u16 color) {
 
 	u16* P_Buffer = get_buffer_pointer(bT);
 	int P_BufferH = get_buffer_height(bT);
