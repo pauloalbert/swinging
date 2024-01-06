@@ -96,6 +96,28 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 
 int t = 8200;
 
+void Dont_Render_Sprites(){
+	extern u16* char_sprite_ptr;
+
+	oamSet(
+	&oamMain,
+	0,
+	0,
+	0,
+	0,
+	0,
+	SpriteSize_64x64,
+	SpriteColorFormat_256Color,
+	char_sprite_ptr,
+	0,
+	0,
+	true,
+	false, //hflip
+	false, //vflip
+	false
+	);
+}
+
 void Render_Sprites(int xo, int yo, float slope){
 	extern u16* char_sprite_ptr;
 

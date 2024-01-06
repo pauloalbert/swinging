@@ -116,9 +116,12 @@ void DrawWeb(enum BUFFER_TYPE bT, Camera* camera, Player* player, Grip* grip) {
 		else
 		DrawCircle(MAIN,2*x,2*y,3,RED);
 
-	DrawLine(MAIN, xo, yo, x, y, ARGB16(1,0,0,0));
-	Render_Sprites(xo, yo, slope);
+		DrawLine(MAIN, xo, yo, x, y, ARGB16(1,0,0,0));
+		Render_Sprites(xo, yo, slope);
 	}
+	else
+		Dont_Render_Sprites();
+
 	x = convert_ranges(grip->x, 0, MAP_WIDTH << WORLD_BLOCK_BITS, 0, 128);
 	y = convert_ranges(grip->y, 0, MAP_HEIGHT << WORLD_BLOCK_BITS, 0, 92);
 	FillCircle(SUB,x,y,2,0);
