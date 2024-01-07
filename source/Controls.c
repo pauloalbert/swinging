@@ -33,7 +33,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 	if(player->state != Paused) {
 
-		if(keys & KEY_B){
+		if(keys & KEY_B){ //for testing
 			//Restart
 			player->x = 100;
 			player->y = 140;
@@ -109,7 +109,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 				score = 0;
 
 				player->state = Falling;
-				mmResume();
+				Audio_PlayMusic();
 				irqEnable(IRQ_TIMER0);
 			}
 		}
@@ -129,7 +129,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 				player->vz = 0;
 
 				player->state = Falling;
-				mmResume();
+				Audio_PlayMusic();
 				irqEnable(IRQ_TIMER0);
 			}
 
