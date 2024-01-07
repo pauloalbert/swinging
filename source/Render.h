@@ -9,6 +9,7 @@
 #pragma once
 #include <stdio.h>
 #include <nds.h>
+#include "Score.h"
 
 #include "P_Graphics.h"
 #include "P_Graphics_Plus.h"

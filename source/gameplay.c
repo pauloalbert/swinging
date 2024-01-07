@@ -21,6 +21,8 @@ float sinF = 0;
 
 float dl = 0;				// web length delta
 
+extern int score;
+
 void Transit(Player* player, Grip* grip)
 {
 	//calculate the initial length of the rope to maintain
@@ -136,6 +138,7 @@ void CrashTest(Player* player, Grip* grip)
 /*	if(player->z <= -100)
 	{
 		irqDisable(IRQ_TIMER0);
+		score = 0;
 		player->state = Paused;
 		grip->ON = false;
 		mmPause();
@@ -150,6 +153,7 @@ void CrashTest(Player* player, Grip* grip)
 			if(getBuildingFromWorld(player->x,player->y).height > player->z)
 			{
 				irqDisable(IRQ_TIMER0);
+				score = 0;
 				player->state = Paused;
 				grip->ON = false;
 				mmPause();

@@ -7,13 +7,15 @@
 #include "Controls.h"
 
 bool power = 1;
-float dpan = 0;
 
-extern int score, Sec, Min, Hour;
+extern int score, Msec, Sec, Min, Hour;
 extern Player* player;
 
 void ISR_KEYS(){
+	irqDisable(IRQ_TIMER0);
 	player->state = Paused;
+	mmPause();
+	draw_Pause();
 }
 
 void initInput(){
@@ -48,7 +50,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			player->vz = 0;
 			player->state = Paused;
 			irqDisable(IRQ_TIMER0);
-			printf("%d : %d : %d : %d\n",Hour, Min, Sec, score);
+			printf("%d : %d : %d : %d\n",Hour, Min, Sec, Msec);
 			score = 0;
 			grip->ON = false;
 			redraw_screen();
