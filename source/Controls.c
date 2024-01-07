@@ -47,6 +47,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 		player->state = Paused;
 		grip->ON = false;
 		redraw_screen();
+		Dont_Render_Sprites();
 	}
 
 	if(keys & KEY_A){
@@ -57,9 +58,9 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	camera->pan = mod_float(camera->pan + 0.12, 2*3.141592);
 	}
 
-	if(keys_pressed & KEY_A){
-		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
-	}
+	//if(keys_pressed & KEY_A){
+	//	REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
+	//}
 
 	if((keys_pressed & KEY_X) && power){
 		slowdown();
