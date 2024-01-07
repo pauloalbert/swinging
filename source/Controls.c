@@ -50,11 +50,11 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	}
 
 	if(keys & KEY_A){
-	camera->pan = mod_float(camera->pan - 0.12, 2*3.141592);
+	camera->pan = fmod(camera->pan - 0.12, 3.141592);
 	}
 
 	if(keys & KEY_Y){
-	camera->pan = mod_float(camera->pan + 0.12, 2*3.141592);
+	camera->pan = fmod(camera->pan + 0.12, 3.141592);
 	}
 
 	if(keys_pressed & KEY_A){
