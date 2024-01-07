@@ -43,6 +43,7 @@ typedef struct{
 	float vz;
 	float angle;
 	State state;
+	bool live;
 	//TODO: store for the player
 } Player;
 

@@ -19,7 +19,7 @@
 	float fov_width;
 	float fov_height;
 Camera camera= {100,140,60,3.141592*10/180.,-3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
-Player player = {100,140,60, 0,0,0,Paused};
+Player player = {100,140,60, 0,0,0,Paused, true};
 Grip grip = {false,0,0,0,0,0,0,0,0,0,0};
 
 u16* char_sprite_ptr;

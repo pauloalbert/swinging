@@ -28,12 +28,8 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	scanKeys();
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
-
-	if(player->state == Paused && (keys & KEY_LEFT)) {
-			mmResume();
-			irqEnable(IRQ_TIMER0);
-			player->state = Falling; //should go back to last state
-	}
+	touchPosition touch;
+	touchRead(&touch);
 
 	if(player->state != Paused) {
 
@@ -74,8 +70,6 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 
 		// read the touch and try slinging
-		touchPosition touch;
-		touchRead(&touch);
 
 		if(touch.px || touch.py){
 
@@ -86,6 +80,59 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			}
 
 		try_sling(touch, camera, player, grip);
+		}
+	}
+	else
+	{
+		// if paused
+		if(player->live)
+		{
+			// resume
+			if(keys & KEY_RIGHT) { //put touchscreen zone where input is
+				mmResume();
+				irqEnable(IRQ_TIMER0);
+				player->state = Falling;
+			}
+			// restart
+			if(keys & KEY_LEFT) { //put touchscreen zone where input is
+				player->x = 100;
+				player->y = 140;
+				player->z = 60;
+				camera->x = 100;
+				camera->y = 140;
+				camera->z = 60;
+				camera->pan = 3.141592*10/180.;
+				player->vx = 0;
+				player->vy = 0;
+				player->vz = 0;
+				grip->ON = false;
+				score = 0;
+
+				player->state = Falling;
+				mmResume();
+				irqEnable(IRQ_TIMER0);
+			}
+		}
+		else // if game over
+		{
+			// restart
+			if((keys & KEY_LEFT) && !player->live) { //put touchscreen zone where input is
+				player->x = 100;
+				player->y = 140;
+				player->z = 60;
+				camera->x = 100;
+				camera->y = 140;
+				camera->z = 60;
+				camera->pan = 3.141592*10/180.;
+				player->vx = 0;
+				player->vy = 0;
+				player->vz = 0;
+
+				player->state = Falling;
+				mmResume();
+				irqEnable(IRQ_TIMER0);
+			}
+
 		}
 	}
 }

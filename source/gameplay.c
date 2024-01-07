@@ -69,7 +69,6 @@ void Fall(Player* player, Grip* grip)
 	if(player->z <= FallBounce(grip, player) && grip->ON)
 	{
 		player->state = Swinging;
-		Transit(player, grip);
 	}
 	else
 	{
@@ -137,6 +136,7 @@ void CrashTest(Player* player, Grip* grip)
 
 /*	if(player->z <= -100)
 	{
+		player->live = false;
 		irqDisable(IRQ_TIMER0);
 		score = 0;
 		player->state = Paused;
@@ -152,6 +152,7 @@ void CrashTest(Player* player, Grip* grip)
 			{
 			if(getBuildingFromWorld(player->x,player->y).height > player->z)
 			{
+				player->live = false;
 				irqDisable(IRQ_TIMER0);
 				score = 0;
 				player->state = Paused;
