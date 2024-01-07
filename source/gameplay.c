@@ -135,6 +135,7 @@ void CrashTest(Player* player, Grip* grip)
 
 /*	if(player->z <= -100)
 	{
+		irqDisable(IRQ_TIMER0);
 		player->state = Paused;
 		grip->ON = false;
 		mmPause();
@@ -148,6 +149,7 @@ void CrashTest(Player* player, Grip* grip)
 			{
 			if(getBuildingFromWorld(player->x,player->y).height > player->z)
 			{
+				irqDisable(IRQ_TIMER0);
 				player->state = Paused;
 				grip->ON = false;
 				mmPause();

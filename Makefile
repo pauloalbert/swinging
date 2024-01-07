@@ -44,8 +44,7 @@ LDFLAGS	=	-specs=ds_arm9.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:= -lnds9 -lmm9 -lm
- 
+LIBS	:= -lfat -lnds9 -lmm9 -lm
  
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -126,7 +125,7 @@ DEPENDS	:=	$(OFILES:.o=.d) precompiled
 # main targets
 #---------------------------------------------------------------------------------
 $(OUTPUT).nds	: 	$(OUTPUT).arm9
-$(OUTPUT).arm9	:	$(OUTPUT).elf
+$(OUTPUT).arm9	:	$(OUTPUT).elf 
 $(OUTPUT).elf	:	$(OFILES)
  
 #---------------------------------------------------------------------------------

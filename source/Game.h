@@ -8,6 +8,9 @@
 #include "P_Audio.h"
 #include "Render.h"
 #include "gameplay.h"
+#include "Score.h"
+
+void initScore();
 
 void redraw_screen();
 

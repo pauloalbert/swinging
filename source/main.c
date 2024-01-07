@@ -1,5 +1,6 @@
 #include <math.h>
 #include <nds.h>
+#include <fat.h>
 #include "P_Graphics.h"
 #include "P_Graphics_Plus.h"
 #include "Map.h"
@@ -7,6 +8,8 @@
 #include "P_Audio.h"
 #include "Render.h"
 #include "Game.h"
+#include "Score.h"
+
 
 #define	RED ARGB16(1,31,0,0)
 
@@ -20,10 +23,15 @@ Player player = {100,140,60, 0,0,0,Paused};
 Grip grip = {false,0,0,0,0,0,0,0,0,0,0};
 
 u16* char_sprite_ptr;
+
 int main(void)
 {
+	//fatInitDefault();   test if works on VM emulator
 	consoleDemoInit();
+	readMaxScore();
+
 	REG_POWERCNT &= ~POWER_SWAP_LCDS;
+
 	Map_Init();
 	initInput();
 	P_Graphics_setup_main();
@@ -32,6 +40,8 @@ int main(void)
 	Audio_Init();
 
 	draw_Pause();
+	displayMaxScore();
+	initScore();
 	Audio_PlayMusic();
 	mmPause();
 	while(1){
