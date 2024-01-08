@@ -1,7 +1,6 @@
 #include "Score.h"
 
-int score = 0; Msec = 0, Sec = 0, Min = 0, Hour = 0;
-float max_score = 0;
+int score = 0; Msec = 0, Sec = 0, Min = 0, Hour = 0, max_score = 0;
 
 void score_ISR()
 {
@@ -71,7 +70,7 @@ void readMaxScore()
 	if(file != NULL)
 	{
 		//Read the value and put it into the variable max_score
-		fscanf(file,"%f\n",&max_score);
+		fscanf(file,"%d\n",&max_score);
 		printf("maxscoreRead\n");
 		// close the file
 		fclose(file);
@@ -115,5 +114,5 @@ void displayMaxScore()
 	if(( ( ( Hour*60+Min )*60+Sec )*1000+Msec ) > max_score){
 		max_score = ( ( ( Hour*60+Min )*60+Sec )*1000+Msec );
 	}
-	printf("DISPLAY MAX  %f\n", max_score);
+	printf("DISPLAY MAX  %d\n", max_score);
 }

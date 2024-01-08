@@ -15,6 +15,7 @@ void ISR_KEYS(){
 	if(player->state != Paused)
 	{
 		irqDisable(IRQ_TIMER0);
+		irqDisable(IRQ_KEYS);
 		player->state = Paused;
 		mmPause();
 		draw_Pause();
@@ -101,6 +102,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			if(keys & KEY_RIGHT) { //put touchscreen zone where input is
 				Audio_PlayMusic();
 				irqEnable(IRQ_TIMER0);
+				irqEnable(IRQ_KEYS);
 				player->state = Falling;
 			}
 			// restart
@@ -121,6 +123,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 				player->state = Falling;
 				Audio_PlayMusic();
 				irqEnable(IRQ_TIMER0);
+				irqEnable(IRQ_KEYS);
 			}
 		}
 		else // if game over
