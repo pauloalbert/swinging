@@ -26,7 +26,7 @@ u16* char_sprite_ptr;
 
 int main(void)
 {
-	fatInitDefault();   //test if works on VM emulator
+	fatInitDefault();
 	consoleDemoInit();
 	readMaxScore();
 
@@ -56,6 +56,7 @@ int main(void)
 		if(player.state != Paused)
 		{
 			gameLogic(&camera, &player, &grip);
+			printf("%f\n",player.z);
 		}
 
 		//TEMP CODE, NOT SURE WHERE TO PUT

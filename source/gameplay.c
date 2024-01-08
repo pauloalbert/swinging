@@ -134,7 +134,7 @@ void Swing(Player* player, Grip* grip)
 void CrashTest(Player* player, Grip* grip)
 {
 
-	if(player->z <= -100)
+	if(player->z <= 20)
 	{
 		player->live = false;
 		irqDisable(IRQ_TIMER0);
@@ -144,10 +144,8 @@ void CrashTest(Player* player, Grip* grip)
 		mmPause();
 		draw_GameOver();
 	}
-
 	else
-
-		{
+	{
 		if(getBuildingFromWorld(player->x,player->y).u16 != 0)
 			{
 			if(getBuildingFromWorld(player->x,player->y).height > player->z)
@@ -159,8 +157,8 @@ void CrashTest(Player* player, Grip* grip)
 				grip->ON = false;
 				mmPause();
 				draw_GameOver();
-				}
 			}
 		}
+	}
 
 }

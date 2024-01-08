@@ -150,7 +150,9 @@ void gameLogic(Camera* camera, Player* player, Grip* grip){
 	camera->z = player->z;
 
 	if(grip->ON)
+	{
 		DrawWeb(MAIN, camera, player, grip);
+	}
 
 	CrashTest(player, grip);
 }
