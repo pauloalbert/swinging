@@ -38,7 +38,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 	if(player->state != Paused) {
 
-		if(keys & KEY_START){ //for testing
+		if(keys & KEY_SELECT){ //for testing
 			//Restart
 			/*
 			player->x = 100;
