@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "Score.h"
 
+void handle_pause(Player player);
 
 #define	RED ARGB16(1,31,0,0)
 
@@ -58,17 +59,33 @@ int main(void)
 			printf("%f\n",player.z);
 		}
 
-		//TEMP CODE, NOT SURE WHERE TO PUT
-		if(player.state == Paused ){
-			swap_palettes(1);
-		}
-		else{
-			swap_palettes(0);
-		}
-
 		redraw_screen();
+		handle_pause(player);
 		swiWaitForVBlank();
 		oamUpdate(&oamMain);
 	}
 	oamFreeGfx(&oamMain, char_sprite_ptr);
+}
+
+void handle_pause(Player player){
+	if(player.live == false){
+		bool first_time = swap_palettes(2);
+		//this is how we fill sub screen
+		FillRectangle(SUB,0,120,0,128,RGB15(10,10,10));
+		if(first_time){
+			consoleClear();
+			printf("\n           =~ YOU DIED ~=\n");
+		}
+	}
+	else if(player.state == Paused ){
+		bool first_time = swap_palettes(1);
+
+		if(first_time){
+			consoleClear();
+			printf("\n       =~ GAME PAUSED ~=\n");
+		}
+	}
+	else{
+		swap_palettes(0);
+	}
 }
