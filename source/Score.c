@@ -102,11 +102,36 @@ void writeMaxScore()
  */
 void displayMaxScore()
 {
-	int dH, dM, dS, cMS, dMS, number;
-		number = max_score / number;
-		number = number % 10;
-		BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
-		BG_MAP_RAM_SUB(24)[1+(6-i)*32+1] = numbersMap[(number)*2+1] | TILE_PALETTE(8);
+	int maxH, maxM, maxS, maxMs, number;
+	// total hours
+	maxH = (max_score - mod(max_score,(1000*60*60)))/(1000*60*60);
+	// tens of hours
+	number = (maxH - mod(maxH, 10))/10;
+	// units of hours
+	number = mod(maxH, 10);
+	// total extra mins
+	maxM = mod(max_score,(1000*60*60)) - mod(max_score,(1000*60)) / (1000*60);
+	// tens of mins
+	number = (maxM - mod(maxM, 10))/10;
+	// units of mins
+	number = mod(maxM, 10);
+	// total extra secs
+	maxS = (mod(max_score,(1000*60)) - mod(max_score,1000)) / 1000;
+	// tens of secs
+	number = (maxS - mod(maxS, 10))/10;
+	// units of secs
+	number = mod(maxS, 10);
+	// total extra msecs
+	maxMs = mod(max_score,1000);
+	// hundreds of msecs
+	number = (maxMs - mod(maxMs, 100))/100;
+	// tens of msecs
+	number = (mod(maxMs, 100) - mod(maxMs, 10))/10;
+	// units of msecs
+	number = mod(maxMs, 10);
+
+		//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+		//BG_MAP_RAM_SUB(24)[1+(6-i)*32+1] = numbersMap[(number)*2+1] | TILE_PALETTE(8);
 	if(( ( ( Hour*60+Min )*60+Sec )*1000+Msec ) > max_score){
 		max_score = ( ( ( Hour*60+Min )*60+Sec )*1000+Msec );
 	}
