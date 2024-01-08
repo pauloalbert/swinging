@@ -81,7 +81,7 @@ void Swing(Player* player, Grip* grip)
 	// "pull" web when attaching
 	if(grip->d>grip->d_rest && grip->d<=grip->d_rest+UpOffset)
 	{
-		grip->vd = -UpOffset;	//grip->vd*(1-damping) - clamp_float(k * dl * dt,-spring_max,spring_max);
+		grip->vd = -UpOffset/3;	//grip->vd*(1-damping) - clamp_float(k * dl * dt,-spring_max,spring_max);
 		grip->d  = fabs(grip->d + grip->vd*dt);
 	}
 	else

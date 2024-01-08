@@ -27,7 +27,7 @@ u16* char_sprite_ptr;
 
 int main(void)
 {
-	//fatInitDefault();
+	fatInitDefault();
 	consoleDemoInit();
 	readMaxScore();
 
