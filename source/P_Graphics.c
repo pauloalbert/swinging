@@ -89,8 +89,8 @@ void P_Graphics_setup_main()
 	BG_PALETTE[11] = RGB15(0,31,2);
 	BG_PALETTE[12] = RGB15(0,25,1);
 	//wall 7
-	BG_PALETTE[13] = RGB15(31,0,13);
-	BG_PALETTE[14] = RGB15(25,0,7);
+	BG_PALETTE[13] = RGB15(10,10,29);
+	BG_PALETTE[14] = RGB15(7,7,17);
 
 	int c,p;
 	//set other palettes

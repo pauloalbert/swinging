@@ -47,6 +47,8 @@ void Map_Init(){
 			//Make the edges all buildings of the same height
 			if(i == 0 || j == 0 || i == MAP_HEIGHT-1 || j == MAP_WIDTH - 1){
 				b.u16 = BUILDING(1,128+(rng()%64)-20);
+				if(rng()%2==0)
+					b.color = 7;
 			}
 			else {
 
@@ -59,6 +61,10 @@ void Map_Init(){
 					b.u16 = BUILDING(1,170);
 				}
 
+				if(rng() % 23 == 0){
+					b.u16 = BUILDING(3,250);
+				}
+
 				//clear the starting area
 				if(i < 6 && j < 6)
 					b.u16 = 0;
@@ -68,7 +74,16 @@ void Map_Init(){
 			map[coords(i,j,MAP_WIDTH)] = b;
 		}
 	}
-
+	for(i=0; i <= (rng()%2)+(rng()%2); i++){
+		int x = rng()%(MAP_WIDTH-1);
+		int y = rng()%(MAP_HEIGHT-1);
+		Building b;
+		b.u16 = BUILDING(6,200);
+		map[coords(x,y,MAP_WIDTH)] = b;
+		map[coords(x+1,y,MAP_WIDTH)] = b;
+		map[coords(x,y+1,MAP_WIDTH)] = b;
+		map[coords(x+1,y+1,MAP_WIDTH)] = b;
+	}
 }
 MAC_EXTERN inline Building getBuilding(int x, int y){
 	return map[coords(x,y,MAP_WIDTH)];
