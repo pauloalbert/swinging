@@ -19,7 +19,7 @@ void Struct_Init(Camera* camera, Player* player, Grip* grip)
 {
 	camera->x = 100;
 	camera->y = 140;
-	camera->z = 60;
+	camera->z = 150;
 	camera->pan = 3.141592*10/180.;
 	camera->tilt = -3.141592*10/180.;
 	camera->fov_width = 3.141592*70/180.;
