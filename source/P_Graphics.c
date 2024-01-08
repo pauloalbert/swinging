@@ -38,6 +38,9 @@ u8 char_sprite[] = {
 		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
 		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
 };
+
+u16 palette_buffer[256*3];
+u8 current_palette = 0;
 bool main_graphics_frame = true;
 bool sub_graphics_frame = true;
 void P_Graphics_setup_main()
@@ -108,6 +111,18 @@ void P_Graphics_setup_main()
 	BG_PALETTE[0xff] = RGB15(15,11,15);
 
 
+	//copy the palette over to a local memory
+	int j;
+	for(j = 0; j < 256; j++){
+		u16 color = BG_PALETTE[j];
+		u8 average_color = (u8)(((color&0x1f) + ((color>>5)&0x1f) + ((color>>10)&0x1f))/3);
+		palette_buffer[j] = color;
+		palette_buffer[j+256] = RGB15(average_color,average_color,average_color);
+		palette_buffer[j+512] = RGB15(average_color,0,0);
+	}
+
+
+
 	//P_Graphics_assignBuffer(MAIN, (u16*)BG_GFX,256,192);
 	if(IS_SCREEN_FLIPPED){
 	REG_BG2PA = -256;
@@ -140,6 +155,16 @@ void P_Graphics_setup_main()
 #endif
 }
 
+bool swap_palettes(u8 target_palette){
+	if(target_palette == current_palette || target_palette > 2)
+		return false;
+
+	current_palette = target_palette;
+	dmaCopy(&palette_buffer[256*target_palette],BG_PALETTE,512);
+
+	return true;
+}
+
 void P_Graphics_setup_sub(){
 	// Sub screen
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
@@ -159,8 +184,8 @@ void P_Graphics_setup_sub(){
 		BG_PALETTE_SUB[i] = BG_PALETTE[i];
 	}
 }
-void P_Graphics_setup_sprites(){
-	extern u16* char_sprite_ptr;
+
+u16* P_Graphics_setup_sprites(u16* char_sprite_ptr){
 	//assign the vram
 	VRAM_F_CR = VRAM_ENABLE | VRAM_F_MAIN_SPRITE;
 
@@ -170,6 +195,8 @@ void P_Graphics_setup_sprites(){
 
 	swiCopy(swingPal, SPRITE_PALETTE, swingPalLen/2);
 	swiCopy(swingTiles, char_sprite_ptr, swingTilesLen/2);
+
+	return char_sprite_ptr;
 }
 
 MAC_EXTERN inline int* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}
@@ -220,6 +247,17 @@ void FillColors(enum BUFFER_TYPE t){
 			FillRectangle(t,12*o,12*o+12,16*p,16*p+16,p+16*o);
 		}
 	}
+}
+
+void FillBuilding(enum BUFFER_TYPE bT, int top, int bottom, int left, int right, u16 color)
+{
+	u16 delta = (bottom - top)/5;
+	FillRectangle(bT, top, top+delta,left,right,color);
+	FillRectangle(bT, top+delta+1, top+2*delta,left,right,color+32);
+	FillRectangle(bT, top+2*delta+1, top+3*delta,left,right,color);
+	FillRectangle(bT, top+3*delta+1, top+4*delta,left,right,color+32);
+	FillRectangle(bT, top+4*delta, bottom,left,right,color);
+
 }
 void FillRectangle(enum BUFFER_TYPE bT, int top, int bottom, int left, int right, u16 color)
 {

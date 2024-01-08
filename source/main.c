@@ -37,7 +37,7 @@ int main(void)
 	initInput();
 	P_Graphics_setup_main();
 	P_Graphics_setup_sub();
-	P_Graphics_setup_sprites();
+	char_sprite_ptr = P_Graphics_setup_sprites(char_sprite_ptr);
 	Audio_Init();
 
 	redraw_screen();
@@ -55,10 +55,20 @@ int main(void)
 		handleInput(&camera, &player, &grip);
 		if(player.state != Paused)
 		{
-		gameLogic(&camera, &player, &grip);
+			gameLogic(&camera, &player, &grip);
+		}
+
+		//TEMP CODE, NOT SURE WHERE TO PUT
+		if(player.state == Paused ){
+			swap_palettes(1);
+		}
+		else{
+			swap_palettes(0);
+		}
+
 		redraw_screen();
 		swiWaitForVBlank();
 		oamUpdate(&oamMain);
-		}
 	}
+	oamFreeGfx(&oamMain, char_sprite_ptr);
 }
