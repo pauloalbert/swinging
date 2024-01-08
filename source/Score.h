@@ -11,3 +11,4 @@ void displayScore();
 void readMaxScore();
 void writeMaxScore();
 void displayMaxScore();
+void displayNumber(int number, bool raw, int digit);
