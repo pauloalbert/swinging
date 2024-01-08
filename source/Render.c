@@ -83,9 +83,9 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 			if (top > bottom)
 				continue;
 
-			if((int)(percent_on_wall*6)%3 == 1)
-					FillBuilding(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
-			else
+			//if((int)(percent_on_wall*6)%3 == 1)
+			//		FillBuilding(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+			//else
 			FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
 
 			highest_building = building.height + 1;
