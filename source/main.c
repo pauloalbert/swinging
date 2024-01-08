@@ -34,7 +34,6 @@ int main(void)
 
 	Struct_Init(&camera, &player, &grip);
 	Map_Init();
-	initInput();
 	P_Graphics_setup_main();
 	P_Graphics_setup_sub();
 	char_sprite_ptr = P_Graphics_setup_sprites(char_sprite_ptr);

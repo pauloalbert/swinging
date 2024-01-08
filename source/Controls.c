@@ -11,23 +11,6 @@ bool power = 1;
 extern int score, Msec, Sec, Min, Hour;
 extern Player* player;
 
-void ISR_KEYS(){
-	if(player->state != Paused)
-	{
-		irqDisable(IRQ_TIMER0);
-		irqDisable(IRQ_KEYS);
-		player->state = Paused;
-		mmPause();
-		draw_Pause();
-	}
-}
-
-void initInput(){
-	REG_KEYCNT = BIT(14) | KEY_START;
-	irqSet(IRQ_KEYS, &ISR_KEYS);
-	irqEnable(IRQ_KEYS);
-}
-
 void handleInput(Camera* camera, Player* player, Grip* grip){
 	scanKeys();
 	u16 keys = keysHeld();
@@ -38,7 +21,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 	if(player->state != Paused) {
 
-		if(keys & KEY_SELECT){ //alternative to interrupt
+		if(keys & KEY_START){ //alternative to interrupt
 			irqDisable(IRQ_TIMER0);
 			player->state = Paused;
 			mmPause();
@@ -84,7 +67,6 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			if(keys & KEY_RIGHT) { //put touchscreen zone where input is
 				Audio_PlayMusic();
 				irqEnable(IRQ_TIMER0);
-				irqEnable(IRQ_KEYS);
 				player->state = Falling;
 			}
 			// restart
@@ -105,7 +87,6 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 				player->state = Falling;
 				Audio_PlayMusic();
 				irqEnable(IRQ_TIMER0);
-				irqEnable(IRQ_KEYS);
 			}
 		}
 		else // if game over

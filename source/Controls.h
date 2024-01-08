@@ -13,6 +13,4 @@
 #include "Render.h"
 #include <math.h>
 
-void ISR_KEYS();
-void initInput();
 void handleInput(Camera* camera, Player* player, Grip* grip);
