@@ -38,6 +38,9 @@ u8 char_sprite[] = {
 		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
 		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
 };
+
+u16 palette_buffer[256*3];
+u8 current_palette = 0;
 bool main_graphics_frame = true;
 bool sub_graphics_frame = true;
 void P_Graphics_setup_main()
@@ -108,6 +111,18 @@ void P_Graphics_setup_main()
 	BG_PALETTE[0xff] = RGB15(15,11,15);
 
 
+	//copy the palette over to a local memory
+	int j;
+	for(j = 0; j < 256; j++){
+		u16 color = BG_PALETTE[j];
+		u8 average_color = (u8)(((color&0x1f) + ((color>>5)&0x1f) + ((color>>10)&0x1f))/3);
+		palette_buffer[j] = color;
+		palette_buffer[j+256] = RGB15(average_color,average_color,average_color);
+		palette_buffer[j+512] = RGB15(average_color,0,0);
+	}
+
+
+
 	//P_Graphics_assignBuffer(MAIN, (u16*)BG_GFX,256,192);
 	if(IS_SCREEN_FLIPPED){
 	REG_BG2PA = -256;
@@ -138,6 +153,16 @@ void P_Graphics_setup_main()
 		BG_MAP_RAM(1)[i] = BIT(15) | BIT(14) | BIT(13) | (i>=32*32 ? BIT(12) : 0);
 	}
 #endif
+}
+
+bool swap_palettes(u8 target_palette){
+	if(target_palette == current_palette || target_palette > 2)
+		return false;
+
+	current_palette = target_palette;
+	dmaCopy(&palette_buffer[256*target_palette],BG_PALETTE,512);
+
+	return true;
 }
 
 void P_Graphics_setup_sub(){

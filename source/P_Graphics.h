@@ -35,6 +35,8 @@ MAC_EXTERN inline int get_buffer_height(enum BUFFER_TYPE bT);
 */
 void P_Graphics_setup_main();
 
+bool swap_palettes(u8 target_palette);
+
 void P_Graphics_setup_sub();
 
 u16* P_Graphics_setup_sprites(u16* char_sprite_ptr);
