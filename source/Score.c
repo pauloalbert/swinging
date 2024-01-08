@@ -111,6 +111,10 @@ void writeMaxScore()
  */
 void displayMaxScore()
 {
+	if(( ((Hour*60+Min)*60+Sec)*1000+Msec) > max_score){
+			max_score = ((Hour*60+Min)*60+Sec)*1000+Msec;
+		}
+
 	int maxH, maxM, maxS, maxMs, number;
 	// total hours
 	maxH = (max_score - mod(max_score,(1000*60*60)))/(1000*60*60);
@@ -141,8 +145,6 @@ void displayMaxScore()
 
 		//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
 		//BG_MAP_RAM_SUB(24)[1+(6-i)*32+1] = numbersMap[(number)*2+1] | TILE_PALETTE(8);
-	if(( ( ( Hour*60+Min )*60+Sec )*1000+Msec ) > max_score){
-		max_score = ( ( ( Hour*60+Min )*60+Sec )*1000+Msec );
-	}
+
 	printf("DISPLAY MAX  %f\n", max_score);
 }
