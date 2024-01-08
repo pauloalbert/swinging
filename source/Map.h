@@ -78,6 +78,8 @@ typedef struct{
 	//TODO: store for the player
 } Grip;
 
+void Struct_Init(Camera* camera, Player* player, Grip* grip);
+
 void Map_Init();
 
 float Map_get_raycast_distance(int px, int py, float angle, bool* xwall, Building* wall_type, int pz, float tilt, Pos* pos, u8 raycursion);

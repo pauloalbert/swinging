@@ -18,9 +18,9 @@
 
 	float fov_width;
 	float fov_height;
-Camera camera= {100,140,60,3.141592*10/180.,-3.141592*10/180.,3.141592*70/180.,3.141592*52/180.};
-Player player = {100,140,60, 0,0,0,Paused, true};
-Grip grip = {false,0,0,0,0,0,0,0,0,0,0};
+Camera camera;
+Player player;
+Grip grip;
 
 u16* char_sprite_ptr;
 
@@ -32,6 +32,7 @@ int main(void)
 
 	REG_POWERCNT &= ~POWER_SWAP_LCDS;
 
+	Struct_Init(&camera, &player, &grip);
 	Map_Init();
 	initInput();
 	P_Graphics_setup_main();
@@ -39,11 +40,17 @@ int main(void)
 	P_Graphics_setup_sprites();
 	Audio_Init();
 
+	redraw_screen();
+	redraw_screen(); //draw twice to render
 	draw_Pause();
 	displayMaxScore();
+
 	initScore();
+
 	Audio_PlayMusic();
 	mmPause();
+	scanKeys();
+
 	while(1){
 		handleInput(&camera, &player, &grip);
 		if(player.state != Paused)

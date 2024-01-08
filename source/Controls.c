@@ -28,13 +28,15 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	scanKeys();
 	u16 keys = keysHeld();
 	u16 keys_pressed = keysDown();
+	u16 keys_up = keysUp();
 	touchPosition touch;
 	touchRead(&touch);
 
 	if(player->state != Paused) {
 
-		if(keys & KEY_B){ //for testing
+		if(keys & KEY_START){ //for testing
 			//Restart
+			/*
 			player->x = 100;
 			player->y = 140;
 			player->z = 60;
@@ -50,6 +52,11 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 			score = 0;
 			grip->ON = false;
 			redraw_screen();
+			*/
+			irqDisable(IRQ_TIMER0);
+			player->state = Paused;
+			mmPause();
+			draw_Pause();
 		}
 
 		if(keys & KEY_A){
@@ -89,7 +96,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 		{
 			// resume
 			if(keys & KEY_RIGHT) { //put touchscreen zone where input is
-				mmResume();
+				Audio_PlayMusic();
 				irqEnable(IRQ_TIMER0);
 				player->state = Falling;
 			}
@@ -116,7 +123,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 		else // if game over
 		{
 			// restart
-			if((keys & KEY_LEFT) && !player->live) { //put touchscreen zone where input is
+			if(keys & KEY_DOWN) { //put touchscreen zone where input is
 				player->x = 100;
 				player->y = 140;
 				player->z = 60;
@@ -127,6 +134,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 				player->vx = 0;
 				player->vy = 0;
 				player->vz = 0;
+				player->live = true;
 
 				player->state = Falling;
 				Audio_PlayMusic();
