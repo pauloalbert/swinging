@@ -5,6 +5,8 @@
 #include "P_Util.h"
 #include "Constants.h"
 #include "swing.h"
+#include "Pause.h"
+#include "GameOver.h"
 
 #define ROTOSCALE
 

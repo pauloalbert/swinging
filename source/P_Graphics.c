@@ -1,5 +1,5 @@
 #include "P_Graphics.h"
-#include <stdio.h>
+
 u16* P_Graphics_mainBuffer;
 u16* P_Graphics_subBuffer;
 int P_Graphics_mainW;
@@ -173,12 +173,22 @@ void P_Graphics_setup_sub(){
 	//
 	BGCTRL_SUB[2] = BG_BMP_BASE(0) | BG_BMP8_256x256;
 
-	REG_BG2PA_SUB = 128;
+	REG_BG2PA_SUB = -200;
 	REG_BG2PC_SUB = 0;
 	REG_BG2PB_SUB = 0;
-	REG_BG2PD_SUB = 120;
+	REG_BG2PD_SUB = -150;
+
+	REG_BG2X_SUB = 200*256;
+	REG_BG2Y_SUB = 150*192;
 
 	P_Graphics_assignBuffer(SUB,BG_GFX_SUB+0x0000,256,192);
+
+	//swiCopy(PauseBitmap, BG_BMP_RAM_SUB(1), PauseBitmapLen/2);
+	//swiCopy(PausePal, BG_PALETTE_SUB, PausePalLen/2);
+
+	//swiCopy(GameOverBitmap, BG_BMP_RAM_SUB(5), GameOverBitmapLen/2);
+	//swiCopy(GameOverPal, &BG_PALETTE_SUB[PausePalLen], GameOverPalLen/2);
+
 	int i;
 	for(i = 0; i < 15; i++){
 		BG_PALETTE_SUB[i] = BG_PALETTE[i];

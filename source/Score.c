@@ -40,21 +40,7 @@ void score_ISR()
 
 void displayScore()
 {
-	printf("DISPLAY SCORE  %d\n", score);
-	//int j,i, number;
-	//i, digit to display
-	//for(i = 5; i>0; i--)
-	{
-		//calculate the power of i-1 in j
-		//j = i-1; number = 1;
-		//while(j--)number = number*10;
-		//Obtain the number to render
-		//number = Msec / number;
-		//number = number % 10;
-		//Render the number
-		//BG_MAP_RAM_SUB(24)[1+(23-i)*32] = numbersMap[(10 - number)*2] | TILE_PALETTE(9);
-		//BG_MAP_RAM_SUB(24)[1+(23-i)*32+1] = numbersMap[(10 - number)*2+1] | TILE_PALETTE(9);
-	}
+	printf("\n\nSCORE :\n\n%d:%d:%d:%d", Hour, Min, Sec, Msec);
 }
 
 
@@ -71,12 +57,9 @@ void readMaxScore()
 	{
 		//Read the value and put it into the variable max_score
 		fscanf(file,"%d\n",&max_score);
-		printf("maxscoreRead\n");
 		// close the file
 		fclose(file);
 	}
-	else
-		printf("NOTREAD\n");
 }
 
 /*
@@ -113,6 +96,9 @@ void displayMaxScore()
 	}*/
 	if(( ( ( Hour*60+Min )*60+Sec )*1000+Msec ) > max_score){
 		max_score = ( ( ( Hour*60+Min )*60+Sec )*1000+Msec );
+		printf("\n\nNEW RECORD!\n\n");
 	}
-	printf("DISPLAY MAX  %d\n", max_score);
+	else printf("\n\nRECORD :\n\n");
+
+	printf("%d:%d:%d:%d", Hour, Min, Sec, Msec);
 }

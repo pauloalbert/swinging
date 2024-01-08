@@ -27,7 +27,7 @@ u16* char_sprite_ptr;
 
 int main(void)
 {
-	fatInitDefault();
+	//fatInitDefault();
 	consoleDemoInit();
 	readMaxScore();
 
@@ -40,10 +40,10 @@ int main(void)
 	char_sprite_ptr = P_Graphics_setup_sprites(char_sprite_ptr);
 	Audio_Init();
 
+	swap_palettes(0);
 	redraw_screen();
 	redraw_screen(); //draw twice to render
 	draw_Pause();
-	displayMaxScore();
 
 	initScore();
 
@@ -52,40 +52,16 @@ int main(void)
 	scanKeys();
 
 	while(1){
+
 		handleInput(&camera, &player, &grip);
 		if(player.state != Paused)
 		{
 			gameLogic(&camera, &player, &grip);
-			printf("%f\n",player.z);
 		}
 
 		redraw_screen();
-		handle_pause(player);
 		swiWaitForVBlank();
 		oamUpdate(&oamMain);
 	}
 	oamFreeGfx(&oamMain, char_sprite_ptr);
-}
-
-void handle_pause(Player player){
-	if(player.live == false){
-		bool first_time = swap_palettes(2);
-		//this is how we fill sub screen
-		FillRectangle(SUB,0,120,0,128,RGB15(10,10,10));
-		if(first_time){
-			consoleClear();
-			printf("\n           =~ YOU DIED ~=\n");
-		}
-	}
-	else if(player.state == Paused ){
-		bool first_time = swap_palettes(1);
-
-		if(first_time){
-			consoleClear();
-			printf("\n       =~ GAME PAUSED ~=\n");
-		}
-	}
-	else{
-		swap_palettes(0);
-	}
 }

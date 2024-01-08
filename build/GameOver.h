@@ -3,14 +3,12 @@
 
 //======================================================================
 //
-//	GameOver, 256x192@4, 
-//	Transparent color : FF,FF,FF
+//	GameOver, 256x192@8, 
 //	+ palette 256 entries, not compressed
-//	+ 203 tiles (t|f reduced) not compressed
-//	+ regular map (flat), not compressed, 32x24 
-//	Total size: 512 + 6496 + 1536 = 8544
+//	+ bitmap not compressed
+//	Total size: 512 + 49152 = 49664
 //
-//	Time-stamp: 2024-01-08, 17:13:07
+//	Time-stamp: 2024-01-08, 21:47:12
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //
@@ -19,11 +17,8 @@
 #ifndef GRIT_GAMEOVER_H
 #define GRIT_GAMEOVER_H
 
-#define GameOverTilesLen 6496
-extern const unsigned int GameOverTiles[1624];
-
-#define GameOverMapLen 1536
-extern const unsigned short GameOverMap[768];
+#define GameOverBitmapLen 49152
+extern const unsigned int GameOverBitmap[12288];
 
 #define GameOverPalLen 512
 extern const unsigned short GameOverPal[256];

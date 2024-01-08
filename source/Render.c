@@ -205,14 +205,36 @@ void Render_Sprites(int xo, int yo, float slope){
 
 void draw_Pause()
 {
+	REG_BG2PA_SUB = -200;
+	REG_BG2PC_SUB = 0;
+	REG_BG2PB_SUB = 0;
+	REG_BG2PD_SUB = -150;
+
+	REG_BG2X_SUB = 200*256;
+	REG_BG2Y_SUB = 150*192;
+	swap_palettes(1);
+	consoleClear();
+	printf("\n           =~ GAME PAUSED ~=\n");
 	displayScore();
 	displayMaxScore();
 	writeMaxScore();
+	printf("\n\n\nPress\nSTART\n\nTo Resume\n\nPress\nSELECT\n\nTo Restart");
 }
 
 void draw_GameOver()
 {
+	REG_BG2PA_SUB = -200;
+	REG_BG2PC_SUB = 0;
+	REG_BG2PB_SUB = 0;
+	REG_BG2PD_SUB = -150;
+
+	REG_BG2X_SUB = 200*256;
+	REG_BG2Y_SUB = 150*192;
+	swap_palettes(2);
+	consoleClear();
+	printf("\n           =~ YOU DIED ~=\n");
 	displayScore();
 	displayMaxScore();
 	writeMaxScore();
+	printf("\n\n\n\n\n\nPress\nSELECT\n\nTo Restart");
 }
