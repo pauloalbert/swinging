@@ -42,20 +42,29 @@ void score_ISR()
 void displayScore()
 {
 	printf("DISPLAY SCORE  %d\n", score);
-	//int j,i, number;
-	//i, digit to display
-	//for(i = 5; i>0; i--)
-	{
-		//calculate the power of i-1 in j
-		//j = i-1; number = 1;
-		//while(j--)number = number*10;
-		//Obtain the number to render
-		//number = Msec / number;
-		//number = number % 10;
-		//Render the number
-		//BG_MAP_RAM_SUB(24)[1+(23-i)*32] = numbersMap[(10 - number)*2] | TILE_PALETTE(9);
-		//BG_MAP_RAM_SUB(24)[1+(23-i)*32+1] = numbersMap[(10 - number)*2+1] | TILE_PALETTE(9);
-	}
+	int number;
+
+	// tens of hours
+	number = (Hour - mod(Hour, 10))/10;
+	// units of hours
+	number = mod(Hour, 10);
+
+	// tens of mins
+	number = (Min - mod(Min, 10))/10;
+	// units of mins
+	number = mod(Min, 10);
+
+	// tens of secs
+	number = (Sec - mod(Sec, 10))/10;
+	// units of secs
+	number = mod(Sec, 10);
+
+	// hundreds of msecs
+	number = (Msec - mod(Msec, 100))/100;
+	// tens of msecs
+	number = (mod(Msec, 100) - mod(Msec, 10))/10;
+	// units of msecs
+	number = mod(Msec, 10);
 }
 
 
