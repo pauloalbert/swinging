@@ -27,15 +27,18 @@ u16 color_from_wall(int wall_type, bool is_x_wall){
 
 
 void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
-	//FillRectangle(MAIN, 0,85,0,255, RGB15(20,25,31));
-	//FillRectangle(MAIN, 86,191,0,255, RGB15(20,31,20));
 	int i = 0;
+
+	//Iterate the slices of the screen from left to right.
 	for(i = 0; i < columns; i++){
-		int z = 0;
-		int highest_building = 0;
-		int lowest_pixel = 192;
-		float ray_x = camera.x;
-		float ray_y = camera.y;
+
+		//These variables are for rendering walls behind walls.
+		int z = 0;	//iteration nr
+		int highest_building = 0;	//height of building hit
+		int lowest_pixel = 192;		//pixel height already drawn to. (bottom to top)
+		float ray_x = camera.x;		//where did the last ray start from
+		float ray_y = camera.y;		//where to shoot the ray from
+		float ray_tilt = 0;
 		for(z = 0; z < VISION_HEIGHT_ITERATIONS;z ++){
 			//calculate the pan angle of the current beam
 			float angle = camera.pan + camera.fov_width*(-0.5 + (i+1)/(float)(columns+1));
@@ -44,21 +47,27 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 			Building building = {0};
 			bool is_x_wall = false;
 			Pos hitpoint = {0,0,0};
-			float distance = Map_get_raycast_distance(ray_x, ray_y, angle, &is_x_wall, &building, highest_building, 0, &hitpoint,VISION_RAYCAST_RECURSION - 20 * z);
+
+			float distance = Map_get_raycast_distance(ray_x, ray_y, angle, &is_x_wall, &building, highest_building, ray_tilt, &hitpoint,VISION_RAYCAST_RECURSION - 20 * z);
 
 			if(distance >= RAYCAST_ERROR_DISTANCE){
 				break;
 			}
 
+			//for windows coloring
+			float percent_on_wall = is_x_wall ? hitpoint.y : hitpoint.x;
+			percent_on_wall -= (int)percent_on_wall;
 
 			//color from palette
 			u16 wall_color = color_from_wall(building.color, !is_x_wall);
 
+			//adjust for fish-eye effect
+			float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
+
+
 			//adjust by distance
 			u8 distance_shift = clamp((int)(distance/COLOR_FALLOFF_PER_DISTANCE),0,8);
 			wall_color += distance_shift*16;	//shift by palette
-			//adjust for fish-eye effect
-			float adjusted_distance = cos(camera.tilt)*(distance*cos(camera.fov_width*(-0.5+i/(float)columns)));
 
 			//Stats for the render
 			float wall_height = building.height;
@@ -74,8 +83,16 @@ void Render_3D(enum BUFFER_TYPE bT, Camera camera, int columns){
 			int bottom = 192 * (bottom_wall) / screen_height_at_wall;
 			int top = 192 * (bottom_wall - wall_height) / screen_height_at_wall;
 
+			//clamp the bottom to the last wall as to not draw over it.
 			bottom = bottom <= lowest_pixel ? bottom : lowest_pixel;
-			FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+
+			//Draw if rectangle has area.
+			if (top <= bottom){
+				//if((int)(percent_on_wall*6)%3 == 1)
+				//		FillBuilding(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+				//else
+				FillRectangle(bT, clamp(top,0,191), clamp(bottom,0,191), (int)(i*(256/(float)columns)),(int)((i+1)*(256/(float)columns))-1, wall_color);
+			}
 
 			highest_building = building.height + 1;
 			lowest_pixel = top + 1;

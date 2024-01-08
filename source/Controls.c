@@ -57,9 +57,11 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 	camera->pan = fmod(camera->pan + 0.12, 3.141592);
 	}
 
-	if(keys_pressed & KEY_A){
+	/*
+	 * toggle the prints
+	 * if(keys_pressed & KEY_A){
 		REG_DISPCNT_SUB ^= DISPLAY_BG0_ACTIVE;
-	}
+	}*/
 
 	if((keys_pressed & KEY_X) && power){
 		slowdown();

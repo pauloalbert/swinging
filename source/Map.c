@@ -28,8 +28,12 @@ void Map_Init(){
 			else {
 
 				//vaccum, set to building on random chance
-				if(rng() % 10 < 2){
-					b.u16 = BUILDING(2,64);
+				if(rng() % 7 == 0){
+					b.u16 = BUILDING(2,64 + (rng()%2)*30);
+				}
+
+				if(rng() % 13 == 0){
+					b.u16 = BUILDING(1,170);
 				}
 
 				//clear the starting area
