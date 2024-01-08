@@ -116,30 +116,55 @@ void displayMaxScore()
 		}
 
 	int maxH, maxM, maxS, maxMs, number;
+
 	// total hours
 	maxH = (max_score - mod(max_score,(1000*60*60)))/(1000*60*60);
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// tens of hours
 	number = (maxH - mod(maxH, 10))/10;
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// units of hours
 	number = mod(maxH, 10);
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// total extra mins
 	maxM = mod(max_score,(1000*60*60)) - mod(max_score,(1000*60)) / (1000*60);
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// tens of mins
 	number = (maxM - mod(maxM, 10))/10;
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// units of mins
 	number = mod(maxM, 10);
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// total extra secs
 	maxS = (mod(max_score,(1000*60)) - mod(max_score,1000)) / 1000;
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// tens of secs
 	number = (maxS - mod(maxS, 10))/10;
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// units of secs
 	number = mod(maxS, 10);
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// total extra msecs
 	maxMs = mod(max_score,1000);
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// hundreds of msecs
 	number = (maxMs - mod(maxMs, 100))/100;
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// tens of msecs
 	number = (mod(maxMs, 100) - mod(maxMs, 10))/10;
+	//BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+
 	// units of msecs
 	number = mod(maxMs, 10);
 
