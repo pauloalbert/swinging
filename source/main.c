@@ -28,7 +28,7 @@ int main(void)
 	initInput();
 	P_Graphics_setup_main();
 	P_Graphics_setup_sub();
-	P_Graphics_setup_sprites();
+	char_sprite_ptr = P_Graphics_setup_sprites(char_sprite_ptr);
 	Audio_Init();
 
 	draw_Pause();
@@ -44,4 +44,5 @@ int main(void)
 		oamUpdate(&oamMain);
 		}
 	}
+	oamFreeGfx(&oamSub, char_sprite_ptr);
 }
