@@ -8,10 +8,12 @@
 #include <nds.h>
 #include <math.h>
 #include "extern.h"
-#ifndef PAULO
+
+// MAC version doesn't work with extern for some reason, so we wanted to try this!
+#ifdef USING_MAC
 #define MAC_EXTERN extern
 #endif
-#ifdef PAULO
+#ifndef USING_MAC
 #define MAC_EXTERN
 #endif
 
