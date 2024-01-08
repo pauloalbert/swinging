@@ -1,6 +1,6 @@
 #include "Score.h"
 
-int score = 0; Msec = 0, Sec = 0, Min = 0, Hour = 0, max_score;
+unsigned int score = 0; Msec = 0, Sec = 0, Min = 0, Hour = 0, max_score;
 
 void score_ISR()
 {
@@ -90,7 +90,7 @@ void writeMaxScore()
 	if(file != NULL)
 	{
 		//Print the value in the file
-		fprintf(file,"%f\n",max_score);
+		fprintf(file,"%d\n",max_score);
 		//Close the file
 		fclose(file);
 	}
