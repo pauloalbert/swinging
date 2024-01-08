@@ -127,6 +127,7 @@ void handleInput(Camera* camera, Player* player, Grip* grip){
 
 				REG_BG2X_SUB = 128*256;
 				REG_BG2Y_SUB = 120*192;
+				Map_Init();
 			}
 
 		}
