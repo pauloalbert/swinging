@@ -205,10 +205,14 @@ void Render_Sprites(int xo, int yo, float slope){
 
 void draw_Pause()
 {
-
+	displayScore();
+	displayMaxScore();
+	writeMaxScore();
 }
 
 void draw_GameOver()
 {
-
+	displayScore();
+	displayMaxScore();
+	writeMaxScore();
 }

@@ -3,6 +3,15 @@
 int count;
 extern bool power;
 
+void initScore(){
+TIMER_DATA(0) = TIMER_FREQ(1000);
+	TIMER0_CR = TIMER_ENABLE | TIMER_DIV_1 | TIMER_IRQ_REQ;
+
+	irqSet(IRQ_TIMER0, &score_ISR);
+
+	extern int score;
+	score = 0;
+}
 void redraw_screen(){
 	extern Camera camera;
 	swap_buffers(SUB);
@@ -35,7 +44,7 @@ void slowdown_ISR()
 		{
 			if(count>=(TIME_POWER+TIME_POWER_BACK)*2)
 			{
-				irqDisable(IRQ_TIMER0);
+				irqDisable(IRQ_TIMER1);
 				power = 1;
 				Audio_PlaySoundEX(SFX_BOOP, 255, 127);
 			}
@@ -46,13 +55,13 @@ void slowdown_ISR()
 void slowdown()
 {
 	power = 0;
-	TIMER_DATA(0) = TIMER_FREQ_256(2);
-	TIMER0_CR = TIMER_ENABLE | TIMER_DIV_256 | TIMER_IRQ_REQ;
+	TIMER_DATA(1) = TIMER_FREQ_256(2);
+	TIMER1_CR = TIMER_ENABLE | TIMER_DIV_256 | TIMER_IRQ_REQ;
 
-	irqSet(IRQ_TIMER0, &slowdown_ISR);
+	irqSet(IRQ_TIMER1, &slowdown_ISR);
 
 	count = 0;
-	irqEnable(IRQ_TIMER0);
+	irqEnable(IRQ_TIMER1);
 }
 
 //try slinging with a touch position.

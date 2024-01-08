@@ -43,6 +43,7 @@ typedef struct{
 	float vz;
 	float angle;
 	State state;
+	bool live;
 	//TODO: store for the player
 } Player;
 
@@ -76,6 +77,8 @@ typedef struct{
 	float vphi;
 	//TODO: store for the player
 } Grip;
+
+void Struct_Init(Camera* camera, Player* player, Grip* grip);
 
 void Map_Init();
 

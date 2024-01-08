@@ -15,6 +15,29 @@
 
 Building map[MAP_HEIGHT*MAP_WIDTH];
 
+void Struct_Init(Camera* camera, Player* player, Grip* grip)
+{
+	camera->x = 100;
+	camera->y = 140;
+	camera->z = 60;
+	camera->pan = 3.141592*10/180.;
+	camera->tilt = -3.141592*10/180.;
+	camera->fov_width = 3.141592*70/180.;
+	camera->fov_height = 3.141592*52/180.;
+
+	player->x = camera->x;
+	player->y = camera->y;
+	player->z = camera->z;
+	player->vx = 0;
+	player->vy = 0;
+	player->vz = 0;
+	player->angle = 0;
+	player->state = Paused;
+	player->live = true;
+
+	grip->ON = false;
+}
+
 void Map_Init(){
 	int i,j;
 	for(i = 0; i < MAP_HEIGHT; i++){
