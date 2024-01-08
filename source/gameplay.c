@@ -134,7 +134,7 @@ void Swing(Player* player, Grip* grip)
 void CrashTest(Player* player, Grip* grip)
 {
 
-	if(player->z <= 20)
+	if(player->z <= -10)
 	{
 		player->live = false;
 		irqDisable(IRQ_TIMER0);
