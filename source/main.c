@@ -44,5 +44,5 @@ int main(void)
 		oamUpdate(&oamMain);
 		}
 	}
-	oamFreeGfx(&oamSub, char_sprite_ptr);
+	oamFreeGfx(&oamMain, char_sprite_ptr);
 }
