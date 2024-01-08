@@ -41,6 +41,7 @@ void score_ISR()
 
 void displayScore()
 {
+	printf("DISPLAY SCORE  %d\n", score);
 	//int j,i, number;
 	//i, digit to display
 	//for(i = 5; i>0; i--)
@@ -114,5 +115,5 @@ void displayMaxScore()
 	if(( ( ( Hour*60+Min )*60+Sec )*1000+Msec ) > max_score){
 		max_score = ( ( ( Hour*60+Min )*60+Sec )*1000+Msec );
 	}
-	printf("DISPLAY  %f\n", max_score);
+	printf("DISPLAY MAX  %f\n", max_score);
 }

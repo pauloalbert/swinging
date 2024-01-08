@@ -12,10 +12,13 @@ extern int score, Msec, Sec, Min, Hour;
 extern Player* player;
 
 void ISR_KEYS(){
-	irqDisable(IRQ_TIMER0);
-	player->state = Paused;
-	mmPause();
-	draw_Pause();
+	if(player->state != Paused)
+	{
+		irqDisable(IRQ_TIMER0);
+		player->state = Paused;
+		mmPause();
+		draw_Pause();
+	}
 }
 
 void initInput(){
