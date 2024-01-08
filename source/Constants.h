@@ -8,7 +8,7 @@
 /* VISUALS */
 
 #define GRIP_RAYCAST_RECURSION 20
-#define VISION_RAYCAST_RECURSION 60
+#define VISION_RAYCAST_RECURSION 32
 #define VISION_SECOND_RAYCAST_RECURSION 30
 #define VISION_HEIGHT_ITERATIONS 3
 #define MAX_INT (0xffff)
@@ -40,10 +40,13 @@
 /* MOVEMENT */
 
 #define RAYCAST_ERROR_DISTANCE 1000000.
-#define DEFAULT_DT 0.3
+#define DEFAULT_DT 0.2
 
 /* GAME */
 
 #define TIME_POWER 3			//counted in 500ms
 #define TIME_POWER_BACK 5
+
+/* MATH */
+#define Pi 3.141592
 

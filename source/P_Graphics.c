@@ -159,8 +159,8 @@ void P_Graphics_setup_sub(){
 		BG_PALETTE_SUB[i] = BG_PALETTE[i];
 	}
 }
-void P_Graphics_setup_sprites(){
-	extern u16* char_sprite_ptr;
+
+u16* P_Graphics_setup_sprites(u16* char_sprite_ptr){
 	//assign the vram
 	VRAM_F_CR = VRAM_ENABLE | VRAM_F_MAIN_SPRITE;
 
@@ -170,6 +170,8 @@ void P_Graphics_setup_sprites(){
 
 	swiCopy(swingPal, SPRITE_PALETTE, swingPalLen/2);
 	swiCopy(swingTiles, char_sprite_ptr, swingTilesLen/2);
+
+	return char_sprite_ptr;
 }
 
 MAC_EXTERN inline int* get_buffer_pointer(enum BUFFER_TYPE bT){return (bT==MAIN) ? P_Graphics_mainBuffer : P_Graphics_subBuffer;}

@@ -6,7 +6,6 @@
  *
  */
 #include "Map.h"
-#include "P_Util.h"
 
 #define B1 {BUILDING(1,256)}
 #define B2 {BUILDING(2,128)}
@@ -197,6 +196,4 @@ float get_grip_position (Camera camera, touchPosition touch, Pos* grip){
 	float distance = Map_get_raycast_distance(camera.x,camera.y,camera.pan + angle_horizontal, NULL, NULL, camera.z, -camera.tilt - angle_vertical, grip,GRIP_RAYCAST_RECURSION);
 	return distance;
 }
-
-
 

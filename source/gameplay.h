@@ -19,7 +19,9 @@ void Transit(Player* player, Grip* grip);
 
 void Swing(Player* player, Grip* grip);
 
-float FallBounce(Grip* grip);
+float FallBounce(Grip* grip, Player* player);
 
 void Fall(Player* player, Grip* grip);
+
+void CrashTest(Player* player, Grip* grip);
 

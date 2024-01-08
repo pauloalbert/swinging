@@ -37,7 +37,7 @@ void P_Graphics_setup_main();
 
 void P_Graphics_setup_sub();
 
-void P_Graphics_setup_sprites();
+u16* P_Graphics_setup_sprites(u16* char_sprite_ptr);
 /*
  	 Function that assigns the buffer (already implemented) and its size
  */
