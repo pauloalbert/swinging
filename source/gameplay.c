@@ -2,8 +2,6 @@
 
 #define g 9.81				// gravity acceleration
 
-#define k 0				// spring constant
-#define spring_max 2		// force clamping
 #define vphi_max 2		// v phi max clamping
 #define vtheta_max 10		// v theta max clamping
 
@@ -19,25 +17,19 @@ float sinT = 0;
 float cosF = 0;
 float sinF = 0;
 
-float dl = 0;				// web length delta
-
 extern int score;
 
 void Transit(Player* player, Grip* grip)
 {
-	//calculate the initial length of the rope to maintain
+	//calculate the initial length of the rope
 	grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
-
-	//Bounce constants
 
 	if(grip->d>=7/4*UpOffset)
 		grip->d_rest = grip->d - UpOffset;
 	else
 		grip->d_rest = grip->d;
 
-	//dl = grip->d - grip->d_rest;
-
-	//calculate initial positions
+	//calculate initial angular position
 	cosT = (grip->z - player->z)/grip->d;
 	grip->theta = acos( cosT );
 	sinT = sin(grip->theta);
@@ -46,10 +38,10 @@ void Transit(Player* player, Grip* grip)
 	sinF = (grip->y-player->y) / sqrt( sqr(grip->x-player->x) + sqr(grip->y-player->y) );
 	grip->phi = ( (cosF > 0) ? ( (sinF>0) ? acos(cosF) : -acos(cosF)) : ( (sinF>0) ? acos(cosF) : -acos(cosF)));
 
-
-	grip->vd = 0; //player->vx*sinT*cosF + player->vy*sinT*sinF - player->vz*cosT; // - UpOffset;		//correct
-	grip->vtheta = (player->vx*cosT*cosF + player->vy*cosT*sinF + player->vz*sinT)/grip->d;	//correct
-	grip->vphi = (-player->vx*sinF + player->vy*cosF)/grip->d; 								//correct
+	// cartesian velocity to spherical
+	grip->vd = 0;
+	grip->vtheta = (player->vx*cosT*cosF + player->vy*cosT*sinF + player->vz*sinT)/grip->d;
+	grip->vphi = (-player->vx*sinF + player->vy*cosF)/grip->d;
 
 
 }
@@ -68,10 +60,12 @@ void Fall(Player* player, Grip* grip)
 
 	if(player->z <= FallBounce(grip, player) && grip->ON)
 	{
+		// if attached and within swinging range
 		player->state = Swinging;
 	}
 	else
 	{
+		// fall
 		player->vz = player->vz - g*dt;
 
 		player->x = player->x + player->vx*dt;
@@ -84,6 +78,7 @@ void Fall(Player* player, Grip* grip)
 
 void Swing(Player* player, Grip* grip)
 {
+	// "pull" web when attaching
 	if(grip->d>grip->d_rest && grip->d<=grip->d_rest+UpOffset)
 	{
 		grip->vd = -UpOffset;	//grip->vd*(1-damping) - clamp_float(k * dl * dt,-spring_max,spring_max);
@@ -96,6 +91,7 @@ void Swing(Player* player, Grip* grip)
 	}
 
 
+	// avoid divergence
 	if(fabs(cosT/sinT) < 70)
 	grip->vphi = grip->vphi*(1-dampingF) - 2*grip->vtheta*grip->vphi*cosT/sinT*dt;
 	else
@@ -117,18 +113,15 @@ void Swing(Player* player, Grip* grip)
 	sinT = sin(grip->theta);
 
 
-	player->vx = -(grip->d_rest*grip->vtheta * cosT*cosF - grip->d*grip->vphi* sinF); //-grip->vd * sinT*cosF
-	player->vy = -(grip->d_rest*grip->vtheta * cosT*sinF + grip->d*grip->vphi* cosF); //-grip->vd * sinT*sinF
-	player->vz = grip->d_rest*grip->vtheta * sinT; //-grip->vd * cosT
+	// spherical velocity to cartesian (excluding radial velocity)
+	player->vx = -(grip->d_rest*grip->vtheta * cosT*cosF - grip->d*grip->vphi* sinF);
+	player->vy = -(grip->d_rest*grip->vtheta * cosT*sinF + grip->d*grip->vphi* cosF);
+	player->vz = grip->d_rest*grip->vtheta * sinT;
 
-	player->x = grip->x - grip->d*sinT*cosF; //clamp_float(player->x + player->vx*dt, grip->x - grip->d, grip->x + grip->d);
-	player->y = grip->y - grip->d*sinT*sinF; //clamp_float(player->y + player->vy*dt, grip->y - grip->d, grip->y + grip->d);
-	player->z = grip->z - grip->d*cosT;//clamp_float(player->z + player->vz*dt, grip->z - grip->d, grip->z + grip->d);
-
-	//grip->d = mag((grip->x-player->x),(grip->y-player->y),(grip->z-player->z));
-
-	//if(grip->theta>0 || grip->theta<=0)
-		//printf("%.2f, %.2f, %d, %.2f\n", grip->d,  player->x, grip->ON, grip->vtheta);
+	// new position constrained on web length
+	player->x = grip->x - grip->d*sinT*cosF;
+	player->y = grip->y - grip->d*sinT*sinF;
+	player->z = grip->z - grip->d*cosT;
 	}
 
 void CrashTest(Player* player, Grip* grip)
