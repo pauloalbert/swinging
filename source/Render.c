@@ -124,7 +124,7 @@ void Render_2D(enum BUFFER_TYPE bT, Camera camera, int left, int top, int right,
 			int x1 = convert_ranges(i+1,0,MAP_WIDTH,left,right) - 1;
 			int y1 = convert_ranges(j+1,0,MAP_HEIGHT,top,bottom) - 1;
 			if(color < 300) FillRectangle(bT,y,y1,x,x1,color);
-			else DrawRectangle(bT,y,y1,x,x1,4);
+			else DrawRectangle(bT,y,y1,x,x1,8);
 		}
 	}
 	int x = convert_ranges(camera.x, 0, MAP_WIDTH << WORLD_BLOCK_BITS, left, right);
