@@ -1,6 +1,6 @@
 #include "Score.h"
 
-int score = 0; Msec = 0, Sec = 0, Min = 0, Hour = 0, max_score = 0;
+int score = 0; Msec = 0, Sec = 0, Min = 0, Hour = 0, max_score;
 
 void score_ISR()
 {
