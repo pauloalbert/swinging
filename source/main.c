@@ -26,7 +26,7 @@ u16* char_sprite_ptr;
 
 int main(void)
 {
-	fatInitDefault();   //test if works on VM emulator
+	//fatInitDefault();   //test if works on VM emulator
 	consoleDemoInit();
 	readMaxScore();
 

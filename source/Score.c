@@ -102,16 +102,11 @@ void writeMaxScore()
  */
 void displayMaxScore()
 {
-	/*int i, j, number;
-	for(i = 5; i>0; i--)
-	{
-		j = i-1; number = 1;
-		while(j--)number = number*10;
+	int dH, dM, dS, cMS, dMS, number;
 		number = max_score / number;
 		number = number % 10;
-		BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(10 - number)*2] | TILE_PALETTE(8);
-		BG_MAP_RAM_SUB(24)[1+(6-i)*32+1] = numbersMap[(10 - number)*2+1] | TILE_PALETTE(8);
-	}*/
+		BG_MAP_RAM_SUB(24)[1+(6-i)*32] = numbersMap[(number)*2] | TILE_PALETTE(8);
+		BG_MAP_RAM_SUB(24)[1+(6-i)*32+1] = numbersMap[(number)*2+1] | TILE_PALETTE(8);
 	if(( ( ( Hour*60+Min )*60+Sec )*1000+Msec ) > max_score){
 		max_score = ( ( ( Hour*60+Min )*60+Sec )*1000+Msec );
 	}
