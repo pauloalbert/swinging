@@ -90,9 +90,23 @@ void displayMaxScore()
 
 	if(( ( ( Hour*60+Min )*60+Sec )*1000+Msec ) > max_score){
 		max_score = ( ( ( Hour*60+Min )*60+Sec )*1000+Msec );
-		printf("\n\nNEW RECORD!\n\n");
+		printf("\n\nNEW RECORD!\n\n%d:%d:%d:%d", Hour, Min, Sec, Msec);
 	}
-	else printf("\n\nRECORD :\n\n");
+	else {
+		int maxH, maxM, maxS, maxMs;
 
-	printf("%d:%d:%d:%d", Hour, Min, Sec, Msec);
+		// total hours
+		maxH = (max_score - mod(max_score,(1000*60*60)))/(1000*60*60);
+
+		// total extra mins
+		maxM = (mod(max_score,(1000*60*60)) - mod(max_score,(1000*60))) / (1000*60);
+
+		// total extra secs
+		maxS = (mod(max_score,(1000*60)) - mod(max_score,1000)) / 1000;
+
+		// total extra msecs
+		maxMs = mod(max_score,1000);
+
+		printf("\n\nRECORD :\n\n%d:%d:%d:%d", maxH, maxM, maxS, maxMs);
+	}
 }
